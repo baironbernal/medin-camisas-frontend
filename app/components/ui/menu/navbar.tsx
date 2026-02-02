@@ -38,6 +38,11 @@ export default function Navbar({
           <div
             className="hidden lg:flex flex-1 justify-center">
             <ul className="flex gap-2 relative">
+
+              <li className="relative flex flex-col items-center">
+                <Link href={'/who-are'} className="inline-flex justify-center rounded px-3 py-2 text-17 transition hover:bg-white/10 hover:text-accent">Nosotros</Link>
+              </li>
+
               {categories.map((category) => {
                 const hasChildren =
                   category.children_recursive &&

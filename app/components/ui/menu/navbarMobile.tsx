@@ -62,6 +62,15 @@ export default function NavbarMobile({
 
         {/* Menu Items */}
         <ul className="flex flex-col gap-2 p-4 overflow-y-auto">
+            <li>
+                <Link
+                  href={'/who-are'}
+                  onClick={handleClose}
+                  className="block rounded px-3 py-3 text-lg hover:bg-white/10"
+                >
+                  Nosotros
+                </Link>
+            </li>
           {categories.map((category) => {
             const href = category.slug
               ? `/categoria/${category.slug}`

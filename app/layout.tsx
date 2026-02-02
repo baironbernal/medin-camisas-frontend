@@ -50,7 +50,7 @@ export default async function RootLayout({
       <body className="antialiased">
         <Navbar categories={categories} />
         <main className="w-full">{children}</main>
-        <Footer styles="w-full h-full bg-accent" />
+        <Footer styles="w-full h-full bg-beige" />
       </body>
     </html>
   );

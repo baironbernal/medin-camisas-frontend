@@ -20,7 +20,7 @@ export default async function Home() {
      </section>
 
      {/* Mayorista Section */}
-     <section className="bg-dark w-full px-4 py-16 flex flex-col justify-between">
+     <section className="bg-dark w-full px-4 py-16 flex flex-col justify-between gap:10 lg:gap-20">
         <MayoristaSection/>
         <VisitUs/>
      </section>
