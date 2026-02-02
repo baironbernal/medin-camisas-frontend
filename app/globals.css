@@ -1,26 +1,104 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  /* ===========================
+     Colors
+  =========================== */
+
+  --color-primary: #292944;
+  --color-secondary: #707070;
+  --color-description: #D6D6D6;
+  --color-tertiary: #777777;
+  --color-accent: #e7d0c3;
+  --color-white: #ffffff;
+  --color-dark: #161625;
+  --color-dark-alt: #161626;
+  --color-beige: #F1ECE5;
+  --color-muted: #6e6c71;
+  --color-purple: #3E3C64;
+
+  /* Aliases */
+  --background: var(--color-white);
+  --foreground: var(--color-primary);
+
+  /* ===========================
+     Fonts (Design System)
+  =========================== */
+
+  /* Primary = Body (Okine) */
+  --font-primary: var(--font-okine);
+
+  /* Secondary = Headings (Utendo) */
+  --font-secondary: var(--font-utendo);
+
+  /* ===========================
+     Font Sizes
+  =========================== */
+
+  --text-15: 15px;
+  --text-17: 17px;
+  --text-20: 20px;
+  --text-22: 22px;
+  --text-25: 25px;
+  --text-30: 30px;
+  --text-60: 60px;
+  --text-90: 90px;
 }
+
+/* ===========================
+   Tailwind Theme Tokens
+=========================== */
 
 @theme inline {
+  /* Colors */
   --color-background: var(--background);
   --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+  --color-primary: var(--color-primary);
+  --color-secondary: var(--color-secondary);
+  --color-description: var(--color-description);
+  --color-tertiary: var(--color-tertiary);
+  --color-accent: var(--color-accent);
+  --color-white: var(--color-white);
+  --color-dark: var(--color-dark);
+  --color-dark-alt: var(--color-dark-alt);
+  --color-beige: var(--color-beige);
+  --color-muted: var(--color-muted);
+  --color-purple: var(--color-purple);
+
+  /* Fonts */
+  --font-sans: var(--font-primary);
+  --font-heading: var(--font-secondary);
+  --font-mono: ui-monospace, monospace;
+
+  /* Text sizes */
+  --text-15: var(--text-15);
+  --text-17: var(--text-17);
+  --text-20: var(--text-20);
+  --text-22: var(--text-22);
+  --text-25: var(--text-25);
+  --text-30: var(--text-30);
+  --text-60: var(--text-60);
+  --text-90: var(--text-90);
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+/* ===========================
+   Base Styles
+=========================== */
 
 body {
   background: var(--background);
   color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: var(--font-primary), system-ui, sans-serif;
+}
+
+/* All headings = Utendo */
+
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+  font-family: var(--font-secondary);
+  line-height: normal;
 }
