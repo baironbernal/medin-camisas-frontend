@@ -1,12 +1,12 @@
 import { CircleCheck, MessageCircle } from 'lucide-react';
 import Tag from '../../ui/tag';
-import Image from 'next/image';
+import Map from '../../ui/map';
 
 const VisitUs = () => {
   return (
-    <section className="container mx-auto flex flex-col lg:flex-row gap-6">
+    <section className="container mx-auto flex flex-col lg:flex-row h-full w-full gap-8 ">
      {/* First Column */}
-        <div>
+      <div className='w-full'>
             <h2 className="mt-4 lg:mt-8 text-white lg:text-60 text-30">Visitanos</h2>
             
             <p className="mt-4 lg:mt-8 text-white text-sm lg:text-20 lg:max-w-xl">
@@ -30,14 +30,9 @@ const VisitUs = () => {
         </div>
 
         {/* Second Column */}
-        <Image
-                src='/home/mayorista.png'
-                alt="Mayorista Prendas"
-                width={6000}
-                height={6000}
-                priority
-                className="w-auto object-contain"
-              />
+         <div className='w-full h-full mt-20'>
+            <Map/>
+         </div>
     </section>
   )
 }

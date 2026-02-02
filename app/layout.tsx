@@ -1,8 +1,10 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
 import "./globals.css";
-import Navbar from "@/app/components/ui/navbar";
+import "animate.css";
+import Navbar from "@/app/components/ui/menu/navbar";
 import { getCategories } from "./services/categories";
+import Footer from "./components/ui/footer/footer";
 
 
 /* Utendo */
@@ -48,6 +50,7 @@ export default async function RootLayout({
       <body className="antialiased">
         <Navbar categories={categories} />
         <main className="w-full">{children}</main>
+        <Footer styles="w-full h-full bg-accent" />
       </body>
     </html>
   );
