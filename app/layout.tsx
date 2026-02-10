@@ -5,6 +5,7 @@ import "animate.css";
 import Navbar from "@/app/components/ui/menu/navbar";
 import { getCategories } from "./services/categories";
 import Footer from "./components/ui/footer/footer";
+import { NuqsAdapter } from 'nuqs/adapters/next/app'
 
 
 /* Utendo */
@@ -49,7 +50,9 @@ export default async function RootLayout({
     <html lang="en" className={`${utendo.variable} ${okine.variable}`}>
       <body className="antialiased">
         <Navbar categories={categories} />
-        <main className="w-full">{children}</main>
+        <main className="w-full">
+          <NuqsAdapter>{children}</NuqsAdapter>
+        </main>
         <Footer styles="w-full h-full bg-beige" />
       </body>
     </html>

@@ -17,7 +17,7 @@ function ProductItem({ product }: ProductItemProps) {
           alt={product.name}
           width={300}
           height={300}
-          className="aspect-square object-cover rounded-lg w-full"
+          className="aspect-square rounded-lg w-full shadow-xl"
         />
       
       <section className='flex justify-between items-start p-4'>

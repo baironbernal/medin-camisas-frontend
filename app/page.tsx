@@ -6,7 +6,8 @@ import { getProducts } from "./services/products";
 
 export default async function Home() {
 
-  const products = await getProducts();
+
+  const { data: products } = await getProducts();
 
   return (
     <section className="max-w-full">

@@ -49,7 +49,7 @@ export default function Navbar({
                   category.children_recursive.length > 0;
 
                 const href = category.slug
-                  ? `/categoria/${category.slug}`
+                  ? `/coleccion?category=${category.slug}`
                   : "#";
 
                 return (

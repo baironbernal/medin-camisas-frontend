@@ -17,7 +17,7 @@ export default function RecursiveCategoryItem({
   const [isExpanded, setIsExpanded] = useState(false);
   
   const hasChildren = category.children_recursive && category.children_recursive.length > 0;
-  const href = category.slug ? `/categoria/${category.slug}` : "#";
+  const href = category.slug ? `/coleccion?subcategory=${category.slug}` : "#";
 
   return (
     <div className={`${level > 0 ? 'ml-4 mt-2' : ''}`}>

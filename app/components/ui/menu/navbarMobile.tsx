@@ -73,7 +73,7 @@ export default function NavbarMobile({
             </li>
           {categories.map((category) => {
             const href = category.slug
-              ? `/categoria/${category.slug}`
+              ? `/coleccion?category=${category.slug}`
               : "#";
 
             return (
