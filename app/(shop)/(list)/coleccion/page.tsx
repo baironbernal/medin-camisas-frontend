@@ -20,8 +20,7 @@ export default async function Page({
   const subcategory = Array.isArray(resolvedSearchParams.subcategory) ? resolvedSearchParams.subcategory[0] : resolvedSearchParams.subcategory;
 
   return (
-    <main className="w-full max-w-7xl mx-auto">
-      
+    <main className="w-full mx-auto ">
       {/* Title based on filters */}
       <h1 className="text-3xl font-heading mb-6 capitalize">
         {category ? `Colección: ${category}` : 
@@ -30,7 +29,7 @@ export default async function Page({
       </h1>
 
       {productsResponse.data.length > 0 ? (
-        <div className="flex flex-wrap gap-4 justify-center md:justify-start">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-center md:justify-start">
           {productsResponse.data.map((product) => (
             <ProductItem key={product.id} product={product} />
           ))}

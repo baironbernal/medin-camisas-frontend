@@ -8,6 +8,7 @@ import { Menu } from "lucide-react";
 import WhatsappButton from "../whatsappButton";
 import Logo from "../logo";
 import HoverPanel from "./HoverPanel";
+import { useAnimatedOpen } from "@/app/hooks/useAnimatedOpen";
 
 
 interface Props {
@@ -21,13 +22,19 @@ export default function Navbar({
   logoSrc = "/logos/logo-ite.png",
   logoAlt = "Medin Camisas",
 }: Props) {
-  const [isMenuOpen, setIsMenuOpen] = useState(false);
+  const { 
+    isOpen: isMenuOpen, 
+    isClosing: isMenuClosing, 
+    open: openMenu, 
+    close: closeMenu 
+  } = useAnimatedOpen();
+  
   const [activeCategory, setActiveCategory] = useState<Category | null>(null);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
 
 
   return (
-    <header className="sticky top-0 z-50 bg-dark font-utendo text-white">
+    <header className="sticky top-0 z-10 bg-dark font-utendo text-white">
       <nav className="container mx-auto px-4 py-3">
         <div className="flex items-center justify-between">
 
@@ -38,9 +45,15 @@ export default function Navbar({
           <div
             className="hidden lg:flex flex-1 justify-center">
             <ul className="flex gap-2 relative">
-
+              
+              {/* Quienes somos */}
               <li className="relative flex flex-col items-center">
                 <Link href={'/who-are'} className="inline-flex justify-center rounded px-3 py-2 text-17 transition hover:bg-white/10 hover:text-accent">Nosotros</Link>
+              </li>
+
+              {/* Ver todo */}
+              <li className="relative flex flex-col items-center">
+                <Link href={'/coleccion'} className="inline-flex justify-center rounded px-3 py-2 text-17 transition hover:bg-white/10 hover:text-accent">Ver todo</Link>
               </li>
 
               {categories.map((category) => {
@@ -83,7 +96,7 @@ export default function Navbar({
 
           {/* ================= Mobile Button ================= */}
           <button
-            onClick={() => setIsMenuOpen(true)}
+            onClick={openMenu}
             className="lg:hidden text-white"
           >
             <Menu size={28} />
@@ -113,7 +126,8 @@ export default function Navbar({
           categories={categories}
           logoSrc={logoSrc}
           logoAlt={logoAlt}
-          onClose={() => setIsMenuOpen(false)}
+          onClose={closeMenu}
+          isClosing={isMenuClosing}
         />
       )}
 

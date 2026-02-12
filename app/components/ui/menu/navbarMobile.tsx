@@ -1,7 +1,5 @@
 `use client`;
 
-import { useState } from "react";
-import Image from "next/image";
 import Link from "next/link";
 import { Category } from "@/types/category";
 import { X } from "lucide-react";
@@ -9,12 +7,12 @@ import "animate.css";
 import WhatsappButton from "../whatsappButton";
 import Logo from "../logo";
 
-
 interface Props {
   categories: Category[];
   logoSrc?: string;
   logoAlt?: string;
   onClose: () => void;
+  isClosing: boolean;
 }
 
 export default function NavbarMobile({
@@ -22,15 +20,8 @@ export default function NavbarMobile({
   logoSrc = "/logos/logo-ite.png",
   logoAlt = "Medin Camisas",
   onClose,
+  isClosing,
 }: Props) {
-  // false = showing (enter), true = closing (exit)
-  const [isClosing, setIsClosing] = useState(false);
-
-  const handleClose = () => {
-    // Play slide-out animation before unmounting
-    setIsClosing(true);
-    setTimeout(onClose, 300);
-  };
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-black">
@@ -55,7 +46,7 @@ export default function NavbarMobile({
            <Logo logoSrc={logoSrc} />
           </div>
 
-          <button onClick={handleClose} aria-label="Cerrar menú">
+          <button onClick={onClose} aria-label="Cerrar menú">
             <X size={28} />
           </button>
         </div>
@@ -65,7 +56,7 @@ export default function NavbarMobile({
             <li>
                 <Link
                   href={'/who-are'}
-                  onClick={handleClose}
+                  onClick={onClose}
                   className="block rounded px-3 py-3 text-lg hover:bg-white/10"
                 >
                   Nosotros
@@ -80,7 +71,7 @@ export default function NavbarMobile({
               <li key={category.id}>
                 <Link
                   href={href}
-                  onClick={handleClose}
+                  onClick={onClose}
                   className="block rounded px-3 py-3 text-lg hover:bg-white/10"
                 >
                   {category.name}
@@ -99,7 +90,7 @@ export default function NavbarMobile({
         type="button"
         className="flex-1"
         aria-label="Cerrar menú"
-        onClick={handleClose}
+        onClick={onClose}
       />
     </div>
   );
