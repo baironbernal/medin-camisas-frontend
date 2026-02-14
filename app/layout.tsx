@@ -6,6 +6,7 @@ import Navbar from "@/app/components/ui/menu/navbar";
 import { getCategories } from "./services/categories";
 import Footer from "./components/ui/footer/footer";
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
+import WhatsAppFloat from "./components/home/whatsapp/whatsappFloat";
 
 
 /* Utendo */
@@ -54,6 +55,10 @@ export default async function RootLayout({
           <NuqsAdapter>{children}</NuqsAdapter>
         </main>
         <Footer styles="w-full h-full bg-beige" />
+        <WhatsAppFloat 
+          phoneNumber="+573115327297" 
+          message="¡Hola! Me interesa obtener más información sobre sus servicios. ¿Podrían ayudarme?" 
+        />
       </body>
     </html>
   );

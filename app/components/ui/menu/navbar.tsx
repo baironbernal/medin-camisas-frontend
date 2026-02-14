@@ -1,14 +1,13 @@
 'use client';
 
-import Link from "next/link";
 import { Category } from "@/types/category";
 import { useState } from "react";
 import NavbarMobile from "./navbarMobile";
-import { Menu } from "lucide-react";
-import WhatsappButton from "../whatsappButton";
+import { Menu, ShoppingBag, CircleUserRound } from "lucide-react";
 import Logo from "../logo";
 import HoverPanel from "./HoverPanel";
 import { useAnimatedOpen } from "@/app/hooks/useAnimatedOpen";
+import NavLink from "./nav-link";
 
 
 interface Props {
@@ -35,7 +34,7 @@ export default function Navbar({
 
   return (
     <header className="sticky top-0 z-10 bg-dark font-utendo text-white">
-      <nav className="container mx-auto px-4 py-3">
+      <nav className="container mx-auto px-4 ">
         <div className="flex items-center justify-between">
 
           {/* Logo */}
@@ -45,15 +44,10 @@ export default function Navbar({
           <div
             className="hidden lg:flex flex-1 justify-center">
             <ul className="flex gap-2 relative">
-              
-              {/* Quienes somos */}
-              <li className="relative flex flex-col items-center">
-                <Link href={'/who-are'} className="inline-flex justify-center rounded px-3 py-2 text-17 transition hover:bg-white/10 hover:text-accent">Nosotros</Link>
-              </li>
 
               {/* Ver todo */}
               <li className="relative flex flex-col items-center">
-                <Link href={'/coleccion'} className="inline-flex justify-center rounded px-3 py-2 text-17 transition hover:bg-white/10 hover:text-accent">Ver todo</Link>
+                <NavLink href={'/coleccion'} className="inline-flex justify-center px-3 text-accent">Ver todo</NavLink>
               </li>
 
               {categories.map((category) => {
@@ -80,19 +74,26 @@ export default function Navbar({
                     className="relative flex flex-col items-center"
                   >
                     {/* Main Category */}
-                    <Link
+                    <NavLink
                       href={href}
-                      className="inline-flex justify-center rounded px-3 py-2 text-17 transition hover:bg-white/10 hover:text-accent">
+                      className="inline-flex justify-center text-accent px-3 ">
                       {category.name}
-                    </Link>
+                    </NavLink>
                   </li>
                 );
               })}
             </ul>
           </div>
 
-          {/* ================= Desktop WhatsApp ================= */}
-          <WhatsappButton/>
+          {/* ================= Login and Cart ================= */}
+          <div className="hidden lg:flex items-center gap-4">
+            <NavLink href="/cart">
+              <CircleUserRound size={30} color="beige" strokeWidth={1} />
+            </NavLink>
+            <NavLink href="/cart">
+              <ShoppingBag size={30} color="beige" strokeWidth={1} />
+            </NavLink>
+          </div>
 
           {/* ================= Mobile Button ================= */}
           <button

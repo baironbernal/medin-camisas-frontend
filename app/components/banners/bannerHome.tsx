@@ -6,12 +6,15 @@ import { MessageCircle, Truck, Tag as TagIcon} from 'lucide-react';
 
 const BannerSection = () => {
   return (
-    <main className="bg-dark p-4">
+    <main className="p-4" 
+    style={{backgroundImage: "url('/home/background.jpg')", 
+    backgroundSize: "cover", 
+    backgroundPosition: "center", backgroundRepeat: "no-repeat"}}>
       <section className="py-4 px-4 container mx-auto lg:flex items-center justify-between">
         {/* First Column */}
         <article>
             {/* Main Title */}
-            <div className="w-full text-6xl lg:text-60 font-bold">
+            <div className="w-full text-6xl lg:text-90 font-bold">
               <h1 className="py-3 px-2 w-fit rounded-md lg:text-primary bg-accent">Camisas</h1>
               <span className=" text-accent">con estilo</span>
             </div>
@@ -32,15 +35,17 @@ const BannerSection = () => {
         </article>
 
         {/* Second Column */}
-        <article>
-        <Image
-                src='/home/man.png'
-                alt="Man"
-                width={1600}
-                height={1600}
-                priority
-                className="w-auto object-contain"
-              />
+        <article className="w-1/2 ">
+        <video className="w-full lg:max-h-[40rem] rounded-xl  object-cover" controls preload="none" autoPlay muted loop>
+            <source src="/home/video.mp4" type="video/mp4" />
+            <track
+              src="/home/captions.vtt"
+              kind="subtitles"
+              srcLang="en"
+              label="English"
+            />
+            Your browser does not support the video tag.
+          </video>
         </article>
       </section>
 

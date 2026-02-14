@@ -1,9 +1,8 @@
-import Image from "next/image";
+import Image from 'next/image'
 
-export default function WhoAre() {
-
-    return (
-      <main className="w-full bg-accent px-4 py-8 lg:py-20 bg-beige  flex flex-col gap-20">
+const Us = () => {
+  return (
+    <main className="w-full bg-accent px-4 bg-beige  flex flex-col gap-20">
         <section className="container mx-auto flex flex-col lg:flex-row gap-10 items-center">
             {/*  Us Section */}
             <section className="w-full lg:w-1/2">
@@ -30,7 +29,7 @@ export default function WhoAre() {
                 </article>
             </section>
 
-            {/* Image Section */} 
+            {/* Image Section */ } 
             <article className="w-full lg:w-1/2 flex justify-center">
               <Image
                       src='/us/main.png'
@@ -72,5 +71,7 @@ export default function WhoAre() {
 
 
       </main>
-    );
-  }
+  )
+}
+
+export default Us

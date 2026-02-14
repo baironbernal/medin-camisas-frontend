@@ -9,7 +9,7 @@ interface ProductItemProps {
 function ProductItem({ product }: ProductItemProps) {
   
   return (
-    <div className="flex flex-col rounded-full">
+    <div className="flex flex-col rounded-full cursor-pointer">
       
         <Image
           unoptimized

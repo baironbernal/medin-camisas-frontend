@@ -1,7 +1,7 @@
 'use client';
 
 import { Category } from "@/types/category";
-import RecursiveCategoryItem from "../RecursiveDropdown";
+import NavLink from "./nav-link";
 
 interface HoverPanelProps {
   activeCategory: Category | null;
@@ -29,7 +29,7 @@ export default function HoverPanel({
         lg:block
         fixed
         left-0
-        top-[72px]
+        top-[62px]
         w-full
         bg-dark
         shadow-xl
@@ -48,7 +48,7 @@ export default function HoverPanel({
         <div className="flex justify-between gap-8">
           {activeCategory.children_recursive.map((child) => (
             <div key={child.id} className="flex-1">
-                <RecursiveCategoryItem category={child} level={0} />
+                <NavLink href={`/coleccion?category=${activeCategory.slug}&subcategory=${child.slug}`} className="text-beige px-3 ">{child.name}</NavLink>
             </div>
           ))}
         </div>
