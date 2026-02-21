@@ -8,6 +8,8 @@ import Logo from "../logo";
 import HoverPanel from "./HoverPanel";
 import { useAnimatedOpen } from "@/app/hooks/useAnimatedOpen";
 import NavLink from "./nav-link";
+import { useCartStore } from "@/app/hooks/useCartStore";
+import CartSidebar from "./cart/cart";
 
 
 interface Props {
@@ -28,6 +30,14 @@ export default function Navbar({
     close: closeMenu 
   } = useAnimatedOpen();
   
+  const { 
+    isOpen: isCartOpen, 
+    isClosing: isCartClosing, 
+    open: openCart, 
+    close: closeCart 
+  } = useAnimatedOpen();
+  
+  const totalItems = useCartStore(state => state.totalItems)
   const [activeCategory, setActiveCategory] = useState<Category | null>(null);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
 
@@ -88,11 +98,20 @@ export default function Navbar({
           {/* ================= Login and Cart ================= */}
           <div className="hidden lg:flex items-center gap-4">
             <NavLink href="/cart">
-              <CircleUserRound size={30} color="beige" strokeWidth={1} />
+                <CircleUserRound  size={30} color="beige" strokeWidth={1} />
             </NavLink>
-            <NavLink href="/cart">
+            <button onClick={openCart} className="relative cursor-pointer">
               <ShoppingBag size={30} color="beige" strokeWidth={1} />
-            </NavLink>
+              {totalItems > 0 && (
+                <span className="absolute -top-2 -right-2 
+                                bg-red-500 text-white 
+                                text-xs font-bold 
+                                rounded-full 
+                                w-5 h-5 flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
+            </button>
           </div>
 
           {/* ================= Mobile Button ================= */}
@@ -129,6 +148,14 @@ export default function Navbar({
           logoAlt={logoAlt}
           onClose={closeMenu}
           isClosing={isMenuClosing}
+        />
+      )}
+
+      {/* ================= Cart Sidebar ================= */}
+      {isCartOpen && (
+        <CartSidebar
+          onClose={closeCart}
+          isClosing={isCartClosing}
         />
       )}
 

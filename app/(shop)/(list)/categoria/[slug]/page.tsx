@@ -14,8 +14,7 @@ export default async function Page({
     category: params.slug,
     ...searchParams,
   });
-
-
+  
   return (
     
       <main className="w-full mx-auto">

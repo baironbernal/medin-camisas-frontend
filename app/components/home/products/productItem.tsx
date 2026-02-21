@@ -1,6 +1,7 @@
 import Image from 'next/image';
 import type { Product } from '@/types/product';
 import { getImageUrl } from '@/app/lib/image';
+import Link from 'next/link';
 
 interface ProductItemProps {
   product: Product;
@@ -11,6 +12,7 @@ function ProductItem({ product }: ProductItemProps) {
   return (
     <div className="flex flex-col rounded-full cursor-pointer">
       
+        <Link href={`/producto/${product.slug}`}>
         <Image
           unoptimized
           src={getImageUrl(product.images?.[0])}
@@ -27,6 +29,7 @@ function ProductItem({ product }: ProductItemProps) {
         </div>
         <p className='text-xs'>3 colores</p>
       </section>
+      </Link>
     </div>
   );
 }

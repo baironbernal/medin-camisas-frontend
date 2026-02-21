@@ -1,5 +1,5 @@
 import { getFilters } from "@/app/services/filters";
-import { SearchInput } from "../components/search";
+import { SearchInput } from "../components/filters/search/search";
 import { FiltersSidebar } from "../components/filters/filters";
 import { Banner } from "../components/banner";
 import { FiltersUIProvider } from "../providers/filters-ui"; 

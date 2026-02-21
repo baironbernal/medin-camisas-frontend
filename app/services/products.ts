@@ -31,3 +31,10 @@ export function getProducts(params?: GetProductsParams) {
     cache: 'no-store',
   });
 }
+
+
+export function getProduct(slug: string) {
+    return apiFetch<Product>(`/products/${slug}`, {
+        cache: 'no-store',
+    });
+}

@@ -1,5 +1,4 @@
-'use server';
-
+export class NotFoundError extends Error {}
 const API_URL = process.env.NEXT_PUBLIC_API_URL!;
 
 export async function apiFetch<T>(
@@ -7,21 +6,18 @@ export async function apiFetch<T>(
   options: RequestInit = {}
 ): Promise<T> {
   const url = `${API_URL}${endpoint}`;
-  console.log(`[apiFetch] Fetching: ${url}`);
-  
-  try {
-    const res = await fetch(url, {
-      ...options,
-      next: options.next, // allow revalidate
-    });
+  const res = await fetch(url, {
+    ...options,
+    next: options.next,
+  });
 
-    if (!res.ok) {
-        console.error(`[apiFetch] Error ${res.status}: ${res.statusText}`);
-        throw new Error("API Error");
-    }
-    return res.json();
-  } catch (error) {
-    console.error(`[apiFetch] Network error fetching ${url}:`, error);
-    throw error;
+  if (res.status === 404) {
+    throw new NotFoundError("Resource not found");
   }
+
+  if (!res.ok) {
+    throw new Error(`API Error ${res.status}`);
+  }
+
+  return res.json();
 }

@@ -1,6 +1,6 @@
 
 export const dynamic = "force-dynamic";
-import { SearchInput } from "@/app/(shop)/components/search";
+import { SearchInput } from "@/app/(shop)/components/filters/search/search";
 import ProductItem from "@/app/components/home/products/productItem";
 import { getProducts } from "@/app/services/products";
 

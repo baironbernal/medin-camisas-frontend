@@ -1,3 +1,5 @@
+import { Variant } from "./variant";
+
 export type ProductDimensions = {
   length: number;
   width: number;
@@ -29,6 +31,8 @@ export type Product = {
   specifications: ProductSpecifications;
   created_at: string;
   updated_at: string;
+  quantity?: number;
+  variants?: Variant[];
 };
 
 export interface PaginatedResponse<T> {
