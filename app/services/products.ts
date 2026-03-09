@@ -1,4 +1,4 @@
-import { Product, PaginatedResponse } from "@/types/product";
+import { Product, PaginatedResponse, ApiResponse } from "@/types/product";
 import { apiFetch } from "./fetcher";
 
 export interface GetProductsParams {
@@ -33,8 +33,8 @@ export function getProducts(params?: GetProductsParams) {
 }
 
 
-export function getProduct(slug: string) {
-    return apiFetch<Product>(`/products/${slug}`, {
+export function getProduct<T>(slug: string): Promise<ApiResponse<T>> {
+    return apiFetch(`/products/${slug}`, {
         cache: 'no-store',
     });
 }

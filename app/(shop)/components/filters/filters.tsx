@@ -8,7 +8,7 @@ import {
 } from "@/components/ui/collapsible"
 import { ChevronDownIcon } from "lucide-react";
 import { X } from 'lucide-react';
-import { useFiltersUI } from "../../providers/filters-ui";
+import { useFiltersUI } from "../../context/filters-ui";
 import { SearchInput } from "./search/search";
 import { MinAndMax } from "./price/minAndMax";
 import { FilterSize } from "./size/filterSize";

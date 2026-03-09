@@ -1,25 +1,29 @@
 'use client'
 
 import { useCartStore } from "@/app/hooks/useCartStore"
-import { Product } from "@/types/product"
+import { Variant } from "@/types/variant";
 import { Trash, Plus, Minus } from 'lucide-react';
-import Image from "next/image";
+import { getImageUrl } from "@/app/lib/image";
+import { formatCOP } from "@/app/lib/formatPrice";
 
 
-export default function CartItem({ product }: { product: Product }) {
+export default function CartItem({ product }: { product: Variant }) {
   const removeFromCart = useCartStore(state => state.removeFromCart)
   const addToCart = useCartStore(state => state.addToCart)
+  const decreaseQuantity = useCartStore(state => state.decreaseQuantity)
+
+  const displayName = product.product_name || `Producto #${product.product_id}`
+  const displayImages = product.product_images || product.images
+  const displayPrice = typeof product.price === 'number' ? product.price : parseFloat(product.price) || 0
 
   return (
     <li className='flex gap-4 pb-4 border-b border-gray-200 text-black'>
       {/* Product Image */}
       <div className="w-20 h-20 bg-gray-100 rounded-lg overflow-hidden flex-shrink-0">
-        {product.images && product.images.length > 0 ? (
-          <Image
-            src={product.images[0]}
-            alt={product.name}
-            width={80}
-            height={80}
+        {displayImages && displayImages.length > 0 ? (
+          <img
+            src={getImageUrl(displayImages[0])}
+            alt={displayName}
             className="w-full h-full object-cover"
           />
         ) : (
@@ -32,8 +36,8 @@ export default function CartItem({ product }: { product: Product }) {
       {/* Product Info */}
       <div className="flex-1 flex flex-col justify-between">
         <div>
-          <h3 className="font-medium text-sm line-clamp-2 text-black">{product.name}</h3>
-          <p className="text-sm text-gray-600 mt-1">${parseInt(product.cost).toLocaleString()}</p>
+          <h3 className="font-medium text-sm line-clamp-2 text-black">{displayName}</h3>
+          <p className="text-sm text-gray-600 mt-1">{formatCOP(displayPrice)}</p>
         </div>
 
         {/* Quantity Controls */}
@@ -41,17 +45,17 @@ export default function CartItem({ product }: { product: Product }) {
           <button
             className="w-6 h-6 flex items-center justify-center border border-gray-300 rounded hover:bg-gray-100 transition-colors"
             onClick={() => {
-              removeFromCart(product.id)
+              decreaseQuantity(product.id)
             }}
           >
-            <Minus size={12} />
+            <Minus size={12} className="cursor-pointer" />
           </button>
           <span className="text-sm font-medium w-8 text-center">{product.quantity || 1}</span>
           <button
             className="w-6 h-6 flex items-center justify-center border border-gray-300 rounded hover:bg-gray-100 transition-colors"
             onClick={() => addToCart(product)}
           >
-            <Plus size={12} />
+            <Plus size={12} className="cursor-pointer"/>
           </button>
         </div>
       </div>
@@ -63,10 +67,10 @@ export default function CartItem({ product }: { product: Product }) {
           className='text-gray-400 hover:text-red-500 transition-colors'
           onClick={() => removeFromCart(product.id)}
         >
-          <Trash size={16} />
+          <Trash size={16}  className="cursor-pointer"/>
         </button>
         <p className="text-sm font-semibold">
-          ${(parseInt(product.cost) * (product.quantity || 1)).toLocaleString()}
+          {formatCOP(displayPrice * (product.quantity || 1))}
         </p>
       </div>
     </li>

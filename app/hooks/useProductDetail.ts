@@ -1,0 +1,77 @@
+'use client'
+
+import { useMemo, useState } from 'react'
+import { ProductDetail } from '@/types/product-detail'
+import { formatCOP } from '../lib/formatPrice'
+
+export function useProductDetail(data: ProductDetail) {
+  const [selectedColor, setSelectedColor] = useState<string | null>(null)
+  const [selectedSize, setSelectedSize] = useState<string | null>(null)
+
+  const { available_attributes, variants, combination_index } = data
+  const colors = available_attributes?.['Color'] ?? []
+  const sizes = available_attributes?.['Talla'] ?? []
+  const material = available_attributes?.['Material']?.[0] ?? null
+
+  // 1. Obtenemos todas las combinaciones como un array una sola vez para facilitar las búsquedas
+  const entries = useMemo(() => Object.entries(combination_index), [combination_index])
+
+  // 2. Tallas disponibles para el color seleccionado
+  const availableSizes = useMemo(() => {
+    if (!selectedColor) return []
+    return entries
+      .filter(([key]) => key.split('-').includes(selectedColor))
+      .map(([key]) => key.split('-')[0])
+  }, [selectedColor, entries])
+
+  // 3. Variante seleccionada (Combinación exacta)
+  const selectedVariant = useMemo(() => {
+    if (!selectedColor || !selectedSize || !material) return null
+    const exactKey = `${selectedSize}-${selectedColor}-${material}`
+    const id = combination_index[exactKey]?.variant_id
+    return variants.find(v => v.id === id) ?? null
+  }, [selectedColor, selectedSize, material, variants, combination_index])
+
+  // 4. Imágenes actuales: Buscamos cualquier variante que coincida con el color si no hay selección completa
+  const currentImages = useMemo(() => {
+    if (selectedVariant) return selectedVariant.images
+    
+    if (selectedColor) {
+      // Buscamos la primera combinación que contenga el color seleccionado
+      const firstComboWithColor = entries.find(([key]) => key.split('-').includes(selectedColor))
+      if (firstComboWithColor) {
+        const variantId = firstComboWithColor[1].variant_id
+        return variants.find(v => v.id === variantId)?.images ?? variants[0].images
+      }
+    }
+    
+    return variants[0]?.images ?? []
+  }, [selectedVariant, selectedColor, entries, variants])
+
+  // 5. Helpers de UI
+  const currentPrice = selectedVariant?.price ?? variants[0]?.price ?? 0
+  const isComplete = !!selectedVariant
+
+  const selectColor = (color: string) => {
+    setSelectedColor(color)
+    setSelectedSize(null) 
+  }
+
+  const selectSize = (size: string) => setSelectedSize(size)
+
+
+
+  return {
+    colors,
+    sizes,
+    availableSizes,
+    selectedColor,
+    selectedSize,
+    selectedVariant,
+    currentImages,
+    currentPrice,
+    isComplete,
+    selectColor,
+    selectSize,
+  }
+}

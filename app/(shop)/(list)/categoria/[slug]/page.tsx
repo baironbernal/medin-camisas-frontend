@@ -20,7 +20,7 @@ export default async function Page({
       <main className="w-full mx-auto">
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 justify-center md:justify-start">
         {productsByCategory.data.map((product) => (
-          <ProductItem key={product.id} product={product} />
+        <ProductItem key={product.id} product={product} />
         ))}
       </div>
       </main>

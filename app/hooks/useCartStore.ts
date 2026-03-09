@@ -2,18 +2,19 @@
 
 import { create } from "zustand";
 import { persist } from "zustand/middleware";
-import { Product } from "@/types/product";
+import { Variant } from "@/types/variant";
 
 
 interface State {
-  cart: Product[];
+  cart: Variant[];
   totalItems: number;
   totalPrice: number;
 }
 
 interface Actions {
-  addToCart: (product: Product) => void;
+  addToCart: (product: Variant) => void;
   removeFromCart: (productId: number) => void;
+  decreaseQuantity: (productId: number) => void;
   clearCart: () => void;
 }
 
@@ -25,11 +26,11 @@ export const useCartStore = create<State & Actions>() (
       totalItems: 0,
       totalPrice: 0,
 
-      addToCart: (product: Product) => {
+      addToCart: (product: Variant) => {
         const cart = get().cart;
         const existing = cart.find(item => item.id === product.id);
 
-        let updatedCart: Product[];
+        let updatedCart: Variant[];
 
         if (existing) {
           updatedCart = cart.map(item =>
@@ -50,12 +51,36 @@ export const useCartStore = create<State & Actions>() (
 
       removeFromCart: (productId: number) => {
         const cart = get().cart;
-        const item: Product | undefined = cart.find(i => i.id === productId);
+        const item: Variant | undefined = cart.find(i => i.id === productId);
         if (!item) return;
 
-        let updatedCart: Product[];
+        let updatedCart: Variant[];
         
         updatedCart = cart.filter(i => i.id !== productId); 
+
+        set({
+          cart: updatedCart,
+          totalItems: calculateItems(updatedCart),
+          totalPrice: calculateTotal(updatedCart),
+        });
+      },
+
+      decreaseQuantity: (productId: number) => {
+        const cart = get().cart;
+        const item = cart.find(i => i.id === productId);
+        if (!item) return;
+
+        let updatedCart: Variant[];
+
+        if ((item.quantity || 1) <= 1) {
+          updatedCart = cart.filter(i => i.id !== productId);
+        } else {
+          updatedCart = cart.map(i =>
+            i.id === productId
+              ? { ...i, quantity: (i.quantity || 1) - 1 }
+              : i
+          );
+        }
 
         set({
           cart: updatedCart,
@@ -73,13 +98,13 @@ export const useCartStore = create<State & Actions>() (
   )
 );
 
-function calculateItems(cart: Product[]) {
+function calculateItems(cart: Variant[]) {
   return cart.reduce((total, item) => total + (item.quantity || 0), 0);
 }
 
-function calculateTotal(cart: Product[]) {
+function calculateTotal(cart: Variant[]) {
   return cart.reduce(
-    (total, item) => total + (item.quantity || 0) * Number(item.cost),
+    (total, item) => total + (item.quantity || 0) * Number(item.price),
     0
   );
 }

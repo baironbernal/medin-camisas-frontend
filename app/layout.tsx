@@ -7,6 +7,7 @@ import { getCategories } from "./services/categories";
 import Footer from "./components/ui/footer/footer";
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import WhatsAppFloat from "./components/home/whatsapp/whatsappFloat";
+import { AuthProvider } from "./context/AuthContext";
 
 
 /* Utendo */
@@ -50,15 +51,21 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${utendo.variable} ${okine.variable}`}>
       <body className="antialiased">
-        <Navbar categories={categories} />
-        <main className="w-full">
-          <NuqsAdapter>{children}</NuqsAdapter>
-        </main>
-        <Footer styles="w-full h-full bg-beige" />
-        <WhatsAppFloat 
-          phoneNumber="+573115327297" 
-          message="¡Hola! Me interesa obtener más información sobre sus servicios. ¿Podrían ayudarme?" 
-        />
+        <AuthProvider>
+          <NuqsAdapter>
+          <Navbar categories={categories} />
+          <main className="w-full">
+            {children}
+          </main>
+          <Footer styles="w-full h-full bg-beige" />
+          </NuqsAdapter>
+
+          
+          <WhatsAppFloat 
+            phoneNumber="+573115327297" 
+            message="¡Hola! Me interesa obtener más información sobre sus servicios. ¿Podrían ayudarme?" 
+          />
+        </AuthProvider>
       </body>
     </html>
   );

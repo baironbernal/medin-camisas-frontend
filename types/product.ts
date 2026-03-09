@@ -22,6 +22,7 @@ export type Product = {
   season_id: number;
   category_id: number;
   base_price: string;
+  colors_count: number;
   cost: string;
   brand: string;
   supplier: string;
@@ -31,7 +32,6 @@ export type Product = {
   specifications: ProductSpecifications;
   created_at: string;
   updated_at: string;
-  quantity?: number;
   variants?: Variant[];
 };
 
@@ -53,4 +53,9 @@ export interface PaginatedResponse<T> {
   prev_page_url: string | null;
   to: number;
   total: number;
+}
+
+
+export interface ApiResponse<T> {
+  data: T;
 }

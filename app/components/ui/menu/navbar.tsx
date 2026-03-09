@@ -1,12 +1,13 @@
 'use client';
 
 import { Category } from "@/types/category";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import NavbarMobile from "./navbarMobile";
 import { Menu, ShoppingBag, CircleUserRound } from "lucide-react";
 import Logo from "../logo";
 import HoverPanel from "./HoverPanel";
 import { useAnimatedOpen } from "@/app/hooks/useAnimatedOpen";
+import { useQueryState } from "nuqs";
 import NavLink from "./nav-link";
 import { useCartStore } from "@/app/hooks/useCartStore";
 import CartSidebar from "./cart/cart";
@@ -40,7 +41,15 @@ export default function Navbar({
   const totalItems = useCartStore(state => state.totalItems)
   const [activeCategory, setActiveCategory] = useState<Category | null>(null);
   const [isPanelOpen, setIsPanelOpen] = useState(false);
+  
+  const [openCartParam, setOpenCartParam] = useQueryState('openCart');
 
+  useEffect(() => {
+    if (openCartParam === 'true') {
+      openCart();
+      setOpenCartParam(null); // Borra el parámetro de la URL
+    }
+  }, [openCartParam, openCart, setOpenCartParam]);
 
   return (
     <header className="sticky top-0 z-10 bg-dark font-utendo text-white">
@@ -97,9 +106,6 @@ export default function Navbar({
 
           {/* ================= Login and Cart ================= */}
           <div className="hidden lg:flex items-center gap-4">
-            <NavLink href="/cart">
-                <CircleUserRound  size={30} color="beige" strokeWidth={1} />
-            </NavLink>
             <button onClick={openCart} className="relative cursor-pointer">
               <ShoppingBag size={30} color="beige" strokeWidth={1} />
               {totalItems > 0 && (
@@ -112,6 +118,9 @@ export default function Navbar({
                 </span>
               )}
             </button>
+            <NavLink href="/perfil">
+                <CircleUserRound  size={30} color="beige" strokeWidth={1} />
+            </NavLink>
           </div>
 
           {/* ================= Mobile Button ================= */}
