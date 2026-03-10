@@ -1,7 +1,8 @@
 'use client';
 
 import React, { createContext, useContext, useEffect, useState, useTransition } from 'react';
-import { getSession, removeSession } from '@/app/lib/session';
+import { getSession } from '@/app/lib/session';
+import { logout as serverLogout } from '@/app/services/auth';
 import { AuthUser } from '@/types/auth';
 
 interface AuthContextValue {
@@ -45,7 +46,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, []);
 
   const logout = async () => {
-    await removeSession();
+    await serverLogout();
     startTransition(() => {
       setIsLoggedIn(false);
       setUser(null);

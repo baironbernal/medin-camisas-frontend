@@ -4,12 +4,18 @@ import { Eye, EyeOff } from 'lucide-react';
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
   label?: string;
   error?: string | string[];
+  theme?: 'light' | 'dark';
+  icon?: React.ReactNode;
 }
 
 export const Input = forwardRef<HTMLInputElement, InputProps>(
-  ({ className = '', label, error, type, ...props }, ref) => {
-    const defaultInputClass =
-      'w-full px-4 py-3 rounded-lg border border-gray-200 bg-accent-light text-primary placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-sm';
+  ({ className = '', label, error, type, theme = 'light', icon, ...props }, ref) => {
+    
+    const isDark = theme === 'dark';
+
+    const defaultInputClass = isDark
+      ? 'w-full py-3 rounded-xl bg-dark/50 border-none text-white placeholder-tertiary focus:outline-none focus:ring-1 focus:ring-accent transition-all text-sm'
+      : 'w-full px-4 py-3 rounded-lg border border-gray-200 bg-accent-light text-primary placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-sm';
 
     const [showPassword, setShowPassword] = useState(false);
     const isPassword = type === 'password';
@@ -17,22 +23,27 @@ export const Input = forwardRef<HTMLInputElement, InputProps>(
     return (
       <div>
         {label && (
-          <label htmlFor={props.id} className="block text-sm font-medium text-primary mb-1.5">
+          <label htmlFor={props.id} className={`block text-sm font-medium mb-1.5 ${isDark ? 'text-white' : 'text-primary'}`}>
             {label}
           </label>
         )}
         <div className="relative">
+          {icon && (
+            <div className={`absolute left-4 top-1/2 -translate-y-1/2 ${isDark ? 'text-tertiary' : 'text-gray-400'}`}>
+              {icon}
+            </div>
+          )}
           <input
             {...props}
             type={isPassword ? (showPassword ? 'text' : 'password') : type}
             ref={ref}
-            className={`${defaultInputClass} ${isPassword ? 'pr-11' : ''} ${className}`}
+            className={`${defaultInputClass} ${icon ? 'pl-11' : isDark ? 'px-4' : ''} ${isPassword ? 'pr-11' : ''} ${className}`}
           />
           {isPassword && (
             <button
               type="button"
               onClick={() => setShowPassword((v) => !v)}
-              className="absolute right-3 top-1/2 -translate-y-1/2 text-gray-400 hover:text-primary transition-colors"
+              className={`absolute right-3 top-1/2 -translate-y-1/2 transition-colors ${isDark ? 'text-tertiary hover:text-white' : 'text-gray-400 hover:text-primary'}`}
               tabIndex={-1}
             >
               {showPassword ? <EyeOff size={18} /> : <Eye size={18} />}

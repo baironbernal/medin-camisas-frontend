@@ -17,4 +17,5 @@ export interface Variant {
   };
   product_name?: string;
   product_images?: string[];
+  combination_name?: string;
 }

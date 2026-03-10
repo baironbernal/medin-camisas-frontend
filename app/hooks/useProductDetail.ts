@@ -24,13 +24,16 @@ export function useProductDetail(data: ProductDetail) {
       .map(([key]) => key.split('-')[0])
   }, [selectedColor, entries])
 
+  const exactKey = useMemo(() => {
+    return `${selectedSize}-${selectedColor}-${material}`;
+  }, [selectedSize, selectedColor, material])
+
   // 3. Variante seleccionada (Combinación exacta)
   const selectedVariant = useMemo(() => {
     if (!selectedColor || !selectedSize || !material) return null
-    const exactKey = `${selectedSize}-${selectedColor}-${material}`
     const id = combination_index[exactKey]?.variant_id
     return variants.find(v => v.id === id) ?? null
-  }, [selectedColor, selectedSize, material, variants, combination_index])
+  }, [selectedColor, selectedSize, material, variants, combination_index, exactKey])
 
   // 4. Imágenes actuales: Buscamos cualquier variante que coincida con el color si no hay selección completa
   const currentImages = useMemo(() => {
@@ -71,6 +74,7 @@ export function useProductDetail(data: ProductDetail) {
     currentImages,
     currentPrice,
     isComplete,
+    exactKey,
     selectColor,
     selectSize,
   }

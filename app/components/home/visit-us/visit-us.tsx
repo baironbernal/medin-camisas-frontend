@@ -30,7 +30,7 @@ const VisitUs = () => {
         </div>
 
         {/* Second Column */}
-         <div className='w-full h-full mt-20'>
+         <div className='w-full h-full mt-8 lg:mt-0 flex items-center shadow-2xl'>
             <Map/>
          </div>
     </section>

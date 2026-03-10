@@ -53,11 +53,11 @@ export default async function RootLayout({
       <body className="antialiased">
         <AuthProvider>
           <NuqsAdapter>
-          <Navbar categories={categories} />
-          <main className="w-full">
-            {children}
-          </main>
-          <Footer styles="w-full h-full bg-beige" />
+            <Navbar categories={categories} />
+            <main className="w-full">
+              {children}
+            </main>
+            <Footer styles="w-full h-full bg-beige" />
           </NuqsAdapter>
 
           

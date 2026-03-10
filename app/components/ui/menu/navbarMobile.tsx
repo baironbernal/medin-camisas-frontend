@@ -2,10 +2,13 @@
 
 import Link from "next/link";
 import { Category } from "@/types/category";
-import { X } from "lucide-react";
+import { X, CircleUserRound } from "lucide-react";
 import "animate.css";
 import WhatsappButton from "../whatsappButton";
 import Logo from "../logo";
+import { useAuth } from "@/app/context/AuthContext";
+import { LogIn } from "lucide-react";
+import NavLink from "./nav-link";
 
 interface Props {
   categories: Category[];
@@ -22,6 +25,7 @@ export default function NavbarMobile({
   onClose,
   isClosing,
 }: Props) {
+  const { isLoggedIn, user } = useAuth();
 
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-black">
@@ -52,21 +56,46 @@ export default function NavbarMobile({
         </div>
 
         {/* Menu Items */}
-        <ul className="flex flex-col gap-2 p-4 overflow-y-auto">
+        <ul className="flex flex-col items-start gap-4 p-6 overflow-y-auto">
+          {/* Auth Item */}
+          <li className="w-full">
+            {isLoggedIn ? (
+              <NavLink
+                href="/perfil"
+                onClick={onClose}
+                className="flex items-center gap-3 rounded px-3 py-3 text-lg hover:bg-white/10 text-accent font-medium w-fit"
+              >
+                <CircleUserRound size={24} />
+                <span className="truncate">Hola, {user?.name.split(' ')[0] || 'Mi Perfil'}</span>
+              </NavLink>
+            ) : (
+              <NavLink
+                href="/login"
+                onClick={onClose}
+                className="flex items-center gap-3 rounded px-3 py-3 text-lg hover:bg-white/10 text-accent font-medium w-fit"
+              >
+                <LogIn size={24} />
+                Iniciar Sesión
+              </NavLink>
+            )}
+          </li>
+          
+          <div className="h-px w-full bg-white/10 my-2" />
+          
           {categories.map((category) => {
             const href = category.slug
               ? `/coleccion?category=${category.slug}`
               : "#";
 
             return (
-              <li key={category.id}>
-                <Link
+              <li key={category.id} className="w-full">
+                <NavLink
                   href={href}
                   onClick={onClose}
-                  className="block rounded px-3 py-3 text-lg hover:bg-white/10"
+                  className="block rounded px-3 py-3 text-lg hover:bg-white/10 w-fit"
                 >
                   {category.name}
-                </Link>
+                </NavLink>
               </li>
             );
           })}

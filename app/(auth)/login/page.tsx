@@ -6,7 +6,7 @@ import { useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import { login } from '@/app/services/auth';
 import { useAuth } from '@/app/context/AuthContext';
-import { Loader2, LogIn } from 'lucide-react';
+import { Loader2, Mail, Lock } from 'lucide-react';
 import { LoginFormSchema } from '@/app/lib/definitions';
 import { Input } from '@/app/components/ui/input';
 
@@ -22,7 +22,7 @@ function LoginContent() {
   const router = useRouter();
   const [callback] = useQueryState('callback');
   const [openCart, setOpenCart] = useQueryState('openCart');
-  const { isLoggedIn, setLoggedIn } = useAuth();
+  const { isLoggedIn, setLoggedIn, setUser } = useAuth();
 
   useEffect(() => {
     if (isLoggedIn) {
@@ -55,8 +55,9 @@ function LoginContent() {
     
     setLoading(true);
     try {
-      await login({ email, password });
+      const res = await login({ email, password });
       setLoggedIn(true);
+      if (res.user) setUser(res.user);
       if (callback === 'cart') {
         setOpenCart('true');
         router.push('/');
@@ -75,67 +76,65 @@ function LoginContent() {
   }
 
   return (
-    <div className="min-h-screen bg-beige flex items-center justify-center px-4 py-16">
-      <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-          <div className="h-2 bg-primary" />
-
-          <div className="px-8 py-10">
-            <div className="mb-8 text-center">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-primary/10 mb-4">
-                <LogIn size={26} className="text-primary" />
-              </div>
-              <h1 className="font-heading text-3xl font-bold text-primary">Iniciar sesión</h1>
-              <p className="text-secondary text-sm mt-2">Bienvenido de nuevo a Medin Camisas</p>
-            </div>
-
-            {error && (
-              <div className="mb-5 bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-red-600 text-sm">
-                {error}
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} className="space-y-5">
-              <Input
-                label="Correo electrónico"
-                id="login-email"
-                type="email"
-                autoComplete="email"
-                value={email}
-                onChange={e => setEmail(e.target.value)}
-                placeholder="tucorreo@ejemplo.com"
-                error={validationErrors.email}
-              />
-
-              <Input
-                label="Contraseña"
-                id="login-password"
-                type="password"
-                autoComplete="current-password"
-                value={password}
-                onChange={e => setPassword(e.target.value)}
-                placeholder="Mínimo 8 caracteres"
-                error={validationErrors.password}
-              />
-
-              <button
-                id="btn-login"
-                type="submit"
-                disabled={loading}
-                className="w-full bg-primary text-white font-medium py-3 rounded-lg hover:bg-purple transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed mt-2"
-              >
-                {loading ? <Loader2 size={18} className="animate-spin" /> : <LogIn size={18} />}
-                {loading ? 'Ingresando…' : 'Ingresar'}
-              </button>
-            </form>
-
-            <p className="text-center text-sm text-secondary mt-6">
-              ¿No tienes cuenta?{' '}
-              <Link href={`/signup${callback ? `?callback=${callback}` : ''}`} className="text-primary font-medium hover:underline">
-                Regístrate aquí
-              </Link>
-            </p>
+    <div className="min-h-screen bg-dark flex items-center justify-center px-4 py-16 font-sans">
+      <div className="w-full max-w-lg">
+        <div className="bg-primary rounded-[32px] md:rounded-[40px] shadow-2xl overflow-hidden p-6 md:p-12">
+          <div className="mb-10 text-left">
+            <p className="text-tertiary font-bold tracking-[0.2em] text-xs uppercase mb-3 text-gray-400">MEDIN</p>
+            <h1 className="font-heading text-3xl md:text-5xl font-bold text-white mb-3">Iniciar Sesión</h1>
+            <p className="text-description text-sm">Inicia sesión y accede a nuestros catálogo y precios mayoristas</p>
           </div>
+
+          {error && (
+            <div className="mb-6 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-red-400 text-sm">
+              {error}
+            </div>
+          )}
+
+          <form onSubmit={handleSubmit} className="space-y-6">
+            <Input
+              label="Email"
+              id="login-email"
+              type="email"
+              autoComplete="email"
+              value={email}
+              onChange={e => setEmail(e.target.value)}
+              placeholder="Ejemplo@gmail.com"
+              error={validationErrors.email}
+              theme="dark"
+              icon={<Mail size={18} />}
+            />
+
+            <Input
+              label="Contraseña"
+              id="login-password"
+              type="password"
+              autoComplete="current-password"
+              value={password}
+              onChange={e => setPassword(e.target.value)}
+              placeholder="••••••••"
+              error={validationErrors.password}
+              theme="dark"
+              icon={<Lock size={18} />}
+            />
+
+            <button
+              id="btn-login"
+              type="submit"
+              disabled={loading}
+              className="w-full md:w-auto md:px-10 bg-accent text-primary font-semibold py-3 rounded-full hover:bg-white transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed mt-2"
+            >
+              {loading && <Loader2 size={18} className="animate-spin" />}
+              {loading ? 'Entrando…' : 'Entrar'}
+            </button>
+          </form>
+
+          <p className="text-sm text-description mt-8">
+            ¿No tienes cuenta?{' '}
+            <Link href={`/signup${callback ? `?callback=${callback}` : ''}`} className="text-white hover:underline transition-colors">
+              Crear cuenta
+            </Link>
+          </p>
         </div>
       </div>
     </div>

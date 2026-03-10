@@ -3,33 +3,37 @@
 
 import { usePathname, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
-import { Suspense, useCallback } from 'react';
+import { Suspense, useCallback, useMemo } from 'react';
 
-function NavLinkContent({ href, children, className }: 
-    { href: string, children: React.ReactNode, className?: string }) {
-    const pathname = usePathname()
-    const searchParams = useSearchParams()
+function NavLinkContent({ href, children, className, onClick }: 
+    { href: string, children: React.ReactNode, className?: string, onClick?: () => void }) {
+    const pathname = usePathname();
+    const searchParams = useSearchParams();
 
-    const isActive = href.includes(pathname+ '?' + '='+ searchParams.get('category') || '');
+    const isActive = useMemo(() => {
+        const category = searchParams.get('category');
+        const currentPath = category ? `${pathname}?category=${category}` : pathname;
+        return href === currentPath;
+    }, [pathname, searchParams, href]);
 
-    const activeStyle = 'text-beige font-semibold border-b-2 border-beige';
+    const activeStyle = 'text-beige relative after:content-[""] after:absolute after:bottom-[-4px] after:left-0 after:w-full after:h-[2px] after:bg-beige active-link';
 
     return (
-      <Link href={href} className={`${isActive ? activeStyle : ''} ${className}`}>
+      <Link href={href} onClick={onClick} className={`${isActive ? activeStyle : ''} ${className}`}>
         {children}
       </Link>
     );
 }
 
-export default function NavLink({ href, children, className }: 
-    { href: string, children: React.ReactNode, className?: string }) {
+export default function NavLink({ href, children, className, onClick }: 
+    { href: string, children: React.ReactNode, className?: string, onClick?: () => void }) {
     return (
         <Suspense fallback={
-            <Link href={href} className={className}>
+            <Link href={href} onClick={onClick} className={className}>
                 {children}
             </Link>
         }>
-            <NavLinkContent href={href} children={children} className={className} />
+            <NavLinkContent href={href} children={children} className={className} onClick={onClick} />
         </Suspense>
     )
 }

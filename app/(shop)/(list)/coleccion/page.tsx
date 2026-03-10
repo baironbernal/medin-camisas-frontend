@@ -45,7 +45,7 @@ export default async function Page({
   }
 
   return (
-    <main className="w-full mx-auto ">
+    <main className="w-full mx-auto">
       {/* Title based on filters */}
       <h1 className="text-3xl font-heading mb-6 capitalize">
         {category ? `Colección: ${category}` : 

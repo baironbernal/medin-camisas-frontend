@@ -1,11 +1,13 @@
 'use client'
 
 import Link from 'next/link';
-import { useState, useActionState, useEffect, Suspense } from 'react';
+import { useActionState, useEffect, Suspense } from 'react';
 import { useQueryState } from 'nuqs';
+import { useRouter } from 'next/navigation';
 import { signup } from '@/app/services/auth';
+import { useAuth } from '@/app/context/AuthContext';
 import { FormState } from '@/app/lib/definitions';
-import { Loader2, UserPlus } from 'lucide-react';
+import { Loader2, User, Mail, Phone, MapPin, Lock } from 'lucide-react';
 import { Input } from '@/app/components/ui/input';
 
 export default function SignupPage() {
@@ -17,102 +19,121 @@ export default function SignupPage() {
 }
 
 function SignupContent() {
+  const router = useRouter();
+  const { setLoggedIn, setUser } = useAuth();
   const [callback] = useQueryState('callback');
+  const [openCart, setOpenCart] = useQueryState('openCart');
   const [state, action, pending] = useActionState<FormState, FormData>(signup, undefined);
 
+  useEffect(() => {
+    if (state?.success) {
+      setLoggedIn(true);
+      if (state.user) setUser(state.user);
+      
+      if (callback === 'cart' || state.redirectUrl?.includes('openCart')) {
+        setOpenCart('true');
+        router.push('/');
+      } else {
+        router.push(state.redirectUrl || '/');
+      }
+    }
+  }, [state, setLoggedIn, setUser, router, callback, setOpenCart]);
+
   return (
-    <div className="min-h-screen bg-beige flex items-center justify-center px-4 py-16">
-      <div className="w-full max-w-md">
-        <div className="bg-white rounded-2xl shadow-lg overflow-hidden">
-          <div className="h-2 bg-primary" />
-
-          <div className="px-8 py-10">
-            {/* Title */}
-            <div className="mb-8 text-center">
-              <div className="inline-flex items-center justify-center w-14 h-14 rounded-full bg-primary/10 mb-4">
-                <UserPlus size={26} className="text-primary" />
-              </div>
-              <h1 className="font-heading text-3xl font-bold text-primary">Crear cuenta</h1>
-              <p className="text-secondary text-sm mt-2">Regístrate para comprar en Medin Camisas</p>
-            </div>
-
-            {/* Error general */}
-            {state?.message && (
-              <div className="mb-5 bg-red-50 border border-red-200 rounded-lg px-4 py-3 text-red-600 text-sm">
-                {state.message}
-              </div>
-            )}
-
-            <form action={action} className="space-y-4">
-              {callback && <input type="hidden" name="callback" value={callback} />}
-              {/* Name */}
-              <Input
-                label="Nombre completo"
-                id="name"
-                name="name"
-                type="text"
-                placeholder="Ej: Juan Pérez"
-                error={state?.errors?.name}
-              />
-
-              {/* Email */}
-              <Input
-                label="Correo electrónico"
-                id="email"
-                name="email"
-                type="email"
-                placeholder="tucorreo@ejemplo.com"
-                error={state?.errors?.email}
-              />
-
-              {/* Cellphone */}
-              <Input
-                label="Celular"
-                id="cellphone"
-                name="cellphone"
-                type="tel"
-                placeholder="Ej: 3001234567"
-                error={state?.errors?.cellphone}
-              />
-
-              {/* Address */}
-              <Input
-                label="Dirección"
-                id="address"
-                name="address"
-                type="text"
-                placeholder="Tu dirección completa"
-                error={state?.errors?.address}
-              />
-
-              {/* Password */}
-              <Input
-                label="Contraseña"
-                id="password"
-                name="password"
-                type="password"
-                placeholder="Mínimo 8 caracteres"
-                error={state?.errors?.password}
-              />
-
-              {/* Submit */}
-              <button
-                type="submit"
-                disabled={pending}
-                className="w-full bg-primary text-white font-medium py-3 rounded-lg hover:bg-purple transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed mt-2"
-              >
-                {pending ? <Loader2 size={18} className="animate-spin" /> : <UserPlus size={18} />}
-                {pending ? 'Creando cuenta…' : 'Crear cuenta'}
-              </button>
-            </form>
-
-            <p className="text-center text-sm text-secondary mt-6">
-              ¿Ya tienes cuenta?{' '}
-              <Link href={`/login${callback ? `?callback=${callback}` : ''}`} className="text-primary font-medium hover:underline">
-                Inicia sesión
-              </Link>
-            </p>
+    <div className="min-h-screen bg-dark flex items-center justify-center px-4 py-24 font-sans">
+      <div className="w-full max-w-lg">
+        <div className="bg-primary rounded-[32px] md:rounded-[40px] shadow-2xl overflow-hidden p-6 md:p-12">
+          
+          <div className="mb-10 text-left">
+            <p className="text-tertiary font-bold tracking-[0.2em] text-xs uppercase mb-3 text-gray-400">MEDIN</p>
+            <h1 className="font-heading text-3xl md:text-5xl font-bold text-white mb-3">Crear Cuenta</h1>
+            <p className="text-description text-sm">Regístrate para ver nuestro catálogo y comprar productos</p>
           </div>
+
+          {state?.message && (
+            <div className="mb-6 bg-red-500/10 border border-red-500/20 rounded-xl px-4 py-3 text-red-400 text-sm">
+              {state.message}
+            </div>
+          )}
+
+          <form action={action} className="space-y-6">
+            {callback && <input type="hidden" name="callback" value={callback} />}
+            
+            <Input
+              label="Nombre completo"
+              id="name"
+              name="name"
+              type="text"
+              placeholder="Ej: Juan Pérez"
+              defaultValue={state?.fields?.name}
+              error={state?.errors?.name}
+              theme="dark"
+              icon={<User size={18} />}
+            />
+
+            <Input
+              label="Correo electrónico"
+              id="email"
+              name="email"
+              type="email"
+              placeholder="tucorreo@ejemplo.com"
+              defaultValue={state?.fields?.email}
+              error={state?.errors?.email}
+              theme="dark"
+              icon={<Mail size={18} />}
+            />
+
+            <Input
+              label="Celular"
+              id="cellphone"
+              name="cellphone"
+              type="tel"
+              placeholder="Ej: 3001234567"
+              defaultValue={state?.fields?.cellphone}
+              error={state?.errors?.cellphone}
+              theme="dark"
+              icon={<Phone size={18} />}
+            />
+
+            <Input
+              label="Dirección"
+              id="address"
+              name="address"
+              type="text"
+              placeholder="Tu dirección completa"
+              defaultValue={state?.fields?.address}
+              error={state?.errors?.address}
+              theme="dark"
+              icon={<MapPin size={18} />}
+            />
+
+            <Input
+              label="Contraseña"
+              id="password"
+              name="password"
+              type="password"
+              placeholder="Mínimo 8 caracteres"
+              error={state?.errors?.password}
+              theme="dark"
+              icon={<Lock size={18} />}
+            />
+
+            <button
+              type="submit"
+              disabled={pending}
+              className="w-full md:w-auto md:px-10 bg-accent text-primary font-semibold py-3 rounded-full hover:bg-white transition-colors flex items-center justify-center gap-2 disabled:opacity-60 disabled:cursor-not-allowed mt-2"
+            >
+              {pending && <Loader2 size={18} className="animate-spin" />}
+              {pending ? 'Creando…' : 'Registrarse'}
+            </button>
+          </form>
+
+          <p className="text-sm text-description mt-8">
+            ¿Ya tienes cuenta?{' '}
+            <Link href={`/login${callback ? `?callback=${callback}` : ''}`} className="text-white hover:underline transition-colors">
+              Inicia sesión
+            </Link>
+          </p>
         </div>
       </div>
     </div>

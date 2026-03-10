@@ -36,8 +36,13 @@ export default function CartItem({ product }: { product: Variant }) {
       {/* Product Info */}
       <div className="flex-1 flex flex-col justify-between">
         <div>
-          <h3 className="font-medium text-sm line-clamp-2 text-black">{displayName}</h3>
-          <p className="text-sm text-gray-600 mt-1">{formatCOP(displayPrice)}</p>
+          <h3 className="font-medium text-sm line-clamp-2 text-black leading-tight">
+            {displayName}
+          </h3>
+          {product.combination_name && (
+            <p className="text-xs text-gray-500 mt-0.5">{product.combination_name}</p>
+          )}
+          <p className="text-sm text-gray-800 font-medium mt-1">{formatCOP(displayPrice)}</p>
         </div>
 
         {/* Quantity Controls */}

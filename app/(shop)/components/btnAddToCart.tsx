@@ -7,9 +7,10 @@ interface Props {
     variant: Variant
     productName?: string
     productImages?: string[]
+    combinationName?: string
 }
 
-export const BtnAddToCart = ({variant, productName, productImages}: Props) => {
+export const BtnAddToCart = ({variant, productName, productImages, combinationName}: Props) => {
     const addFromCart = useCartStore(state => state.addToCart)
       const { 
         isOpen: isCartOpen, 
@@ -24,10 +25,11 @@ export const BtnAddToCart = ({variant, productName, productImages}: Props) => {
         addFromCart({
           ...variant,
           product_name: productName,
-          product_images: productImages
+          product_images: productImages,
+          combination_name: combinationName
         }); 
-        openCart;
-      }} className="bg-primary text-white px-4 py-2 hover:bg-secondary text-okine rounded-full cursor-pointer w-full">Agregar al carrito</button>
+        openCart();
+      }} className="w-full bg-primary text-white font-medium py-3 rounded-full hover:bg-purple transition-colors duration-200">Agregar al carrito</button>
 
      
     </div>

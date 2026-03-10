@@ -11,6 +11,8 @@ import { useQueryState } from "nuqs";
 import NavLink from "./nav-link";
 import { useCartStore } from "@/app/hooks/useCartStore";
 import CartSidebar from "./cart/cart";
+import { useAuth } from "@/app/context/AuthContext";
+import { LogIn } from "lucide-react";
 
 
 interface Props {
@@ -24,6 +26,7 @@ export default function Navbar({
   logoSrc = "/logos/logo-ite.png",
   logoAlt = "Medin Camisas",
 }: Props) {
+  const { isLoggedIn } = useAuth();
   const { 
     isOpen: isMenuOpen, 
     isClosing: isMenuClosing, 
@@ -118,8 +121,12 @@ export default function Navbar({
                 </span>
               )}
             </button>
-            <NavLink href="/perfil">
-                <CircleUserRound  size={30} color="beige" strokeWidth={1} />
+            <NavLink href={isLoggedIn ? "/perfil" : "/login"}>
+                {isLoggedIn ? (
+                  <CircleUserRound size={30} color="beige" strokeWidth={1} />
+                ) : (
+                  <LogIn size={26} color="beige" strokeWidth={1.5} />
+                )}
             </NavLink>
           </div>
 

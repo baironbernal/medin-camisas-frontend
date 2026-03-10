@@ -1,4 +1,5 @@
 import * as z from 'zod'
+import { AuthUser } from '@/types/auth';
  
 export const SignupFormSchema = z.object({
   name: z
@@ -34,5 +35,9 @@ export type FormState =
         password?: string[]
       }
       message?: string
+      fields?: Record<string, string>
+      success?: boolean
+      user?: AuthUser
+      redirectUrl?: string
     }
   | undefined

@@ -21,6 +21,12 @@ export async function signup(state: FormState, formData: FormData) {
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
+      fields: {
+        name: formData.get('name') as string,
+        email: formData.get('email') as string,
+        cellphone: formData.get('cellphone') as string,
+        address: formData.get('address') as string,
+      }
     }
   }
   
@@ -46,17 +52,28 @@ export async function signup(state: FormState, formData: FormData) {
   if(!user) {
      return {
       message: 'An error occurred while creating your account.',
+      fields: {
+        name: validatedFields.data.name,
+        email: validatedFields.data.email,
+        cellphone: validatedFields.data.cellphone,
+        address: validatedFields.data.address,
+      }
     }
   }
 
   await setSession(response.access_token, user);
   
   const callback = formData.get('callback');
+  let redirectUrl = '/';
   if (callback === 'cart') {
-    return redirect('/?openCart=true');
+    redirectUrl = '/?openCart=true';
   }
 
-  return redirect('/');
+  return {
+    success: true,
+    user,
+    redirectUrl
+  };
 }
 
 export async function register(payload: RegisterPayload): Promise<AuthResponse> {

@@ -15,7 +15,7 @@ export default async function Page ({params}: {params: { slug: string }}) {
     }
     
   return (
-    <main className="flex items-justify justify-center container mx-auto py-12">
+    <main className="flex items-justify justify-center py-12 bg-beige">
       <WrapperDetail data={product.data} />
     </main> 
   )

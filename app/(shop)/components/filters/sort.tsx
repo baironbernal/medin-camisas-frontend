@@ -55,7 +55,7 @@ export const Sort = () => {
   }, []);
 
   return (
-    <section className="flex justify-between items-center py-6">
+    <section className="flex justify-between items-center py-6 bg-beige">
       <div>
         <p>Ver todo</p>
       </div>        

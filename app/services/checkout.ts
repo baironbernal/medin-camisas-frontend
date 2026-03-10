@@ -38,12 +38,13 @@ export async function checkout(
   payload: CheckoutPayload,
   sessionId: string
 ): Promise<OrderResponse> {
+  const authHeaders = await getAuthHeaders();
   return apiFetch<OrderResponse>('/checkout', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
       'X-Session-ID': sessionId,
-      ...getAuthHeaders(),
+      ...authHeaders,
     },
     body: JSON.stringify(payload),
   });
