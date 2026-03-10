@@ -1,5 +1,6 @@
 'use client';
 
+
 import Link from 'next/link';
 import { useState, useEffect, FormEvent, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
@@ -9,6 +10,9 @@ import { useAuth } from '@/app/context/AuthContext';
 import { Loader2, Mail, Lock } from 'lucide-react';
 import { LoginFormSchema } from '@/app/lib/definitions';
 import { Input } from '@/app/components/ui/input';
+
+
+export const dynamic = 'force-dynamic'
 
 export default function LoginPage() {
   return (

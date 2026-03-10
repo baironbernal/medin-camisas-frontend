@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import localFont from "next/font/local";
+import { Suspense } from "react";
 import "./globals.css";
 import "animate.css";
 import Navbar from "@/app/components/ui/menu/navbar";
@@ -53,7 +54,9 @@ export default async function RootLayout({
       <body className="antialiased">
         <AuthProvider>
           <NuqsAdapter>
-            <Navbar categories={categories} />
+            <Suspense fallback={<div className="h-20 bg-dark" />}>
+              <Navbar categories={categories} />
+            </Suspense>
             <main className="w-full">
               {children}
             </main>

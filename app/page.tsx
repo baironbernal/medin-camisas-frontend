@@ -5,6 +5,8 @@ import VisitUs from "./components/home/visit-us/visit-us";
 import Us from "./components/home/who-are/us";
 import { getProducts } from "./services/products";
 
+
+export const dynamic = 'force-dynamic';
 export default async function Home() {
 
 

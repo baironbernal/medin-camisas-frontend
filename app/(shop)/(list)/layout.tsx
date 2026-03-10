@@ -11,7 +11,9 @@ export default async function CategoryListLayout({ children }: { children: React
   return (
     <FiltersUIProvider>
       {/* Filters */}
+      <Suspense fallback={null}>
         <FiltersSidebar availableFilters={filters}/>
+      </Suspense>
         {/* Banner */}
       <Banner name="Ver todo" image="/shop/background.png" /> 
       <div className=" bg-beige">

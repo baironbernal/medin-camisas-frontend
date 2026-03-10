@@ -12,7 +12,7 @@ import { Input } from '@/app/components/ui/input';
 
 export default function SignupPage() {
   return (
-    <Suspense fallback={null}>
+    <Suspense fallback={<div>Loading...</div>}>
       <SignupContent />
     </Suspense>
   );

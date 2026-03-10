@@ -6,8 +6,17 @@ import { useRouter, useSearchParams } from 'next/navigation';
 import { login } from '@/app/services/auth';
 import { useAuth } from '@/app/context/AuthContext';
 import { Eye, EyeOff, Loader2, LogIn } from 'lucide-react';
+import { Suspense } from 'react';
 
 export default function LoginPage() {
+  return (
+    <Suspense fallback={<div>Loading...</div>}>
+      <LoginForm />
+    </Suspense>
+  );
+}
+
+function LoginForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const redirect = searchParams.get('redirect') || '/';
