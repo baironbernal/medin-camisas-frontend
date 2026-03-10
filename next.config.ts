@@ -2,7 +2,7 @@ import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   output: 'standalone',
-  experimental:{
+  experimental: {
     globalNotFound: true,
   },
   images: {
@@ -11,6 +11,11 @@ const nextConfig: NextConfig = {
         protocol: 'http',
         hostname: 'api.medin.test',
         port: '8000',
+      },
+      {
+        protocol: 'https',
+        hostname: 'deepskyblue-gorilla-748938.hostingersite.com',
+        pathname: 'storage/**',
       },
     ],
   },
