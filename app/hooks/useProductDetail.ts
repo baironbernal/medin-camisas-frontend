@@ -1,12 +1,15 @@
 'use client'
 
-import { useMemo, useState } from 'react'
+import { useMemo, useState, useEffect } from 'react'
 import { ProductDetail } from '@/types/product-detail'
 import { formatCOP } from '../lib/formatPrice'
+import { useCartStore } from './useCartStore'
 
 export function useProductDetail(data: ProductDetail) {
   const [selectedColor, setSelectedColor] = useState<string | null>(null)
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
+  const [quantityAvailable, setQuantityAvailable] = useState<number>(0)
+  const [quantitySelected, setQuantitySelected] = useState<number>(1)
 
   const { available_attributes, variants, combination_index } = data
   const colors = available_attributes?.['Color'] ?? []
@@ -31,6 +34,8 @@ export function useProductDetail(data: ProductDetail) {
   // 3. Variante seleccionada (Combinación exacta)
   const selectedVariant = useMemo(() => {
     if (!selectedColor || !selectedSize || !material) return null
+    const stock = combination_index[exactKey]?.stock
+    setQuantityAvailable(stock ?? 0)
     const id = combination_index[exactKey]?.variant_id
     return variants.find(v => v.id === id) ?? null
   }, [selectedColor, selectedSize, material, variants, combination_index, exactKey])
@@ -51,13 +56,28 @@ export function useProductDetail(data: ProductDetail) {
     return variants[0]?.images ?? []
   }, [selectedVariant, selectedColor, entries, variants])
 
-  // 5. Helpers de UI
+  // 5. How many of this variant are already in the cart
+  const cart = useCartStore(state => state.cart)
+  const inCartQuantity = useMemo(() => {
+    if (!selectedVariant) return 0
+    return cart.find(item => item.id === selectedVariant.id)?.quantity ?? 0
+  }, [cart, selectedVariant])
+
+  // 6. Remaining stock the user can actually add
+  const remainingStock = Math.max(0, quantityAvailable - inCartQuantity)
+
+  // 7. Helpers de UI
   const currentPrice = selectedVariant?.price ?? variants[0]?.price ?? 0
-  const isComplete = !!selectedVariant
+  const isComplete = !!selectedVariant && remainingStock > 0
+
+  // Reset quantity selection whenever the variant changes
+  useEffect(() => {
+    setQuantitySelected(1)
+  }, [selectedVariant])
 
   const selectColor = (color: string) => {
     setSelectedColor(color)
-    setSelectedSize(null) 
+    setSelectedSize(null)
   }
 
   const selectSize = (size: string) => setSelectedSize(size)
@@ -77,5 +97,10 @@ export function useProductDetail(data: ProductDetail) {
     exactKey,
     selectColor,
     selectSize,
+    quantityAvailable,
+    remainingStock,
+    inCartQuantity,
+    quantitySelected,
+    setQuantitySelected
   }
 }

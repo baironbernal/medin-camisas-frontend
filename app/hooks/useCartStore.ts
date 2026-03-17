@@ -29,17 +29,18 @@ export const useCartStore = create<State & Actions>() (
       addToCart: (product: Variant) => {
         const cart = get().cart;
         const existing = cart.find(item => item.id === product.id);
+        const quantity = product.quantity || 1;
 
         let updatedCart: Variant[];
 
         if (existing) {
           updatedCart = cart.map(item =>
             item.id === product.id
-              ? { ...item, quantity: (item.quantity || 0) + 1 }
+              ? { ...item, quantity: (item.quantity || 0) + quantity }
               : item
           );
         } else {
-          updatedCart = [...cart, { ...product, quantity: 1 }];
+          updatedCart = [...cart, { ...product, quantity: quantity }];
         }
 
         set({

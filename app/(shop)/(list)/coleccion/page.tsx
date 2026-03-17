@@ -2,12 +2,17 @@
 export const dynamic = "force-dynamic";
 import ProductItem from "@/app/components/home/products/productItem";
 import { getProducts } from "@/app/services/products";
-import { notFound } from "next/navigation";
 import { ApiError } from "@/app/services/fetcher";
 
 interface SearchParams {
   category?: string | string[];
   subcategory?: string | string[];
+  name?: string | string[];
+  color?: string | string[];
+  size?: string | string[];
+  type?: string | string[];
+  min_cost?: string | string[];
+  max_cost?: string | string[];
   order_by?: string;
   order_dir?: string;
 }
@@ -19,15 +24,30 @@ export default async function Page({
 }) {
   const resolvedSearchParams = await searchParams;
 
-  const category = Array.isArray(resolvedSearchParams.category) ? resolvedSearchParams.category[0] : resolvedSearchParams.category;
-  const subcategory = Array.isArray(resolvedSearchParams.subcategory) ? resolvedSearchParams.subcategory[0] : resolvedSearchParams.subcategory;
+  const pick = (v?: string | string[]) =>
+    Array.isArray(v) ? v[0] : v;
+
+  const category  = pick(resolvedSearchParams.category);
+  const subcategory = pick(resolvedSearchParams.subcategory);
+  const name      = pick(resolvedSearchParams.name);
+  const color     = pick(resolvedSearchParams.color);
+  const size      = pick(resolvedSearchParams.size);
+  const type      = pick(resolvedSearchParams.type);
+  const min_cost  = pick(resolvedSearchParams.min_cost);
+  const max_cost  = pick(resolvedSearchParams.max_cost);
 
   let productsResponse;
-  
+
   try {
     productsResponse = await getProducts({
       category,
       subcategory,
+      name,
+      color,
+      size,
+      type,
+      min_cost,
+      max_cost,
       order_by: resolvedSearchParams.order_by,
       order_dir: resolvedSearchParams.order_dir as 'asc' | 'desc' | undefined,
     });
@@ -48,8 +68,8 @@ export default async function Page({
     <main className="w-full mx-auto">
       {/* Title based on filters */}
       <h1 className="text-3xl font-heading mb-6 capitalize">
-        {category ? `Colección: ${category}` : 
-         subcategory ? `Subcategoría: ${subcategory}` : 
+        {category ? `Colección: ${category}` :
+         subcategory ? `Subcategoría: ${subcategory}` :
          "Todos los productos"}
       </h1>
 

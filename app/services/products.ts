@@ -5,6 +5,9 @@ export interface GetProductsParams {
   category?: string;
   subcategory?: string;
   name?: string;
+  color?: string;
+  size?: string;
+  type?: string;
   season_id?: number | string;
   min_cost?: number | string;
   max_cost?: number | string;

@@ -25,6 +25,11 @@ export const WrapperDetail = ({ data }: ProductDetailProps) => {
     exactKey,
     selectColor,
     selectSize,
+    quantityAvailable,
+    remainingStock,
+    inCartQuantity,
+    quantitySelected,
+    setQuantitySelected
   } = useProductDetail(data)
 
   const defaultDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
@@ -70,7 +75,7 @@ export const WrapperDetail = ({ data }: ProductDetailProps) => {
 
           {sizes.length > 0 && (
             <div className="flex flex-col gap-3">
-              <p className="text-sm font-medium uppercase tracking-wide text-primary">Select Size</p>
+              <p className="text-sm font-medium tracking-wide text-primary">SELECT SIZE</p>
               <div className="flex gap-3">
                 {sizes.map((size) => {
                   const isAvailable = availableSizes.includes(size)
@@ -98,10 +103,44 @@ export const WrapperDetail = ({ data }: ProductDetailProps) => {
             </div>
           )}
 
+          {selectedSize && (
+            <>
+              {/* Stock summary */}
+              <div className="flex items-center gap-2 text-sm">
+                <p className="font-medium tracking-wide text-primary">
+                  Quedan <span className="text-secondary font-bold">{quantityAvailable}</span> unidades
+                </p>
+                {inCartQuantity > 0 && (
+                  <span className="text-xs text-gray-500">
+                    ({inCartQuantity} ya en tu carrito)
+                  </span>
+                )}
+              </div>
+
+              {remainingStock > 0 ? (
+                <select
+                  value={quantitySelected}
+                  className="w-full border border-gray-300 rounded px-4 py-2"
+                  onChange={(e) => setQuantitySelected(Number(e.target.value))}
+                >
+                  {Array.from({ length: remainingStock }, (_, i) => i + 1).map((num) => (
+                    <option key={num} value={num}>{num}</option>
+                  ))}
+                </select>
+              ) : (
+                <p className="text-sm text-red-500 font-medium">
+                  Ya tienes el máximo disponible en tu carrito.
+                </p>
+              )}
+            </>
+          )}
+
           <div className="flex flex-col gap-3 pt-4">
             {isComplete ? (
               <>
                 <BtnAddToCart 
+                  quantitySelected={quantitySelected}
+                  remainingStock={remainingStock}
                   variant={selectedVariant!} 
                   productName={data.name}
                   productImages={currentImages ?? []}
@@ -113,7 +152,7 @@ export const WrapperDetail = ({ data }: ProductDetailProps) => {
               </>
             ) : (
               <button disabled className="w-full bg-gray-300 text-gray-500 py-3 rounded-full cursor-not-allowed">
-                Seleccionar opciones
+                {selectedVariant && remainingStock === 0 ? 'Sin stock disponible' : 'Seleccionar opciones'}
               </button>
             )}
           </div>
