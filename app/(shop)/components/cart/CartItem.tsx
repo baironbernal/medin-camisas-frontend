@@ -11,7 +11,7 @@ import { useDiscountRules } from "@/app/useContext/DiscountRuleContext";
 export default function CartItem({ product }: { product: Variant }) {
   const removeFromCart = useCartStore(state => state.removeFromCart)
   const addToCart = useCartStore(state => state.addToCart)
-  const decreaseQuantity = useCartStore(state => state.decreaseQuantity)
+  const decreaseOrSumQuantity = useCartStore(state => state.decreaseOrSumQuantity)
 
   const { getDiscountForQuantity } = useDiscountRules();
 
@@ -70,14 +70,14 @@ export default function CartItem({ product }: { product: Variant }) {
           <div className="flex items-center gap-1">
             <button
               className="w-7 h-7 flex items-center justify-center border border-gray-200 rounded hover:bg-gray-50 transition-colors"
-              onClick={() => decreaseQuantity(product.id)}
+              onClick={() => decreaseOrSumQuantity(product.id, 'decrease')}
             >
               <Minus size={14} className="text-gray-600" />
             </button>
             <span className="text-sm font-medium w-8 text-center text-primary">{quantity}</span>
             <button
               className="w-7 h-7 flex items-center justify-center border border-gray-200 rounded hover:bg-gray-50 transition-colors"
-              onClick={() => addToCart(product)}
+              onClick={() => decreaseOrSumQuantity(product.id, 'sum')}
             >
               <Plus size={14} className="text-gray-600"/>
             </button>

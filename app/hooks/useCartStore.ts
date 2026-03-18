@@ -14,7 +14,7 @@ interface State {
 interface Actions {
   addToCart: (product: Variant) => void;
   removeFromCart: (productId: number) => void;
-  decreaseQuantity: (productId: number) => void;
+  decreaseOrSumQuantity: (productId: number, type: 'decrease' | 'sum' ) => void;
   clearCart: () => void;
 }
 
@@ -36,7 +36,7 @@ export const useCartStore = create<State & Actions>() (
         if (existing) {
           updatedCart = cart.map(item =>
             item.id === product.id
-              ? { ...item, quantity: (item.quantity || 0) + quantity }
+              ? { ...item, quantity: quantity }
               : item
           );
         } else {
@@ -66,19 +66,20 @@ export const useCartStore = create<State & Actions>() (
         });
       },
 
-      decreaseQuantity: (productId: number) => {
+      decreaseOrSumQuantity: (productId: number, type: 'decrease' | 'sum' ) => {
         const cart = get().cart;
         const item = cart.find(i => i.id === productId);
         if (!item) return;
 
         let updatedCart: Variant[];
+        const operation = type === 'decrease' ? -1 : 1;
 
         if ((item.quantity || 1) <= 1) {
           updatedCart = cart.filter(i => i.id !== productId);
         } else {
           updatedCart = cart.map(i =>
             i.id === productId
-              ? { ...i, quantity: (i.quantity || 1) - 1 }
+              ? { ...i, quantity: (i.quantity || 1) + operation }
               : i
           );
         }
