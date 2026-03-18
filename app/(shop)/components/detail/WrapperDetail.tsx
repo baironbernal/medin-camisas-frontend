@@ -1,7 +1,7 @@
 'use client'
 
 import { ProductDetail } from '@/types/product-detail'
-import GalleryDetail from '../gallery/gallery';
+import GalleryDetail from '../gallery/Gallery';
 import BtnAddToCart from '../cart/BtnAddToCart';
 import { useProductDetail } from '@/app/hooks/useProductDetail'
 import { formatCOP } from '@/app/lib/formatPrice'
