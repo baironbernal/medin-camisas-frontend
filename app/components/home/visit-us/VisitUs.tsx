@@ -1,6 +1,5 @@
 import { CircleCheck, MessageCircle } from 'lucide-react';
-import Tag from '../../ui/tag';
-import Map from '../../ui/map';
+import { Tag, Map } from "../../ui";
 
 const VisitUs = () => {
   return (

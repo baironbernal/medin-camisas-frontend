@@ -1,6 +1,6 @@
 'use client';
 
-import { useAuth } from '@/app/context/AuthContext';
+import { useAuth } from '@/app/useContext/AuthContext';
 import { useRouter } from 'next/navigation';
 import { User, Mail, Phone, LogOut, Loader2, CircleUserRound } from 'lucide-react';
 import { useEffect } from 'react';

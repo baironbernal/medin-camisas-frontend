@@ -1,7 +1,7 @@
 'use client';
 
 import { ChevronDownIcon, Funnel } from 'lucide-react';
-import { useFiltersUI, SORT_OPTIONS } from '../../context/filters-ui';
+import { useFiltersUI, SORT_OPTIONS } from '../../useContext/FiltersContext';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 

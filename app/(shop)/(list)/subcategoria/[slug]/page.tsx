@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 import { getProducts } from "@/app/services/products";
 import { ApiError, NotFoundError } from "@/app/services/fetcher";
 import { notFound } from "next/navigation";
-import ProductItem from "@/app/components/home/products/productItem";
+import { ProductItem } from "@/app/components";
 
 export default async function Page({
   params,

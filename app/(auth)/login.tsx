@@ -4,7 +4,7 @@ import Link from 'next/link';
 import { useState, FormEvent } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { login } from '@/app/services/auth';
-import { useAuth } from '@/app/context/AuthContext';
+import { useAuth } from '@/app/useContext/AuthContext';
 import { Eye, EyeOff, Loader2, LogIn } from 'lucide-react';
 import { Suspense } from 'react';
 

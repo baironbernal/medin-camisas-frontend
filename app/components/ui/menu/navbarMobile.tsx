@@ -1,14 +1,14 @@
 `use client`;
 
-import Link from "next/link";
 import { Category } from "@/types/category";
 import { X, CircleUserRound } from "lucide-react";
 import "animate.css";
-import WhatsappButton from "../whatsappButton";
-import Logo from "../logo";
-import { useAuth } from "@/app/context/AuthContext";
+import { useAuth } from "@/app/useContext/AuthContext";
 import { LogIn } from "lucide-react";
-import NavLink from "./nav-link";
+import NavLink from "./NavLinkContent";
+import WhatsappButton from "../commons/WhatsappButton";
+import Logo from "../commons/Logo";
+
 
 interface Props {
   categories: Category[];

@@ -1,6 +1,6 @@
 
 export const dynamic = "force-dynamic";
-import ProductItem from "@/app/components/home/products/productItem";
+import { ProductItem } from "@/app/components";
 import { getProducts } from "@/app/services/products";
 import { ApiError } from "@/app/services/fetcher";
 

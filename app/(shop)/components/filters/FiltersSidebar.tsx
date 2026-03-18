@@ -5,15 +5,15 @@ import {
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-} from "@/components/ui/collapsible"
+} from "@/app/components/ui"
 import { ChevronDownIcon } from "lucide-react";
 import { X } from 'lucide-react';
-import { useFiltersUI } from "../../context/filters-ui";
-import { SearchInput } from "./search/search";
-import { MinAndMax } from "./price/minAndMax";
-import { FilterSize } from "./size/filterSize";
-import { FilterType } from "./clothing-type/filterType";
+import { useFiltersUI } from "../../useContext/FiltersContext";
+import { SearchInput } from "./search/SearchInput";
 import { FilterColor } from "./color/FilterColor";
+import { FilterType } from "./clothing-type/FilterType";
+import { FilterSize } from "./size/FilterSize";
+import MinAndMax from "./price/MinAndMax";
 
 
 export interface FiltersSidebarProps {

@@ -1,11 +1,13 @@
 'use client'
 
 import { ProductDetail } from '@/types/product-detail'
-import { GalleryDetail } from '../gallery/gallery'
-import { BtnAddToCart } from '../btnAddToCart'
+import { GalleryDetail } from '../gallery/gallery';
+import { BtnAddToCart } from '../cart/BtnAddToCart';
 import { useProductDetail } from '@/app/hooks/useProductDetail'
 import { formatCOP } from '@/app/lib/formatPrice'
-import { Truck, Percent, Package } from 'lucide-react'
+import { Truck, Percent, Package, AlertCircle } from 'lucide-react'
+import { useDiscount } from '@/app/hooks/useDiscount';
+import { useDiscountRules } from '@/app/useContext/DiscountRuleContext';
 
 interface ProductDetailProps {
   data: ProductDetail;
@@ -32,6 +34,15 @@ export const WrapperDetail = ({ data }: ProductDetailProps) => {
     setQuantitySelected
   } = useProductDetail(data)
 
+  const { rules } = useDiscountRules();
+  const { getDiscountForQuantity } = useDiscount(rules);
+
+  const currentDiscount = getDiscountForQuantity(quantitySelected, currentPrice);
+  const nextTierQuantity = quantitySelected + 1;
+  const nextTierDiscount = nextTierQuantity <= quantityAvailable 
+    ? getDiscountForQuantity(nextTierQuantity, currentPrice)
+    : null;
+
   const defaultDescription = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.\n\nDuis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.";
 
   return (
@@ -45,7 +56,14 @@ export const WrapperDetail = ({ data }: ProductDetailProps) => {
         <div className="flex flex-col gap-8 lg:sticky lg:top-24 h-fit">
           <div className="flex flex-col gap-2">
             <h1 className="text-3xl font-semibold text-primary">{data.name}</h1>
-            <p className="text-2xl font-medium text-primary">{formatCOP(currentPrice)}</p>
+            {currentDiscount && currentDiscount.discount > 0 ? (
+              <div className="flex items-baseline gap-3">
+                
+                <p className="text-lg text-gray-400 line-through">{formatCOP(currentPrice)}</p>
+              </div>
+            ) : (
+              <p className="text-2xl font-medium text-primary">{formatCOP(currentPrice)}</p>
+            )}
           </div>
 
           {colors.length > 0 && (
@@ -131,6 +149,18 @@ export const WrapperDetail = ({ data }: ProductDetailProps) => {
                 <p className="text-sm text-red-500 font-medium">
                   Ya tienes el máximo disponible en tu carrito.
                 </p>
+              )}
+
+              {/* Next tier discount message */}
+              {nextTierDiscount && nextTierDiscount.discount > 0 && (
+                <div className="bg-green-50 p-3 flex items-start gap-2">
+                  <AlertCircle size={18} className="text-green-600  mt-0.5" />
+                  <div className="text-sm">
+                    <p className="text-green-800 font-medium">
+                      ¡Añade {nextTierQuantity - quantitySelected} unidad más por {formatCOP(nextTierDiscount.discountedPrice)}
+                    </p>
+                  </div>
+                </div>
               )}
             </>
           )}

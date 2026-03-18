@@ -2,17 +2,17 @@
 
 import { Category } from "@/types/category";
 import { useState, useEffect } from "react";
-import NavbarMobile from "./navbarMobile";
 import { Menu, ShoppingBag, CircleUserRound } from "lucide-react";
-import Logo from "../logo";
-import HoverPanel from "./HoverPanel";
 import { useAnimatedOpen } from "@/app/hooks/useAnimatedOpen";
 import { useQueryState } from "nuqs";
-import NavLink from "./nav-link";
 import { useCartStore } from "@/app/hooks/useCartStore";
-import CartSidebar from "./cart/cart";
-import { useAuth } from "@/app/context/AuthContext";
+import { useAuth } from "@/app/useContext/AuthContext";
 import { LogIn } from "lucide-react";
+import { CartSidebar } from "@/app/(shop)/components";
+import HoverPanel from "./HoverPanel";
+import NavLink from "./NavLinkContent";
+import NavbarMobile from "./NavbarMobile";
+import Logo from "../commons/Logo";
 
 
 interface Props {

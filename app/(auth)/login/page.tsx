@@ -6,10 +6,10 @@ import { useState, useEffect, FormEvent, Suspense } from 'react';
 import { useRouter } from 'next/navigation';
 import { useQueryState } from 'nuqs';
 import { login } from '@/app/services/auth';
-import { useAuth } from '@/app/context/AuthContext';
+import { useAuth } from '@/app/useContext/AuthContext';
 import { Loader2, Mail, Lock } from 'lucide-react';
 import { LoginFormSchema } from '@/app/lib/definitions';
-import { Input } from '@/app/components/ui/input';
+import { Input } from '@/app/components/ui';
 
 
 export const dynamic = 'force-dynamic'

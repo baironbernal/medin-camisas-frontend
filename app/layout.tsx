@@ -3,12 +3,10 @@ import localFont from "next/font/local";
 import { Suspense } from "react";
 import "./globals.css";
 import "animate.css";
-import Navbar from "@/app/components/ui/menu/navbar";
 import { getCategories } from "./services/categories";
-import Footer from "./components/ui/footer/footer";
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
-import WhatsAppFloat from "./components/home/whatsapp/whatsappFloat";
-import { AuthProvider } from "./context/AuthContext";
+import { AuthProvider } from "./useContext/AuthContext";
+import { Footer, WhatsAppFloat, Navbar } from "./components";
 
 
 /* Utendo */

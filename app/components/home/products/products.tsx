@@ -1,8 +1,8 @@
 'use client';
 
 import { Product } from '@/types/product';
-import SwiperCarousel from '../../ui/swiper/swiper';
-import ProductItem from './productItem';
+import { SwiperCarousel } from "../../ui";
+import ProductItem from "./ProductItem";
 
 interface Props {
   products: Product[];

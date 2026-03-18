@@ -1,6 +1,5 @@
-import ButtonDefault from "../ui/button"
-import Image from "next/image";
-import Tag from "../ui/tag";
+
+import { ButtonDefault, Tag } from "../ui";
 import { MessageCircle, Truck, Tag as TagIcon} from 'lucide-react';
 
 

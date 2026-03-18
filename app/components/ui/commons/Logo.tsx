@@ -1,7 +1,7 @@
 import Image from "next/image"
 import Link from "next/link"
 
-const Logo = ({logoSrc}: {logoSrc: string}) => {
+export default function Logo({logoSrc}: {logoSrc: string}) {
   return (
     <>
       <Link href="/" className="flex items-center">
@@ -17,5 +17,3 @@ const Logo = ({logoSrc}: {logoSrc: string}) => {
     </>
   )
 }
-
-export default Logo

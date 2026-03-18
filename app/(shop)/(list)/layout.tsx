@@ -1,9 +1,8 @@
 import { getFilters } from "@/app/services/filters";
-import { FiltersSidebar } from "../components/filters/filters";
-import { Banner } from "../components/banner";
-import { FiltersUIProvider } from "../context/filters-ui"; 
-import { Sort } from "../components/filters/sort";
+import { FiltersSidebar, Banner, Sort } from "../components";
+import { FiltersUIProvider } from "../useContext/FiltersContext"; 
 import { Suspense } from "react";
+
 
 export default async function CategoryListLayout({ children }: { children: React.ReactNode }) {
   const filters = await getFilters();

@@ -1,7 +1,7 @@
 'use client';
 
 import { Category } from "@/types/category";
-import NavLink from "./nav-link";
+import NavLink from "./NavLinkContent";
 
 interface HoverPanelProps {
   activeCategory: Category | null;

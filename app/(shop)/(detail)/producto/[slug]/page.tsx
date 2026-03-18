@@ -1,8 +1,7 @@
-
 import { getProduct } from "@/app/services/products";
 import { notFound } from "next/navigation";
-import { WrapperDetail } from "@/app/(shop)/components/detail/wrapperDetail";
 import { ProductDetail } from "@/types/product-detail";
+import { WrapperDetail } from "@/app/(shop)/components";
 
 export default async function Page ({params}: {params: { slug: string }}) {
     const { slug } = await params;

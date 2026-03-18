@@ -2,7 +2,7 @@
 
 import { useQueryState } from "nuqs"
 
-export const MinAndMax = () => {
+export default function MinAndMax() {
     const [min, setMin] = useQueryState('min_cost', { shallow: false })
     const [max, setMax] = useQueryState('max_cost', { shallow: false })
     

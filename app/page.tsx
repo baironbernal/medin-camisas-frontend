@@ -1,8 +1,10 @@
-import BannerSection from "./components/banners/bannerHome";
-import MayoristaSection from "./components/home/mayorista/mayorista";
-import ProductSection from "./components/home/products/products";
-import VisitUs from "./components/home/visit-us/visit-us";
-import Us from "./components/home/who-are/us";
+import { 
+  BannerHome as BannerSection, 
+  MayoristaSection, 
+  Products as ProductSection, 
+  VisitUs, 
+  Us 
+} from "./components";
 import { getProducts } from "./services/products";
 
 

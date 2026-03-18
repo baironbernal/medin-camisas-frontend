@@ -5,10 +5,10 @@ import { useActionState, useEffect, Suspense } from 'react';
 import { useQueryState } from 'nuqs';
 import { useRouter } from 'next/navigation';
 import { signup } from '@/app/services/auth';
-import { useAuth } from '@/app/context/AuthContext';
+import { useAuth } from '@/app/useContext/AuthContext';
 import { FormState } from '@/app/lib/definitions';
 import { Loader2, User, Mail, Phone, MapPin, Lock } from 'lucide-react';
-import { Input } from '@/app/components/ui/input';
+import { Input } from '@/app/components/ui';
 
 export default function SignupPage() {
   return (

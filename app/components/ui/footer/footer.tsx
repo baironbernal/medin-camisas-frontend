@@ -1,5 +1,5 @@
 import Image from "next/image"
-import { SocialNetworks } from "./social-networks"
+import { SocialNetworks } from "./SocialNetworks";
 
 const Footer = ({ styles }: { styles?: string }) => {
   return (
