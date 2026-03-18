@@ -8,7 +8,7 @@ import { signup } from '@/app/services/auth';
 import { useAuth } from '@/app/useContext/AuthContext';
 import { FormState } from '@/app/lib/definitions';
 import { Loader2, User, Mail, Phone, MapPin, Lock } from 'lucide-react';
-import { Input } from '@/app/components/ui';
+import { Input } from '@/app/components';
 
 export default function SignupPage() {
   return (

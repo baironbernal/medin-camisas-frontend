@@ -1,5 +1,5 @@
 import { CircleCheck, MessageCircle } from 'lucide-react';
-import { Tag } from "../../ui";
+import { Tag } from "@/app/components";
 import Image from 'next/image';
 
 

@@ -2,7 +2,7 @@
 
 import { Loader2, ArrowRight } from 'lucide-react';
 import { formatCOP } from '@/app/lib/formatPrice';
-import { Input } from '@/app/components/ui';
+import { Input } from '@/app/components';
 
 import { FormState } from '@/app/hooks/useCartSidebar';
 import { Variant } from '@/types/variant';
@@ -18,7 +18,7 @@ interface CheckoutFormStepProps {
   total: number;
 }
 
-export function CheckoutFormStep({
+export default function CheckoutFormStep({
   error,
   loading,
   formState,

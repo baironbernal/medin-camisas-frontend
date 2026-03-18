@@ -1,4 +1,4 @@
-export const Banner = ({ name, image }: { name: string; image: string }) => {
+export default function Banner({ name, image }: { name: string; image: string }) {
   return (
     <section className="hidden  h-[20vh] lg:h-[30vh] w-full lg:block" style={{backgroundImage: "url('/home/background.jpg')", 
     backgroundSize: "cover", 

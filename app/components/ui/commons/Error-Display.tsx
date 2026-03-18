@@ -8,7 +8,7 @@ interface ErrorDisplayProps {
   reset?: () => void;
 }
 
-export function ErrorDisplay({ error, reset }: ErrorDisplayProps) {
+export default function ErrorDisplay({ error, reset }: ErrorDisplayProps) {
   const [isRetrying, setIsRetrying] = useState(false);
 
   const handleRetry = async () => {

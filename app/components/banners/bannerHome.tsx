@@ -1,5 +1,5 @@
 
-import { ButtonDefault, Tag } from "../ui";
+import { ButtonDefault, Tag } from "@/app/components";
 import { MessageCircle, Truck, Tag as TagIcon} from 'lucide-react';
 
 

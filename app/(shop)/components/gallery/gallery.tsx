@@ -7,7 +7,7 @@ interface GalleryDetailProps {
   images: string[];
 }
 
-export const GalleryDetail = ({images}: GalleryDetailProps) => {
+export default function GalleryDetail({images}: GalleryDetailProps) {
 
     const [thumbsSwiper, setThumbsSwiper] = useState(images?.[0] || "");
 

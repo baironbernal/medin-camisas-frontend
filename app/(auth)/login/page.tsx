@@ -9,7 +9,7 @@ import { login } from '@/app/services/auth';
 import { useAuth } from '@/app/useContext/AuthContext';
 import { Loader2, Mail, Lock } from 'lucide-react';
 import { LoginFormSchema } from '@/app/lib/definitions';
-import { Input } from '@/app/components/ui';
+import { Input } from '@/app/components';
 
 
 export const dynamic = 'force-dynamic'

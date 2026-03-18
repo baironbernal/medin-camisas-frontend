@@ -1,10 +1,10 @@
 'use client'
 
-import { Checkbox } from "@/app/components/ui";
+import { Checkbox } from "@/app/components";
 import { useQueryState } from "nuqs"
 
 
-export const FilterType = ({types}: {types: string[]}) => {
+export default function FilterType({types}: {types: string[]}) {
   const [selectedType, setSelectedType] = useQueryState('type', { shallow: false })
   return (
     <div className="flex flex-col w-full gap-3">

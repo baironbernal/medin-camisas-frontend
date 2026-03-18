@@ -6,7 +6,7 @@ import {
   Music,
 } from "lucide-react";
 
-export const SocialNetworks = () => {
+export default function SocialNetworks() {
   return (
     <div className="flex items-center gap-4">
 

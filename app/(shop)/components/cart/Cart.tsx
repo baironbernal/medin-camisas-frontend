@@ -2,9 +2,9 @@
 
 import { X } from 'lucide-react';
 import { useCartSidebar } from '@/app/hooks/useCartSidebar';
-import { CartStep } from './steps/CartStep';
-import { CheckoutFormStep } from './steps/CheckoutFormStep';
-import { SuccessStep } from './steps/SuccessStep';
+import CartStep from './steps/CartStep';
+import CheckoutFormStep from './steps/CheckoutFormStep';
+import SuccessStep from './steps/SuccessStep';
 
 interface CartSidebarProps {
   onClose: () => void;

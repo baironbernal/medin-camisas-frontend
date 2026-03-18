@@ -4,7 +4,7 @@ import { getSession } from './app/lib/session';
 const protectedRoutes = ['/perfil'];
 const authRoutes = ['/login', '/signup'];
 
-export async function middleware(request: NextRequest) {
+export async function proxy(request: NextRequest) {
   const { pathname } = request.nextUrl;
   
   const { isAuthenticated } = await getSession();

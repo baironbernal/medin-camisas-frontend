@@ -3,7 +3,7 @@
 import { useQueryState } from "nuqs"
 import { Value } from "@/types/filters"
 
-export const FilterColor = ({colors}: {colors: Value[]}) => {
+export default function FilterColor({colors}: {colors: Value[]}) {
   const [selectedColor, setSelectedColor] = useQueryState('color', { shallow: false })
   
   return (

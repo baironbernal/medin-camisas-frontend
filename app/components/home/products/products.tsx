@@ -1,7 +1,7 @@
 'use client';
 
 import { Product } from '@/types/product';
-import { SwiperCarousel } from "../../ui";
+import { SwiperCarousel } from "@/app/components";
 import ProductItem from "./ProductItem";
 
 interface Props {

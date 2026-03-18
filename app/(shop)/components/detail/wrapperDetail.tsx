@@ -1,8 +1,8 @@
 'use client'
 
 import { ProductDetail } from '@/types/product-detail'
-import { GalleryDetail } from '../gallery/gallery';
-import { BtnAddToCart } from '../cart/BtnAddToCart';
+import GalleryDetail from '../gallery/gallery';
+import BtnAddToCart from '../cart/BtnAddToCart';
 import { useProductDetail } from '@/app/hooks/useProductDetail'
 import { formatCOP } from '@/app/lib/formatPrice'
 import { Truck, Percent, Package, AlertCircle } from 'lucide-react'

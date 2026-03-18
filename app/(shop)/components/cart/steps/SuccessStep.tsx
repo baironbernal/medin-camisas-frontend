@@ -9,7 +9,7 @@ interface SuccessStepProps {
   onClose: () => void;
 }
 
-export function SuccessStep({
+export default function SuccessStep({
   orderNumber,
   orderTotal,
   onClose,

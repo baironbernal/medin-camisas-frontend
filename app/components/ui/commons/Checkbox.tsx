@@ -6,7 +6,7 @@ import { Checkbox as CheckboxPrimitive } from "radix-ui"
 
 import { cn } from "@/app/lib/utils"
 
-function Checkbox({
+export default function Checkbox({
   className,
   ...props
 }: React.ComponentProps<typeof CheckboxPrimitive.Root>) {

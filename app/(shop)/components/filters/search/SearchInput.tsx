@@ -3,7 +3,7 @@
 import { useQueryState } from 'nuqs'
 import { Search, X } from 'lucide-react'
 
-export function SearchInput() {
+export default function SearchInput() {
 
   const [name, setName] = useQueryState('name', { shallow: false })
   

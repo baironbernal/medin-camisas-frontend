@@ -3,7 +3,7 @@
 import { useQueryState } from "nuqs"
 
 
-export const FilterSize = ({sizes}: {sizes: string[]}) => {
+export default function FilterSize({sizes}: {sizes: string[]}) {
     const [selectedSize, setSelectedSize] = useQueryState('size', { shallow: false })
     
   return (

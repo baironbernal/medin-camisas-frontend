@@ -14,7 +14,7 @@ interface CartStepProps {
   handleProceed: () => void;
 }
 
-export function CartStep({
+export default function CartStep({
   cart,
   total,
   originalTotal,

@@ -1,5 +1,13 @@
-export * from './Banner';
-export * from './cart';
+export { default as Banner } from './Banner';
+export { default as CartSidebar } from './cart/CartWithDiscount';
+export { default as CartItem } from './cart/CartItem';
+export { default as BtnAddToCart } from './cart/BtnAddToCart';
 export { default as WrapperDetail } from './detail/ProductDetailWithDiscount';
-export * from './filters';
-export * from './gallery';
+export { default as FiltersSidebar } from './filters/FiltersSidebar';
+export { default as Sort } from './filters/Sort';
+export { default as FilterType } from './filters/clothing-type/FilterType';
+export { default as FilterColor } from './filters/color/FilterColor';
+export { default as FilterSize } from './filters/size/FilterSize';
+export { default as MinAndMax } from './filters/price/MinAndMax';
+export { default as SearchInput } from './filters/search/SearchInput';
+export { default as GalleryDetail } from './gallery/gallery';

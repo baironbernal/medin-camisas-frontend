@@ -35,14 +35,14 @@ const toast = (text: string, type: 'success' | 'error') => {
   }).showToast()
 }
 
-export const BtnAddToCart = ({
+export default function BtnAddToCart({
   variant,
   productName,
   productImages,
   combinationName,
   quantitySelected,
   remainingStock,
-}: Props) => {
+}: Props) {
   const addToCart = useCartStore(state => state.addToCart)
   const { open: openCart } = useAnimatedOpen()
 

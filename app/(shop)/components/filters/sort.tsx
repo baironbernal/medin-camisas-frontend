@@ -5,7 +5,7 @@ import { useFiltersUI, SORT_OPTIONS } from '../../useContext/FiltersContext';
 import { useRouter, useSearchParams } from 'next/navigation';
 import { useCallback, useEffect, useRef, useState } from 'react';
 
-export const Sort = () => {
+export default function Sort() {
   const { setOpen, sortBy, setSortBy } = useFiltersUI();
   const router = useRouter();
   const searchParams = useSearchParams();
