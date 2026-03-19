@@ -121,7 +121,7 @@ export default function Navbar({
                 </span>
               )}
             </button>
-            <NavLink href={isLoggedIn ? "/perfil" : "/login"}>
+            <NavLink href={isLoggedIn ? "/profile" : "/login"}>
                 {isLoggedIn ? (
                   <CircleUserRound size={30} color="beige" strokeWidth={1} />
                 ) : (

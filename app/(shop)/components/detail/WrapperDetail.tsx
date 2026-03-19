@@ -171,6 +171,7 @@ export const WrapperDetail = ({ data }: ProductDetailProps) => {
                 <BtnAddToCart 
                   quantitySelected={quantitySelected}
                   remainingStock={remainingStock}
+                  totalStock={quantityAvailable}
                   variant={selectedVariant!} 
                   productName={data.name}
                   productImages={currentImages ?? []}

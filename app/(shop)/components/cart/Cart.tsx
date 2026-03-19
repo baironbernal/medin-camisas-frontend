@@ -22,9 +22,9 @@ export default function CartSidebar({ onClose, isClosing }: CartSidebarProps) {
     loading,
     error,
     orderNumber,
-    orderTotal,
-    total,
-    originalTotal,
+    orderData,
+    subtotalDiscounted,
+    subtotalOriginal,
     handleProceed,
     handleCheckout,
     getDiscountForQuantity
@@ -84,8 +84,8 @@ export default function CartSidebar({ onClose, isClosing }: CartSidebarProps) {
         {step === 'cart' && (
           <CartStep 
             cart={cart}
-            total={total}
-            originalTotal={originalTotal}
+            total={subtotalDiscounted}
+            originalTotal={subtotalOriginal}
             isLoggedIn={isLoggedIn}
             handleProceed={handleProceed}
           />
@@ -100,14 +100,14 @@ export default function CartSidebar({ onClose, isClosing }: CartSidebarProps) {
             handleCheckout={handleCheckout}
             cart={cart}
             getDiscountForQuantity={getDiscountForQuantity}
-            total={total}
+            total={subtotalDiscounted}
           />
         )}
 
-        {step === 'success' && (
+        {step === 'success' && orderData && (
           <SuccessStep 
             orderNumber={orderNumber}
-            orderTotal={orderTotal}
+            orderData={orderData}
             onClose={onClose}
           />
         )}

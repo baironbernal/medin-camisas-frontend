@@ -12,6 +12,7 @@ interface Props {
   combinationName?: string
   quantitySelected: number
   remainingStock: number
+  totalStock: number
 }
 
 const toast = (text: string, type: 'success' | 'error') => {
@@ -42,6 +43,7 @@ export default function BtnAddToCart({
   combinationName,
   quantitySelected,
   remainingStock,
+  totalStock,
 }: Props) {
   const addToCart = useCartStore(state => state.addToCart)
   const { open: openCart } = useAnimatedOpen()
@@ -66,6 +68,7 @@ export default function BtnAddToCart({
       product_images: productImages,
       combination_name: combinationName,
       quantity: quantitySelected,
+      stock: totalStock,
     })
 
     toast(

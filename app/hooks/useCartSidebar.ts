@@ -45,9 +45,25 @@ export function useCartSidebar(onClose: () => void) {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [orderNumber, setOrderNumber] = useState('');
-  const [orderTotal, setOrderTotal] = useState('');
+  const [orderData, setOrderData] = useState<{
+    total: string;
+    subtotal_original: string;
+    subtotal_discounted: string;
+    total_discount: string;
+    items: {
+      product_name: string;
+      variant_sku: string;
+      quantity: number;
+      discount_rule_id: number | null;
+      discount_percentage: number;
+      unit_price: string;
+      discounted_unit_price: string;
+      total_price: string;
+      discounted_total_price: string;
+    }[];
+  } | null>(null);
 
-  const total = cart.reduce((acc, p) => {
+  const subtotalDiscounted = cart.reduce((acc, p) => {
     const basePrice = Number(p.price);
     const quantity = p.quantity as number;
     const discountInfo = getDiscountForQuantity(quantity, basePrice);
@@ -57,10 +73,12 @@ export function useCartSidebar(onClose: () => void) {
     return acc + finalPrice * quantity;
   }, 0);
 
-  const originalTotal = cart.reduce(
+  const subtotalOriginal = cart.reduce(
     (acc, p) => acc + Number(p.price) * (p.quantity as number),
     0
   );
+
+  const totalDiscount = subtotalOriginal - subtotalDiscounted;
 
   const setField = (field: keyof FormState) => (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -89,21 +107,49 @@ export function useCartSidebar(onClose: () => void) {
     setLoading(true);
     try {
       const sessionId = getSessionId();
+      
+      const checkoutItems = cart.map(item => {
+        const unitPrice = Number(item.price);
+        const quantity = item.quantity as number;
+        const totalPrice = unitPrice * quantity;
+        const discountInfo = getDiscountForQuantity(quantity, unitPrice);
+        const hasDiscount = discountInfo && discountInfo.discount > 0;
+        const discountedUnitPrice = hasDiscount ? discountInfo.discountedPrice : unitPrice;
+        const discountedTotalPrice = discountedUnitPrice * quantity;
+
+        return {
+          product_variant_id: item.id,
+          quantity,
+          discount_rule_id: discountInfo?.rule?.id ?? null,
+          discount_percentage: discountInfo?.discount ?? 0,
+          unit_price: unitPrice,
+          discounted_unit_price: discountedUnitPrice,
+          total_price: totalPrice,
+          discounted_total_price: discountedTotalPrice,
+        };
+      });
+
       const res = await checkout(
         {
           customer_name: formState.customer_name,
           customer_email: formState.customer_email,
           customer_phone: formState.customer_phone || undefined,
           notes: formState.notes || undefined,
-          items: cart.map(item => ({
-            product_variant_id: item.id,
-            quantity: item.quantity as number,
-          })),
+          subtotal_original: subtotalOriginal,
+          subtotal_discounted: subtotalDiscounted,
+          items: checkoutItems,
         },
         sessionId
       );
+      
       setOrderNumber(res.data.order.order_number);
-      setOrderTotal(res.data.order.total);
+      setOrderData({
+        total: res.data.order.total,
+        subtotal_original: res.data.order.subtotal_original,
+        subtotal_discounted: res.data.order.subtotal_discounted,
+        total_discount: res.data.order.total_discount,
+        items: res.data.items,
+      });
       clearCart();
       setStep('success');
     } catch (err: unknown) {
@@ -127,9 +173,10 @@ export function useCartSidebar(onClose: () => void) {
     loading,
     error,
     orderNumber,
-    orderTotal,
-    total,
-    originalTotal,
+    orderData,
+    subtotalDiscounted,
+    subtotalOriginal,
+    totalDiscount,
     handleProceed,
     handleCheckout,
     getDiscountForQuantity
