@@ -14,6 +14,7 @@ interface Actions {
   addToCart: (product: Variant) => void;
   removeFromCart: (productId: number) => void;
   updateQuantity: (productId: number, delta: number) => void;
+  setQuantity: (productId: number, quantity: number) => void;
   clearCart: () => void;
 }
 
@@ -83,6 +84,22 @@ export const useCartStore = create<State & Actions>()(
             return item;
           })
           .filter(item => (item.quantity ?? 0) > 0);
+
+        set({
+          cart: updatedCart,
+          ...calculateTotals(updatedCart),
+        });
+      },
+
+      setQuantity: (productId, quantity) => {
+        const updatedCart = get().cart.map(item => {
+          if (item.id === productId) {
+            // Ensure between 1 and stock limit
+            const newQty = Math.max(1, Math.min(quantity, item.stock ?? Infinity));
+            return { ...item, quantity: newQty };
+          }
+          return item;
+        });
 
         set({
           cart: updatedCart,

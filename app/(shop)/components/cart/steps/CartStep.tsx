@@ -31,11 +31,16 @@ export default function CartStep({
             <p className="text-sm text-secondary">Agrega productos para comenzar</p>
           </div>
         ) : (
-          <ul className="space-y-4">
-            {cart.map((product) => (
-              <CartItem key={product.id} product={product} />
-            ))}
-          </ul>
+          <div className="flex flex-col gap-4">
+            <div className="bg-green-50 border  text-green-800 px-4 py-2 rounded-lg text-xs text-center shadow-sm">
+              Despues de <b>6</b> unidades precio emprendedor (LLEVA MÁS DE 11 PARA PRECIO MAYORISTA)
+            </div>
+            <ul className="space-y-4">
+              {cart.map((product) => (
+                <CartItem key={product.id} product={product} />
+              ))}
+            </ul>
+          </div>
         )}
       </div>
 

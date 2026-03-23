@@ -1,39 +1,23 @@
 'use client'
 
+import { useState, useEffect } from 'react';
+
 import { useCartStore } from "@/app/hooks/useCartStore"
 import { Variant } from "@/types/variant";
 import { Trash, Plus, Minus } from 'lucide-react';
 import { getImageUrl } from "@/app/lib/image";
 import { formatCOP } from "@/app/lib/formatPrice";
 import { useDiscountRules } from "@/app/useContext/DiscountRuleContext";
-import Toastify from 'toastify-js';
-import 'toastify-js/src/toastify.css';
-
-const toast = (text: string, type: 'success' | 'error') => {
-  Toastify({
-    text,
-    duration: 3000,
-    close: true,
-    gravity: 'top',
-    position: 'right',
-    stopOnFocus: true,
-    style: {
-      background: type === 'success'
-        ? 'linear-gradient(135deg, #2d2d5e, #4b4b9e)'
-        : 'linear-gradient(135deg, #c0392b, #e74c3c)',
-      borderRadius: '12px',
-      padding: '12px 20px',
-      fontFamily: 'inherit',
-      fontSize: '14px',
-      boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
-    },
-  }).showToast();
-};
+import { toast } from '@/app/lib/toast';
 
 
 export default function CartItem({ product }: { product: Variant }) {
+
+  
+
   const removeFromCart = useCartStore(state => state.removeFromCart)
   const updateQuantity = useCartStore(state => state.updateQuantity)
+  const setQuantity = useCartStore(state => state.setQuantity)
 
   const { getDiscountForQuantity } = useDiscountRules();
 
@@ -48,6 +32,48 @@ export default function CartItem({ product }: { product: Variant }) {
   const finalTotalPrice = finalUnitPrice * quantity;
 
   const productStock = product.stock ?? Infinity;
+
+  const [inputValue, setInputValue] = useState(quantity.toString());
+
+  useEffect(() => {
+    setInputValue(quantity.toString());
+  }, [quantity]);
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+  const rawValue = e.target.value;
+
+  // 1. Permitir solo números o vacío
+  if (!/^\d*$/.test(rawValue)) return;
+
+  setInputValue(rawValue);
+
+  // 2. Si está vacío, no hacer nada más
+  if (rawValue === '') return;
+
+  const parsedValue = parseInt(rawValue, 10);
+
+  // 3. Validar mínimo
+  if (parsedValue <= 0) return;
+
+  // 4. Validar stock máximo
+  if (parsedValue > productStock) {
+    toast(`Solo hay ${productStock} unidades en stock.`, 'error');
+
+    const maxStockString = productStock.toString();
+    setInputValue(maxStockString);
+    setQuantity(product.id, productStock);
+    return;
+  }
+
+  // 5. Caso válido
+  setQuantity(product.id, parsedValue);
+};
+
+  const handleBlur = () => {
+    if (inputValue === '' || parseInt(inputValue, 10) === 0) {
+      setInputValue(quantity.toString());
+    }
+  }
 
   const handleIncrease = () => {
     if (quantity >= productStock) {
@@ -100,14 +126,14 @@ export default function CartItem({ product }: { product: Variant }) {
 
         {/* Quantity Controls */}
         <div className="flex items-center justify-between items-end">
-          <div className="flex items-center gap-1">
+          <div className="flex items-center justify-between gap-1">
             <button
               className="w-7 h-7 flex items-center justify-center border border-gray-200 rounded hover:bg-gray-50 transition-colors"
               onClick={() => updateQuantity(product.id, -1)}
             >
               <Minus size={14} className="text-gray-600" />
             </button>
-            <span className="text-sm font-medium w-8 text-center text-primary">{quantity}</span>
+            <input type="text" value={inputValue} onChange={handleInputChange} onBlur={handleBlur} className="w-10 py-1 text-center text-sm text-primary border border-transparent focus:border-gray-200 rounded outline-none transition-colors"  pattern="[0-9]*" />
             <button
               className={`w-7 h-7 flex items-center justify-center border border-gray-200 rounded transition-colors ${
                 quantity >= productStock

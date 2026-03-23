@@ -2,8 +2,7 @@
 import { useCartStore } from '@/app/hooks/useCartStore'
 import { Variant } from '@/types/variant'
 import { useAnimatedOpen } from '@/app/hooks/useAnimatedOpen'
-import Toastify from 'toastify-js'
-import 'toastify-js/src/toastify.css'
+import { toast } from '@/app/lib/toast'
 
 interface Props {
   variant: Variant
@@ -15,26 +14,7 @@ interface Props {
   totalStock: number
 }
 
-const toast = (text: string, type: 'success' | 'error') => {
-  Toastify({
-    text,
-    duration: 3000,
-    close: true,
-    gravity: 'top',
-    position: 'right',
-    stopOnFocus: true,
-    style: {
-      background: type === 'success'
-        ? 'linear-gradient(135deg, #2d2d5e, #4b4b9e)'
-        : 'linear-gradient(135deg, #c0392b, #e74c3c)',
-      borderRadius: '12px',
-      padding: '12px 20px',
-      fontFamily: 'inherit',
-      fontSize: '14px',
-      boxShadow: '0 4px 20px rgba(0,0,0,0.2)',
-    },
-  }).showToast()
-}
+
 
 export default function BtnAddToCart({
   variant,
