@@ -1,6 +1,5 @@
-
 export const dynamic = "force-dynamic";
-import { ProductItem } from "@/app/components";
+import { ProductGrid } from "@/app/components";
 import { getProducts } from "@/app/services/products";
 import { ApiError } from "@/app/services/fetcher";
 
@@ -64,27 +63,11 @@ export default async function Page({
     throw error;
   }
 
-  return (
-    <main className="w-full mx-auto">
-      {/* Title based on filters */}
-      <h1 className="text-3xl font-heading mb-6 capitalize">
-        {category ? `Colección: ${category}` :
-         subcategory ? `Subcategoría: ${subcategory}` :
-         "Todos los productos"}
-      </h1>
+  const title = category ? `Colección: ${category}` :
+   subcategory ? `Subcategoría: ${subcategory}` :
+   "Todos los productos";
 
-      {/* Products list */}
-      {productsResponse.data.length > 0 ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 2xl:gap-14 justify-center md:justify-start">
-          {productsResponse.data.map((product) => (
-            <ProductItem key={product.id} product={product} />
-          ))}
-        </div>
-      ) : (
-        <div className="text-center py-10">
-          <p className="text-lg text-muted">No se encontraron productos con estos filtros.</p>
-        </div>
-      )}
-    </main>
+  return (
+    <ProductGrid products={productsResponse.data} title={title} />
   );
 }

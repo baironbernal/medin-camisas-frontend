@@ -63,8 +63,8 @@ export default async function RootLayout({
 
           
           <WhatsAppFloat 
-            phoneNumber="+573115327297" 
-            message="¡Hola! Me interesa obtener más información sobre sus servicios. ¿Podrían ayudarme?" 
+            phoneNumber="+573024197103" 
+            message="¡Hola! Me interesa comprar al por mayor" 
           />
         </AuthProvider>
       </body>

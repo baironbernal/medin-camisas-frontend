@@ -22,8 +22,8 @@ const BannerSection = () => {
             con la mejor calidad.</p>
 
             <div className="flex gap-5 mt-8">
-              <ButtonDefault title="Ver Catalogo" url="Update"/>
-              <ButtonDefault title="Soy Mayorista" url="Update"/>
+              <ButtonDefault title="Ver Catalogo" url="/coleccion"/>
+              <ButtonDefault title="Soy Mayorista" url="/login"/>
             </div>
 
             <div className="flex flex-col lg:flex-row lg:items-center lg:justify-center gap-3 lg:gap-2 mt-8">

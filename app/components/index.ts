@@ -1,3 +1,4 @@
+export { default as FadeIn } from './ui/commons/FadeIn';
 export { default as Footer } from './ui/footer/Footer';
 export { default as SocialNetworks } from './ui/footer/SocialNetworks';
 export { default as Navbar } from './ui/menu/Navbar';
@@ -16,6 +17,7 @@ export { default as Tag } from './ui/commons/Tag';
 export { default as WhatsappButton } from './ui/commons/WhatsappButton';
 export { default as BannerHome } from './banners/BannerHome';
 export { default as CategoryItem } from './home/categories/CategoryItem';
+export { default as ProductGrid } from './home/products/ProductGrid';
 export { default as ProductItem } from './home/products/ProductItem';
 export { default as Products } from './home/products/Products';
 export { default as VisitUs } from './home/visit-us/VisitUs';

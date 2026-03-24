@@ -22,19 +22,27 @@ export interface FiltersSidebarProps {
 export default function FiltersSidebar({ availableFilters }: FiltersSidebarProps) {
   const { open, setOpen } = useFiltersUI();
 
+   const animClass = !open
+    ? 'animate__animated animate__slideOutLeft animate__faster'
+    : 'animate__animated animate__slideInLeft animate__faster';
+
+  const backdropClass = !open
+    ? 'animate__animated animate__fadeOut animate__faster'
+    : 'animate__animated animate__fadeIn animate__faster';
+
   return (
     <>
       {/* Backdrop Overlay */}
       {open && (
         <div 
-          className="fixed inset-0 bg-black/30 z-10 transition-opacity"
+          className={`fixed inset-0 bg-black/30 z-10 transition-opacity ${backdropClass}`}
           onClick={() => setOpen(false)}
         />
       )}
 
       {/* Filters Sidebar */}
       {open && (
-        <section className="mx-auto w-full bg-accent-light max-w-sm fixed left-0 h-screen z-20 top-0 overflow-y-auto shadow-2xl">
+        <section className={`mx-auto w-full bg-accent-light max-w-sm fixed left-0 h-screen z-20 top-0 overflow-y-auto shadow-2xl ${animClass}`}>
           {/* Header */}
           <div className="sticky top-0 bg-accent-light border-b border-gray-200 px-6 py-4 flex justify-between items-center">
             <h2 className="font-utendo font-bold text-xl">Filtros</h2>
