@@ -15,7 +15,7 @@ const nextConfig: NextConfig = {
       {
         protocol: 'https',
         hostname: 'deepskyblue-gorilla-748938.hostingersite.com',
-        pathname: 'storage/**',
+        pathname: '/storage/**',
       },
     ],
   },
