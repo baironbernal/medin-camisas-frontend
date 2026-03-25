@@ -15,15 +15,14 @@ function ProductItem({ product }: ProductItemProps) {
     : product.base_price;
 
   return (
-    <div className="group flex flex-col cursor-pointer transition-transform duration-300 hover:-translate-y-1">
+    <div className="group flex flex-col cursor-pointer transition-transform duration-300 hover:-translate-y-1 gap-20">
       <Link href={`/producto/${product.slug}`} className="block">
-        <div className="relative aspect-square overflow-hidden rounded-lg shadow-xl">
+        <div className="relative w-full h-[25rem] overflow-hidden rounded-lg shadow-xl">
           <Image
             unoptimized
             src={getImageUrl(product.images?.[0])}
             alt={`Imagen de ${product.name}`}
             fill // Usar fill + aspect-square es más flexible en Next.js
-            sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
             className="object-cover transition-transform duration-500 group-hover:scale-105"
           />
         </div>
