@@ -8,6 +8,7 @@ import { Suspense } from "react";
 interface SearchParams {
   category?: string | string[];
   subcategory?: string | string[];
+  subsubcategory?: string | string[];
   name?: string | string[];
   color?: string | string[];
   size?: string | string[];
@@ -30,6 +31,7 @@ export default async function Page({
 
   const category  = pick(resolvedSearchParams.category);
   const subcategory = pick(resolvedSearchParams.subcategory);
+  const subsubcategory = pick(resolvedSearchParams.subsubcategory);
   const name      = pick(resolvedSearchParams.name);
   const color     = pick(resolvedSearchParams.color);
   const size      = pick(resolvedSearchParams.size);
@@ -43,6 +45,7 @@ export default async function Page({
     productsResponse = await getProducts({
       category,
       subcategory,
+      subsubcategory,
       name,
       color,
       size,

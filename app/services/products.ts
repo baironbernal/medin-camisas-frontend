@@ -4,6 +4,7 @@ import { apiFetch } from "./fetcher";
 export interface GetProductsParams {
   category?: string;
   subcategory?: string;
+  subsubcategory?: string;
   name?: string;
   color?: string;
   size?: string;
