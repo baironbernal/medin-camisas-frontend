@@ -13,18 +13,9 @@ export default async function CategoryListLayout({ children }: { children: React
       <Suspense fallback={null}>
         <FiltersSidebar availableFilters={filters}/>
       </Suspense>
-        {/* Banner */}
-      <Banner name="Ver todo" image="/shop/background.png" /> 
+        
       <div className=" bg-beige">
-          {/* Products */}
-          <main className="container mx-auto px-4">
-            {/* Sort to show the filters */}
-            <Suspense fallback={<div className="h-14" />}>
-              <Sort/>
-            </Suspense>
-            
-            {children}
-          </main>         
+        {children}
       </div>
     </FiltersUIProvider>
   );

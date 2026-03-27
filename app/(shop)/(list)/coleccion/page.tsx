@@ -2,6 +2,8 @@ export const dynamic = "force-dynamic";
 import { ProductGrid } from "@/app/components";
 import { getProducts } from "@/app/services/products";
 import { ApiError } from "@/app/services/fetcher";
+import { Banner, Sort } from "../../components";
+import { Suspense } from "react";
 
 interface SearchParams {
   category?: string | string[];
@@ -63,11 +65,23 @@ export default async function Page({
     throw error;
   }
 
-  const title = category ? `Colección: ${category}` :
-   subcategory ? `Subcategoría: ${subcategory}` :
+  const title = category ? `${category}` :
+   subcategory ? `${subcategory}` :
    "Todos los productos";
 
   return (
-    <ProductGrid products={productsResponse.data} title={title} />
+    <>
+      {/* Banner */}
+      <Banner name={title} image="/shop/background.png" /> 
+      <section className="container mx-auto px-4">
+        {/* Products */}
+            {/* Sort to show the filters */}
+            <Suspense fallback={<div className="h-14" />}>
+              <Sort/>
+            </Suspense>
+            
+            <ProductGrid products={productsResponse.data} title={title} />
+      </section>
+    </>
   );
 }

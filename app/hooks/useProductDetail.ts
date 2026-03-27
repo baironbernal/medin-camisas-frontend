@@ -3,7 +3,7 @@
 import { useMemo, useState, useEffect } from 'react'
 import { ProductDetail } from '@/types/product-detail'
 import { formatCOP } from '../lib/formatPrice'
-import { useCartStore } from './useCartStore'
+import { useCartStore } from '../store/useCartStore'
 
 export function useProductDetail(data: ProductDetail) {
   const [selectedColor, setSelectedColor] = useState<string | null>(null)

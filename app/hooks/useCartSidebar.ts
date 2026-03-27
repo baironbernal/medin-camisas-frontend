@@ -2,7 +2,7 @@
 
 import { useState } from 'react';
 import { useRouter } from 'next/navigation';
-import { useCartStore } from '@/app/hooks/useCartStore';
+import { useCartStore } from '../store/useCartStore';
 import { useAuth } from '@/app/useContext/AuthContext';
 import { checkout } from '@/app/services/checkout';
 import { useDiscountRules } from '@/app/useContext/DiscountRuleContext';

@@ -4,7 +4,7 @@ import Link from "next/link"
 export default function Logo({logoSrc}: {logoSrc: string}) {
   return (
     <>
-      <Link href="/" className="flex items-center">
+      <Link href="/" className="flex items-center h-[6rem]">
             <Image
               src={logoSrc}
               alt={"Logo Medin Camisas"}

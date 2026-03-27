@@ -47,6 +47,7 @@ export default async function RootLayout({
   children: React.ReactNode;
 }>) {
   const categories = await getCategories();
+
   return (
     <html lang="en" className={`${utendo.variable} ${okine.variable}`}>
       <body className="antialiased">

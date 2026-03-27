@@ -8,6 +8,11 @@ interface State {
   cart: Variant[];
   totalItems: number;
   totalPrice: number;
+  isOpen: boolean;
+  isClosing: boolean;
+  openCart: () => void,
+  closeCart: () => void,
+  toggleCart: () => void,
 }
 
 interface Actions {
@@ -16,6 +21,9 @@ interface Actions {
   updateQuantity: (productId: number, delta: number) => void;
   setQuantity: (productId: number, quantity: number) => void;
   clearCart: () => void;
+  openCart: () => void,
+  closeCart: () => void,
+  toggleCart: () => void,
 }
 
 const calculateTotals = (cart: Variant[]) => ({
@@ -32,6 +40,16 @@ export const useCartStore = create<State & Actions>()(
       cart: [],
       totalItems: 0,
       totalPrice: 0,
+      isOpen: false,
+      isClosing: false,
+      openCart: () => set({ isOpen: true, isClosing: false }),
+      closeCart: () => {
+        set({ isClosing: true });
+        setTimeout(() => {
+          set({ isOpen: false, isClosing: false });
+        }, 300);
+      },
+      toggleCart: () => set({ isOpen: !get().isOpen }),
 
       addToCart: (product) => {
         const cart = get().cart;

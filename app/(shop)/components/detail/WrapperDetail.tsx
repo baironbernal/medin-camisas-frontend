@@ -9,6 +9,7 @@ import { Truck, Percent, Package, AlertCircle } from 'lucide-react'
 import { useDiscount } from '@/app/hooks/useDiscount';
 import { useDiscountRules } from '@/app/useContext/DiscountRuleContext';
 import { FadeIn } from '@/app/components';
+import { useCartStore } from '@/app/store/useCartStore';
 
 interface ProductDetailProps {
   data: ProductDetail;
@@ -34,6 +35,8 @@ export const WrapperDetail = ({ data }: ProductDetailProps) => {
     quantitySelected,
     setQuantitySelected
   } = useProductDetail(data)
+
+   const openCart = useCartStore(state => state.openCart)
 
   const { rules } = useDiscountRules();
   const { getDiscountForQuantity } = useDiscount(rules);
@@ -84,7 +87,7 @@ export const WrapperDetail = ({ data }: ProductDetailProps) => {
                       <button
                         key={color.name}
                         onClick={() => selectColor(color.name)}
-                        className={`w-10 h-10 rounded-full transition-all duration-200
+                        className={`w-10 h-10 rounded-full cursor-pointer transition-all duration-200
                           ${selectedColor === color.name
                             ? 'border-primary border-2 scale-110 shadow-md'
                             : 'border-1 border-gray-200 hover:border-gray-400'
@@ -111,7 +114,7 @@ export const WrapperDetail = ({ data }: ProductDetailProps) => {
                           key={size}
                           disabled={!isAvailable}
                           onClick={() => selectSize(size)}
-                          className={`px-4 py-2 border rounded transition
+                          className={`px-4 py-2 border cursor-pointer rounded transition
                             ${selectedSize === size
                               ? 'border-primary bg-primary text-white'
                               : 'border-gray-300'
@@ -190,7 +193,7 @@ export const WrapperDetail = ({ data }: ProductDetailProps) => {
                       productImages={currentImages ?? []}
                       combinationName={exactKey}
                     />
-                    <button className="w-full bg-black text-white font-medium py-3 rounded-full hover:bg-dark-alt transition-colors duration-200">
+                    <button onClick={openCart} className="w-full bg-black cursor-pointer text-white font-medium py-3 rounded-full hover:bg-dark-alt transition-colors duration-200">
                       Comprar ahora
                     </button>
                   </>

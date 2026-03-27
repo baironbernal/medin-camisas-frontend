@@ -2,7 +2,7 @@
 
 import { useState, useEffect } from 'react';
 
-import { useCartStore } from "@/app/hooks/useCartStore"
+import { useCartStore } from '@/app/store/useCartStore'
 import { Variant } from "@/types/variant";
 import { Trash, Plus, Minus } from 'lucide-react';
 import { getImageUrl } from "@/app/lib/image";

@@ -7,7 +7,7 @@ export default function FilterColor({colors}: {colors: Value[]}) {
   const [selectedColor, setSelectedColor] = useQueryState('color', { shallow: false })
   
   return (
-    <div className="grid grid-cols-3 gap-4 w-full">
+    <div className="flex flex-wrap gap-4 w-full">
       {colors.map((color) => {
         const isSelected = selectedColor === color.value
         

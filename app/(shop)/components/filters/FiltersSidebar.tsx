@@ -75,10 +75,6 @@ export default function FiltersSidebar({ availableFilters }: FiltersSidebarProps
                   </button>
                 </CollapsibleTrigger>
                 <CollapsibleContent className="pt-3">
-                  {/* Filter Type (Categoria) */}
-                  {filter.code === 'TYPE' && (
-                    <FilterType types={filter.values.map((value) => value.value)} />
-                  )}
                   
                   {/* Filter Size (Talla) */}
                   {filter.code === 'SIZE' && (

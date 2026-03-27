@@ -4,7 +4,7 @@ export default function Banner({ name, image }: { name: string; image: string })
     backgroundSize: "cover", 
     backgroundPosition: "center", backgroundRepeat: "no-repeat"}}>
       <div className="w-full h-full flex items-center justify-center">
-        <h1 className="text-white text-5xl">{name}</h1>
+        <h1 className="text-white text-5xl uppercase">{name}</h1>
       </div>
     </section>
   )

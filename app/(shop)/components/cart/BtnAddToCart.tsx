@@ -1,7 +1,6 @@
 'use client'
-import { useCartStore } from '@/app/hooks/useCartStore'
+import { useCartStore } from '@/app/store/useCartStore'
 import { Variant } from '@/types/variant'
-import { useAnimatedOpen } from '@/app/hooks/useAnimatedOpen'
 import { toast } from '@/app/lib/toast'
 
 interface Props {
@@ -26,7 +25,7 @@ export default function BtnAddToCart({
   totalStock,
 }: Props) {
   const addToCart = useCartStore(state => state.addToCart)
-  const { open: openCart } = useAnimatedOpen()
+  const openCart = useCartStore(state => state.openCart)
 
   const handleAdd = () => {
     if (quantitySelected > remainingStock) {
@@ -63,7 +62,7 @@ export default function BtnAddToCart({
     <div>
       <button
         onClick={handleAdd}
-        className="w-full bg-primary text-white font-medium py-3 rounded-full hover:bg-purple transition-colors duration-200"
+        className="w-full cursor-pointer bg-primary text-white font-medium py-3 rounded-full hover:bg-purple transition-colors duration-200"
       >
         Agregar al carrito
       </button>

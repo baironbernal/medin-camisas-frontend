@@ -5,7 +5,7 @@ import { useState, useEffect } from "react";
 import { Menu, ShoppingBag, CircleUserRound } from "lucide-react";
 import { useAnimatedOpen } from "@/app/hooks/useAnimatedOpen";
 import { useQueryState } from "nuqs";
-import { useCartStore } from "@/app/hooks/useCartStore";
+
 import { useAuth } from "@/app/useContext/AuthContext";
 import { LogIn } from "lucide-react";
 import { CartSidebar } from "@/app/(shop)/components";
@@ -13,6 +13,7 @@ import HoverPanel from "./HoverPanel";
 import NavLink from "./NavLinkContent";
 import NavbarMobile from "./NavbarMobile";
 import Logo from "../commons/Logo";
+import { useCartStore } from "@/app/store/useCartStore";
 
 
 interface Props {
@@ -34,12 +35,10 @@ export default function Navbar({
     close: closeMenu 
   } = useAnimatedOpen();
   
-  const { 
-    isOpen: isCartOpen, 
-    isClosing: isCartClosing, 
-    open: openCart, 
-    close: closeCart 
-  } = useAnimatedOpen();
+  const isCartOpen = useCartStore(state => state.isOpen)
+  const isCartClosing = useCartStore(state => state.isClosing)
+  const openCart = useCartStore(state => state.openCart)
+  const closeCart = useCartStore(state => state.closeCart)
   
   const totalItems = useCartStore(state => state.totalItems)
   const [activeCategory, setActiveCategory] = useState<Category | null>(null);
@@ -68,7 +67,7 @@ export default function Navbar({
             <ul className="flex gap-2 relative">
 
               {/* Ver todo */}
-              <li className="relative flex flex-col items-center">
+              <li className="relative flex flex-col items-center text-lg">
                 <NavLink href={'/coleccion'} className="inline-flex justify-center px-3 text-accent">Ver todo</NavLink>
               </li>
 
@@ -98,7 +97,7 @@ export default function Navbar({
                     {/* Main Category */}
                     <NavLink
                       href={href}
-                      className="inline-flex justify-center text-accent px-3 ">
+                      className="inline-flex justify-center text-accent px-3 text-lg ">
                       {category.name}
                     </NavLink>
                   </li>

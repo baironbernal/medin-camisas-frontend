@@ -11,7 +11,7 @@ const BannerSection = () => {
     backgroundPosition: "center", backgroundRepeat: "no-repeat"}}>
       <section className="py-4 px-4 container mx-auto lg:flex items-center justify-between">
         {/* First Column */}
-        <article>
+        <article className="animate__animated animate__fadeInLeft">
             {/* Main Title */}
             <div className="w-full text-6xl lg:text-90 font-bold">
               <h1 className="py-3 px-2 w-fit rounded-md lg:text-primary bg-accent">Camisas</h1>
@@ -21,20 +21,14 @@ const BannerSection = () => {
             <p className="mt-8 text-white text-sm lg:text-20 lg:max-w-xl">Colecciones para hombre con fit moderno y precios competitivos. Compra al detal o surte tu negocio
             con la mejor calidad.</p>
 
-            <div className="flex gap-5 mt-8">
+            <div className="flex flex-col lg:flex-row gap-5 mt-8">
               <ButtonDefault title="Ver Catalogo" url="/coleccion"/>
               <ButtonDefault title="Soy Mayorista" url="/login"/>
-            </div>
-
-            <div className="flex flex-col lg:flex-row lg:items-center lg:justify-center gap-3 lg:gap-2 mt-8">
-              <Tag icon={<MessageCircle size={16} />} title="Atención por whatsapp" />
-              <Tag icon={<TagIcon size={16} />} title="Nuevas Referencias" />
-              <Tag icon={<Truck size={16} />} title="Envios Nacionales" />
             </div>
         </article>
 
         {/* Second Column */}
-        <article className="w-1/2 ">
+        <article className="w-full lg:w-1/2 lg:mt-0 mt-12">
         <video className="w-full lg:max-h-[40rem] rounded-xl  object-cover" controls preload="none" autoPlay muted loop>
             <source src="/home/video.mp4" type="video/mp4" />
             <track
