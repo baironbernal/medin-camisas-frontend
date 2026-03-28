@@ -42,16 +42,16 @@ export default function CartSidebar({ onClose, isClosing }: CartSidebarProps) {
     <>
       {/* Backdrop */}
       <div
-        className={`fixed inset-0 bg-black/30 z-10 ${backdropClass}`}
+        className={`fixed inset-0 bg-black/70 z-10 ${backdropClass}`}
         onClick={onClose}
       />
 
       {/* Sidebar */}
       <section
-        className={`mx-auto w-full bg-accent-light max-w-sm fixed right-0 h-screen z-20 top-0 shadow-2xl flex flex-col ${animClass}`}
+        className={`mx-auto w-full fade-in backdrop-filter backdrop-blur-md bg-white/80 border-l border-white/20 max-w-sm fixed right-0 h-screen z-20 top-0 shadow-2xl flex flex-col ${animClass}`}
       >
         {/* ── HEADER ── */}
-        <div className="sticky top-0 bg-accent-light border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+        <div className="sticky top-0  border-b border-gray-200 px-6 py-4 flex justify-between items-center">
           {step === 'cart' && (
             <h2 className="font-heading font-bold text-xl text-primary">
               Carrito

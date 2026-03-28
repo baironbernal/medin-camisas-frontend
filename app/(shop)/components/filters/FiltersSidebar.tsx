@@ -11,7 +11,6 @@ import { X } from 'lucide-react';
 import { useFiltersUI } from "../../useContext/FiltersContext";
 import SearchInput from "./search/SearchInput";
 import FilterColor from "./color/FilterColor";
-import FilterType from "./clothing-type/FilterType";
 import FilterSize from "./size/FilterSize";
 import MinAndMax from "./price/MinAndMax";
 
@@ -35,16 +34,16 @@ export default function FiltersSidebar({ availableFilters }: FiltersSidebarProps
       {/* Backdrop Overlay */}
       {open && (
         <div 
-          className={`fixed inset-0 bg-black/30 z-10 transition-opacity ${backdropClass}`}
+          className={`fixed inset-0 bg-black/70 z-10 transition-opacity ${backdropClass}`}
           onClick={() => setOpen(false)}
         />
       )}
 
       {/* Filters Sidebar */}
       {open && (
-        <section className={`mx-auto w-full bg-accent-light max-w-sm fixed left-0 h-screen z-20 top-0 overflow-y-auto shadow-2xl ${animClass}`}>
+        <section className={`mx-auto fade-in backdrop-filter backdrop-blur-md bg-white/80 w-full-\0[poir e] max-w-sm fixed left-0 h-screen z-20 top-0 overflow-y-auto shadow-2xl ${animClass}`}>
           {/* Header */}
-          <div className="sticky top-0 bg-accent-light border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+          <div className="sticky top-0 border-b border-gray-200 px-6 py-4 flex justify-between items-center">
             <h2 className="font-utendo font-bold text-xl">Filtros</h2>
             <button onClick={() => setOpen(false)} className="cursor-pointer p-2 ">
               <X size={20} />

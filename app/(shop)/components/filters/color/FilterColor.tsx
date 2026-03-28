@@ -18,14 +18,14 @@ export default function FilterColor({colors}: {colors: Value[]}) {
             className="flex flex-col items-center gap-2 group"
           >
             <div 
-              className={`w-12 h-12 rounded-lg transition-all ${
+              className={`w-10 cursor-pointer h-10 rounded-full transition-all ${
                 isSelected 
                   ? 'ring-2 ring-black ring-offset-2' 
                   : 'hover:scale-110'
               } ${color.hex_color === '#FFFFFF' || color.hex_color === '#ffffff' ? 'border border-gray-300' : ''}`}
               style={{ backgroundColor: color.hex_color || '#CCCCCC' }}
             />
-            <span className={`text-xs ${isSelected ? 'font-semibold' : ''}`}>
+            <span className={` text-xs ${isSelected ? 'font-semibold' : ''}`}>
               {color.value}
             </span>
           </button>
