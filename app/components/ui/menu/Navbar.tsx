@@ -129,13 +129,27 @@ export default function Navbar({
             </NavLink>
           </div>
 
-          {/* ================= Mobile Button ================= */}
-          <button
-            onClick={openMenu}
-            className="lg:hidden text-white"
-          >
-            <Menu size={28} />
-          </button>
+          {/* ================= Mobile Buttons ================= */}
+          <div className="lg:hidden flex items-center gap-4">
+            <button onClick={openCart} className="relative text-white">
+              <ShoppingBag size={28} />
+              {totalItems > 0 && (
+                <span className="absolute -top-2 -right-2 
+                                bg-red-500 text-white 
+                                text-xs font-bold 
+                                rounded-full 
+                                w-5 h-5 flex items-center justify-center">
+                  {totalItems}
+                </span>
+              )}
+            </button>
+            <button
+              onClick={openMenu}
+              className="text-white"
+            >
+              <Menu size={28} />
+            </button>
+          </div>
 
         </div>
       </nav>

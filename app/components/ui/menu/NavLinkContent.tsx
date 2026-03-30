@@ -1,4 +1,3 @@
-// components/NavLink.tsx
 'use client';
 
 import { usePathname, useSearchParams } from 'next/navigation';

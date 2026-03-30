@@ -9,10 +9,11 @@ interface ProductItemProps {
 }
 
 function ProductItem({ product }: ProductItemProps) {
-  // 1. Pre-calculamos el precio para evitar lógica pesada en el JSX
   const price = typeof product.base_price === 'string' 
     ? parseInt(product.base_price, 10) 
     : product.base_price;
+
+  const hasSecondImage = product.images && product.images.length > 1;
 
   return (
     <div className="group flex flex-col cursor-pointer transition-transform duration-300 hover:-translate-y-1 gap-20">
@@ -22,9 +23,20 @@ function ProductItem({ product }: ProductItemProps) {
             unoptimized
             src={getImageUrl(product.images?.[0])}
             alt={`Imagen de ${product.name}`}
-            fill // Usar fill + aspect-square es más flexible en Next.js
-            className="object-cover transition-transform duration-500 group-hover:scale-105"
+            fill
+            className={`object-cover transition-all duration-500 ${
+              hasSecondImage ? 'group-hover:opacity-0' : 'group-hover:scale-105'
+            }`}
           />
+          {hasSecondImage && (
+            <Image
+              unoptimized
+              src={getImageUrl(product.images![1])}
+              alt={`Imagen de ${product.name}`}
+              fill
+              className="object-cover opacity-0 transition-all duration-500 group-hover:opacity-100 group-hover:scale-105"
+            />
+          )}
         </div>
         
         <section className='flex justify-between items-start pt-4 px-2'>

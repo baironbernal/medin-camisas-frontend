@@ -25,9 +25,6 @@ export default function FilterColor({colors}: {colors: Value[]}) {
               } ${color.hex_color === '#FFFFFF' || color.hex_color === '#ffffff' ? 'border border-gray-300' : ''}`}
               style={{ backgroundColor: color.hex_color || '#CCCCCC' }}
             />
-            <span className={` text-xs ${isSelected ? 'font-semibold' : ''}`}>
-              {color.value}
-            </span>
           </button>
         )
       })}

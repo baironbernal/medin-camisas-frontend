@@ -13,6 +13,7 @@ import SearchInput from "./search/SearchInput";
 import FilterColor from "./color/FilterColor";
 import FilterSize from "./size/FilterSize";
 import MinAndMax from "./price/MinAndMax";
+import { FilterMaterial } from "./material/FilterMaterial";
 
 
 export interface FiltersSidebarProps {
@@ -79,10 +80,15 @@ export default function FiltersSidebar({ availableFilters }: FiltersSidebarProps
                   {filter.code === 'SIZE' && (
                     <FilterSize sizes={filter.values.map((value) => value.value)} />
                   )}
-
+      
                   {/* Filter Color */}
                   {filter.code === 'COLOR' && (
                     <FilterColor colors={filter.values} />
+                  )}
+
+                  {/* Filter Material */}
+                  {filter.code === 'MATERIAL' && (
+                    <FilterMaterial materials={filter.values} />
                   )}
                 </CollapsibleContent>
               </Collapsible>
