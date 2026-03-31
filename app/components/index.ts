@@ -1,4 +1,6 @@
 export { default as FadeIn } from './ui/commons/FadeIn';
+export { default as Breadcrumb } from './ui/commons/Breadcrumb';
+export type { BreadcrumbItem } from './ui/commons/Breadcrumb';
 export { default as Footer } from './ui/footer/Footer';
 export { default as SocialNetworks } from './ui/footer/SocialNetworks';
 export { default as Navbar } from './ui/menu/Navbar';

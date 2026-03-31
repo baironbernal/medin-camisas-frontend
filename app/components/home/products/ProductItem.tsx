@@ -16,9 +16,9 @@ function ProductItem({ product }: ProductItemProps) {
   const hasSecondImage = product.images && product.images.length > 1;
 
   return (
-    <div className="group flex flex-col cursor-pointer transition-transform duration-300 hover:-translate-y-1 gap-20">
+    <div className="group flex flex-col cursor-pointer transition-transform duration-300 hover:-translate-y-1 gap-6 lg:gap-20">
       <Link href={`/producto/${product.slug}`} className="block">
-        <div className="relative w-full h-[25rem] overflow-hidden rounded-lg shadow-xl">
+        <div className="relative w-full h-[16rem] lg:h-[25rem] overflow-hidden rounded-lg shadow-xl">
           <Image
             unoptimized
             src={getImageUrl(product.images?.[0])}

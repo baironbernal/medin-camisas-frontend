@@ -63,11 +63,11 @@ export default function Sort() {
   }, []);
 
   return (
-    <section className="flex justify-between items-center py-6 bg-beige">
+    <section className="flex lg:justify-end justify-center items-center py-6 bg-beige">
       <div>
       </div>
 
-      <article className="flex gap-6 select-none">
+      <article className="flex gap-6 select-none text-sm lg:text-base">
         {/* 💡 4. El dropdown-ref ahora envuelve al botón correcto */}
         <div className="relative" ref={dropdownRef}>
           <button

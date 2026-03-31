@@ -14,7 +14,7 @@ export default async function Page ({params}: {params: { slug: string }}) {
     }
     
   return (
-    <main className="flex items-justify justify-center py-12 bg-beige">
+    <main className="flex items-justify justify-center py-2 lg:py-12 bg-beige">
       <ProductDetailWithDiscount data={product.data} />
     </main> 
   )

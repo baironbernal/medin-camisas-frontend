@@ -20,7 +20,7 @@ export function ProductGrid({ products, title }: ProductGridProps) {
 
       {/* Products list */}
       {products.length > 0 ? (
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-10 2xl:gap-14 justify-center md:justify-start">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6 lg:gap-10 2xl:gap-14 justify-center md:justify-start">
           {products.map((product, index) => (
             <FadeIn 
               key={product.id} 
