@@ -11,6 +11,7 @@ import { useDiscountRules } from '@/app/useContext/DiscountRuleContext';
 import { FadeIn } from '@/app/components';
 import { useCartStore } from '@/app/store/useCartStore';
 import Link from 'next/link';
+import { useRef, useEffect, useState } from 'react';
 
 interface ProductDetailProps {
   data: ProductDetail;
@@ -37,7 +38,20 @@ export const WrapperDetail = ({ data }: ProductDetailProps) => {
     setQuantitySelected
   } = useProductDetail(data)
 
-   const openCart = useCartStore(state => state.openCart)
+   const openCart = useCartStore(state => state.openCart);
+  const addToCartBtnRef = useRef<HTMLDivElement>(null);
+  const [showFloatingBtn, setShowFloatingBtn] = useState(false);
+
+  useEffect(() => {
+    const el = addToCartBtnRef.current;
+    if (!el) return;
+    const observer = new IntersectionObserver(
+      ([entry]) => setShowFloatingBtn(!entry.isIntersecting),
+      { threshold: 0 }
+    );
+    observer.observe(el);
+    return () => observer.disconnect();
+  }, []);
 
   const { rules } = useDiscountRules();
   const { getDiscountForQuantity } = useDiscount(rules);
@@ -195,7 +209,7 @@ export const WrapperDetail = ({ data }: ProductDetailProps) => {
             )}
 
             <FadeIn animation="fadeInUp" delay={0.5}>
-              <div className="flex flex-col gap-3 pt-4">
+              <div ref={addToCartBtnRef} className="flex flex-col gap-3 pt-4">
                 {isComplete ? (
                   <>
                     <BtnAddToCart 
@@ -258,6 +272,27 @@ export const WrapperDetail = ({ data }: ProductDetailProps) => {
           </div>
         </FadeIn>
       </div>
+
+      {/* Floating CTA — mobile only, appears when add-to-cart button scrolls out of view */}
+      {showFloatingBtn && (
+        <div className="lg:hidden fixed bottom-0 left-0 right-0 z-40 p-4 bg-white border-t border-gray-100 shadow-lg">
+          {isComplete ? (
+            <BtnAddToCart
+              quantitySelected={quantitySelected}
+              remainingStock={remainingStock}
+              totalStock={quantityAvailable}
+              variant={selectedVariant!}
+              productName={data.name}
+              productImages={currentImages ?? []}
+              combinationName={exactKey}
+            />
+          ) : (
+            <button disabled className="w-full bg-gray-300 text-gray-500 py-3 rounded-full cursor-not-allowed">
+              {selectedVariant && remainingStock === 0 ? 'Sin stock disponible' : 'Seleccionar opciones'}
+            </button>
+          )}
+        </div>
+      )}
     </section>
   )
 }

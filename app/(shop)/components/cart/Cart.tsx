@@ -35,7 +35,7 @@ export default function CartSidebar({ onClose, isClosing }: CartSidebarProps) {
     <>
       {/* Backdrop */}
       <motion.div
-        className="fixed inset-0 bg-black/70 z-10"
+        className="fixed inset-0 bg-black/70 z-40"
         initial={{ opacity: 0 }}
         animate={{ opacity: isClosing ? 0 : 1 }}
         transition={{ duration: 0.2 }}
@@ -44,7 +44,7 @@ export default function CartSidebar({ onClose, isClosing }: CartSidebarProps) {
 
       {/* Sidebar */}
       <motion.section
-        className="mx-auto w-full fade-in backdrop-filter backdrop-blur-md bg-white/80 border-l border-white/20 max-w-sm fixed right-0 h-screen z-20 top-0 shadow-2xl flex flex-col"
+        className="mx-auto w-full backdrop-filter backdrop-blur-md bg-white/80 border-l border-white/20 max-w-sm fixed right-0 h-screen z-50 top-0 shadow-2xl flex flex-col"
         initial={{ x: '100%' }}
         animate={{ x: isClosing ? '100%' : 0 }}
         transition={{ duration: 0.3, ease: 'easeInOut' }}

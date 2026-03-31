@@ -35,7 +35,7 @@ export default function FiltersSidebar({ availableFilters }: FiltersSidebarProps
             animate={{ opacity: 1 }}
             exit={{ opacity: 0 }}
             transition={{ duration: 0.2 }}
-            className="fixed inset-0 bg-black/70 z-10"
+            className="fixed inset-0 bg-black/70 z-40"
             onClick={() => setOpen(false)}
           />
         )}
@@ -50,7 +50,7 @@ export default function FiltersSidebar({ availableFilters }: FiltersSidebarProps
             animate={{ x: 0 }}
             exit={{ x: '-100%' }}
             transition={{ duration: 0.3, ease: 'easeInOut' }}
-            className="mx-auto backdrop-filter backdrop-blur-md bg-white/80 max-w-sm fixed left-0 h-screen z-20 top-0 overflow-y-auto shadow-2xl"
+            className="mx-auto backdrop-filter backdrop-blur-md bg-white/80 max-w-sm fixed left-0 h-screen z-50 top-0 overflow-y-auto shadow-2xl"
           >
             {/* Header */}
             <div className="sticky top-0 border-b border-gray-200 px-6 py-4 flex justify-between items-center">

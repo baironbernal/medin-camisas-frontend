@@ -54,7 +54,7 @@ export default function Navbar({
   }, [openCartParam, openCart, setOpenCartParam]);
 
   return (
-    <header className="sticky top-0 z-10 bg-dark font-utendo text-white">
+    <header className="sticky top-0 z-30 bg-dark font-utendo text-white">
       <nav className="container mx-auto px-4 ">
         <div className="flex items-center justify-between">
 
