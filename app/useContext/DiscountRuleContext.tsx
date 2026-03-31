@@ -1,12 +1,10 @@
 'use client';
 
-import { createContext, useContext, useEffect, useState, ReactNode, useMemo, useCallback } from "react";
+import { createContext, useContext, ReactNode, useMemo, useCallback } from "react";
 import { DiscountRule } from "@/types/discount-rule";
-import { getDiscountRules } from "@/app/services/discount-rules";
 
 type DiscountRuleContextType = {
   rules: DiscountRule[];
-  loading: boolean;
   getDiscountForQuantity: (quantity: number, basePrice: number) => {
     discount: number;
     discountedPrice: number;
@@ -16,32 +14,19 @@ type DiscountRuleContextType = {
 
 const DiscountRuleContext = createContext<DiscountRuleContextType | undefined>(undefined);
 
-export function DiscountRuleProvider({ children }: { children: ReactNode }) {
-  const [rules, setRules] = useState<DiscountRule[]>([]);
-  const [loading, setLoading] = useState(true);
+interface DiscountRuleProviderProps {
+  children: ReactNode;
+  initialRules: DiscountRule[];
+}
 
-  useEffect(() => {
-    const fetchDiscountRules = async () => {
-      try {
-        const data = await getDiscountRules();
-        setRules(data);
-      } catch (error) {
-        console.error("Error fetching discount rules", error);
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchDiscountRules();
-  }, []);
-
+export function DiscountRuleProvider({ children, initialRules }: DiscountRuleProviderProps) {
   const getDiscountForQuantity = useCallback((quantity: number, basePrice: number) => {
-    if (rules.length === 0 || quantity < 1) return null;
+    if (initialRules.length === 0 || quantity < 1) return null;
 
-    const sortedRules = [...rules].sort((a, b) => a.min_quantity - b.min_quantity);
-    
+    const sortedRules = [...initialRules].sort((a, b) => a.min_quantity - b.min_quantity);
+
     let applicableRule: DiscountRule | null = null;
-    
+
     for (const rule of sortedRules) {
       const maxQty = rule.max_quantity ?? null;
       if (quantity >= rule.min_quantity) {
@@ -63,13 +48,12 @@ export function DiscountRuleProvider({ children }: { children: ReactNode }) {
       discountedPrice,
       rule: applicableRule,
     };
-  }, [rules]);
+  }, [initialRules]);
 
   const value = useMemo(() => ({
-    rules,
-    loading,
+    rules: initialRules,
     getDiscountForQuantity,
-  }), [rules, loading, getDiscountForQuantity]);
+  }), [initialRules, getDiscountForQuantity]);
 
   return (
     <DiscountRuleContext.Provider value={value}>

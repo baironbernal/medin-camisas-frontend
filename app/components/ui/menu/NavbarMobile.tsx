@@ -1,9 +1,9 @@
 'use client';
 
 import { useState } from "react";
+import { motion } from "framer-motion";
 import { Category } from "@/types/category";
 import { X, CircleUserRound, ChevronDown, ChevronRight, ShoppingBag } from "lucide-react";
-import "animate.css";
 import { useAuth } from "@/app/useContext/AuthContext";
 import { LogIn } from "lucide-react";
 import NavLink from "./NavLinkContent";
@@ -92,19 +92,11 @@ export default function NavbarMobile({
   return (
     <div className="fixed inset-0 z-50 flex justify-end bg-black">
       {/* Sliding panel */}
-      <div
-        className={`
-          flex
-          h-full
-          w-screen
-          flex-col
-          bg-dark
-          text-white
-          shadow-2xl
-          transform
-          animate__animated
-          ${!isClosing ? "animate__slideInRight" : "animate__slideOutRight"}
-        `}
+      <motion.div
+        className="flex h-full w-screen flex-col bg-dark text-white shadow-2xl"
+        initial={{ x: '100%' }}
+        animate={{ x: isClosing ? '100%' : 0 }}
+        transition={{ duration: 0.3, ease: 'easeInOut' }}
       >
         {/* Header */}
         <div className="flex items-center justify-between px-4 py-4 border-b border-white/10 ">
@@ -176,7 +168,7 @@ export default function NavbarMobile({
 
         {/* WhatsApp Button */}
         <WhatsappButton/>
-      </div>
+      </motion.div>
 
       {/* Clickable backdrop to close */}
       <button

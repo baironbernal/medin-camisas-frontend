@@ -9,7 +9,7 @@ import {
 import { getProducts } from "./services/products";
 
 
-export const dynamic = 'force-dynamic';
+export const revalidate = 60;
 export default async function Home() {
 
 

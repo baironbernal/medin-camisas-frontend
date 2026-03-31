@@ -1,5 +1,6 @@
 'use client';
 
+import { motion } from 'framer-motion';
 import { X } from 'lucide-react';
 import { useCartSidebar } from '@/app/hooks/useCartSidebar';
 import CartStep from './steps/CartStep';
@@ -30,28 +31,26 @@ export default function CartSidebar({ onClose, isClosing }: CartSidebarProps) {
     getDiscountForQuantity
   } = useCartSidebar(onClose);
 
-  const animClass = isClosing
-    ? 'animate__animated animate__slideOutRight animate__faster'
-    : 'animate__animated animate__slideInRight animate__faster';
-
-  const backdropClass = isClosing
-    ? 'animate__animated animate__fadeOut animate__faster'
-    : 'animate__animated animate__fadeIn animate__faster';
-
   return (
     <>
       {/* Backdrop */}
-      <div
-        className={`fixed inset-0 bg-black/70 z-10 ${backdropClass}`}
+      <motion.div
+        className="fixed inset-0 bg-black/70 z-10"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isClosing ? 0 : 1 }}
+        transition={{ duration: 0.2 }}
         onClick={onClose}
       />
 
       {/* Sidebar */}
-      <section
-        className={`mx-auto w-full fade-in backdrop-filter backdrop-blur-md bg-white/80 border-l border-white/20 max-w-sm fixed right-0 h-screen z-20 top-0 shadow-2xl flex flex-col ${animClass}`}
+      <motion.section
+        className="mx-auto w-full fade-in backdrop-filter backdrop-blur-md bg-white/80 border-l border-white/20 max-w-sm fixed right-0 h-screen z-20 top-0 shadow-2xl flex flex-col"
+        initial={{ x: '100%' }}
+        animate={{ x: isClosing ? '100%' : 0 }}
+        transition={{ duration: 0.3, ease: 'easeInOut' }}
       >
         {/* ── HEADER ── */}
-        <div className="sticky top-0  border-b border-gray-200 px-6 py-4 flex justify-between items-center">
+        <div className="sticky top-0 border-b border-gray-200 px-6 py-4 flex justify-between items-center">
           {step === 'cart' && (
             <h2 className="font-heading font-bold text-xl text-primary">
               Carrito
@@ -82,7 +81,7 @@ export default function CartSidebar({ onClose, isClosing }: CartSidebarProps) {
 
         {/* ── STEPS ── */}
         {step === 'cart' && (
-          <CartStep 
+          <CartStep
             cart={cart}
             total={subtotalDiscounted}
             originalTotal={subtotalOriginal}
@@ -92,7 +91,7 @@ export default function CartSidebar({ onClose, isClosing }: CartSidebarProps) {
         )}
 
         {step === 'form' && (
-          <CheckoutFormStep 
+          <CheckoutFormStep
             error={error}
             loading={loading}
             formState={formState}
@@ -105,13 +104,13 @@ export default function CartSidebar({ onClose, isClosing }: CartSidebarProps) {
         )}
 
         {step === 'success' && orderData && (
-          <SuccessStep 
+          <SuccessStep
             orderNumber={orderNumber}
             orderData={orderData}
             onClose={onClose}
           />
         )}
-      </section>
+      </motion.section>
     </>
   );
 }

@@ -1,7 +1,6 @@
 'use client';
 
-import React, { createContext, useContext, useEffect, useState, useTransition } from 'react';
-import { getSession } from '@/app/lib/session';
+import React, { createContext, useContext, useState, useTransition } from 'react';
 import { logout as serverLogout } from '@/app/services/auth';
 import { AuthUser } from '@/types/auth';
 
@@ -11,7 +10,6 @@ interface AuthContextValue {
   setLoggedIn: (v: boolean) => void;
   setUser: (u: AuthUser | null) => void;
   logout: () => Promise<void>;
-  isLoading: boolean;
 }
 
 const AuthContext = createContext<AuthContextValue>({
@@ -20,30 +18,20 @@ const AuthContext = createContext<AuthContextValue>({
   setLoggedIn: () => {},
   setUser: () => {},
   logout: async () => {},
-  isLoading: true,
 });
 
-export function AuthProvider({ children }: { children: React.ReactNode }) {
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [user, setUser] = useState<AuthUser | null>(null);
-  const [isLoading, setIsLoading] = useState(true);
-  const [, startTransition] = useTransition();
+interface AuthProviderProps {
+  children: React.ReactNode;
+  initialSession: {
+    isAuthenticated: boolean;
+    user: AuthUser | null;
+  };
+}
 
-  useEffect(() => {
-    async function loadSession() {
-      try {
-        const session = await getSession();
-        startTransition(() => {
-          setIsLoggedIn(session.isAuthenticated);
-          setUser(session.user);
-          setIsLoading(false);
-        });
-      } catch {
-        setIsLoading(false);
-      }
-    }
-    loadSession();
-  }, []);
+export function AuthProvider({ children, initialSession }: AuthProviderProps) {
+  const [isLoggedIn, setIsLoggedIn] = useState(initialSession.isAuthenticated);
+  const [user, setUser] = useState<AuthUser | null>(initialSession.user);
+  const [, startTransition] = useTransition();
 
   const logout = async () => {
     await serverLogout();
@@ -54,7 +42,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <AuthContext.Provider value={{ isLoggedIn, user, setLoggedIn: setIsLoggedIn, setUser, logout, isLoading }}>
+    <AuthContext.Provider value={{ isLoggedIn, user, setLoggedIn: setIsLoggedIn, setUser, logout }}>
       {children}
     </AuthContext.Provider>
   );

@@ -2,30 +2,15 @@
 
 import { useAuth } from '@/app/useContext/AuthContext';
 import { useRouter } from 'next/navigation';
-import { User, Mail, Phone, LogOut, Loader2, CircleUserRound } from 'lucide-react';
-import { useEffect } from 'react';
+import { User, Mail, Phone, LogOut, CircleUserRound } from 'lucide-react';
 
 export default function ProfilePage() {
-  const { user, logout, isLoggedIn, isLoading } = useAuth();
+  const { user, logout } = useAuth();
   const router = useRouter();
-
-  useEffect(() => {
-    if (!isLoading && !isLoggedIn) {
-      router.push('/login');
-    }
-  }, [isLoading, isLoggedIn, router]);
 
   async function handleLogout() {
     await logout();
     router.push('/');
-  }
-
-  if (isLoading) {
-    return (
-      <div className="min-h-screen bg-beige flex items-center justify-center">
-        <Loader2 className="animate-spin text-primary" size={32} />
-      </div>
-    );
   }
 
   if (!user) return null;

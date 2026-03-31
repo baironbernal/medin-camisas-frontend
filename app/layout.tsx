@@ -2,10 +2,12 @@ import type { Metadata } from "next";
 import localFont from "next/font/local";
 import { Suspense } from "react";
 import "./globals.css";
-import "animate.css";
 import { getCategories } from "./services/categories";
+import { getDiscountRules } from "./services/discount-rules";
+import { getSession } from "./lib/session";
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { AuthProvider } from "./useContext/AuthContext";
+import { DiscountRuleProvider } from "./useContext/DiscountRuleContext";
 import { Footer, WhatsAppFloat, Navbar } from "./components";
 
 
@@ -46,27 +48,31 @@ export default async function RootLayout({
 }: Readonly<{
   children: React.ReactNode;
 }>) {
-  const categories = await getCategories();
+  const [categories, discountRules, session] = await Promise.all([
+    getCategories(),
+    getDiscountRules(),
+    getSession(),
+  ]);
 
   return (
     <html lang="en" className={`${utendo.variable} ${okine.variable}`}>
       <body className="antialiased">
-        <AuthProvider>
-          <NuqsAdapter>
-            <Suspense fallback={<div className="h-20 bg-dark" />}>
-              <Navbar categories={categories} />
-            </Suspense>
-            <main className="w-full">
-              {children}
-            </main>
-            <Footer styles="w-full h-full bg-beige" />
-          </NuqsAdapter>
-
-          
-          <WhatsAppFloat 
-            phoneNumber="+573024197103" 
-            message="¡Hola! Me interesa comprar al por mayor" 
-          />
+        <AuthProvider initialSession={{ isAuthenticated: session.isAuthenticated, user: session.user }}>
+          <DiscountRuleProvider initialRules={discountRules}>
+            <NuqsAdapter>
+              <Suspense fallback={<div className="h-20 bg-dark" />}>
+                <Navbar categories={categories} />
+              </Suspense>
+              <main className="w-full">
+                {children}
+              </main>
+              <Footer styles="w-full h-full bg-beige" />
+            </NuqsAdapter>
+            <WhatsAppFloat
+              phoneNumber="+573024197103"
+              message="¡Hola! Me interesa comprar al por mayor"
+            />
+          </DiscountRuleProvider>
         </AuthProvider>
       </body>
     </html>
