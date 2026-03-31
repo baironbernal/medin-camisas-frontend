@@ -10,6 +10,7 @@ import { useDiscount } from '@/app/hooks/useDiscount';
 import { useDiscountRules } from '@/app/useContext/DiscountRuleContext';
 import { FadeIn } from '@/app/components';
 import { useCartStore } from '@/app/store/useCartStore';
+import Link from 'next/link';
 
 interface ProductDetailProps {
   data: ProductDetail;
@@ -51,6 +52,19 @@ export const WrapperDetail = ({ data }: ProductDetailProps) => {
 
   return (
     <section className="w-full container mx-auto px-6 py-10 font-sans">
+      {/* Breadcrumb */}
+      <nav className="flex items-center gap-2 text-sm text-secondary mb-8">
+        <Link href="/" className="hover:text-primary transition-colors">Inicio</Link>
+        <span className="text-gray-300">/</span>
+        {data.brand && (
+          <>
+            <span className="text-secondary">{data.brand}</span>
+            <span className="text-gray-300">/</span>
+          </>
+        )}
+        <span className="text-primary font-medium line-clamp-1">{data.name}</span>
+      </nav>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
         
         <FadeIn animation="fadeInLeft" duration={0.7}>
