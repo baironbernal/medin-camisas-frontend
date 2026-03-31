@@ -8,7 +8,6 @@ import { useCartStore } from '../store/useCartStore'
 export function useProductDetail(data: ProductDetail) {
   const [selectedColor, setSelectedColor] = useState<string | null>(null)
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
-  const [quantityAvailable, setQuantityAvailable] = useState<number>(0)
   const [quantitySelected, setQuantitySelected] = useState<number>(1)
 
   const { available_attributes, variants, combination_index } = data
@@ -34,11 +33,15 @@ export function useProductDetail(data: ProductDetail) {
   // 3. Variante seleccionada (Combinación exacta)
   const selectedVariant = useMemo(() => {
     if (!selectedColor || !selectedSize || !material) return null
-    const stock = combination_index[exactKey]?.stock
-    setQuantityAvailable(stock ?? 0)
     const id = combination_index[exactKey]?.variant_id
     return variants.find(v => v.id === id) ?? null
   }, [selectedColor, selectedSize, material, variants, combination_index, exactKey])
+
+  // 3b. Stock disponible (derivado, sin side effects)
+  const quantityAvailable = useMemo(() => {
+    if (!selectedColor || !selectedSize || !material) return 0
+    return combination_index[exactKey]?.stock ?? 0
+  }, [selectedColor, selectedSize, material, combination_index, exactKey])
 
   // 4. Imágenes actuales: Buscamos cualquier variante que coincida con el color si no hay selección completa
   const currentImages = useMemo(() => {

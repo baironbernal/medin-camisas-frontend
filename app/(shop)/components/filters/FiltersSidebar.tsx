@@ -76,7 +76,7 @@ export default function FiltersSidebar({ availableFilters }: FiltersSidebarProps
 
               {/* Dynamic Filters */}
               {availableFilters.map((filter) => (
-                <Collapsible key={filter.id} defaultOpen={true} className="border-b border-gray-200 pb-4">
+                <Collapsible key={filter.code} defaultOpen={true} className="border-b border-gray-200 pb-4">
                   <CollapsibleTrigger asChild>
                     <button className="group w-full text-left flex items-center justify-between py-3 hover:text-black transition-colors">
                       <span className="">{filter.name}</span>

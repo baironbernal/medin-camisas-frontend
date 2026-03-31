@@ -35,21 +35,19 @@ export default function HoverPanel({
           <div className="container mx-auto px-6 py-6">
             <div className="flex justify-between gap-8">
               {activeCategory!.children_recursive!.map((child) => (
-                <div key={child.id}>
-                  <NavLink href={`/coleccion?category=${activeCategory!.slug}&subcategory=${child.slug}`} className="text-beige px-3">
-                    <div className="flex flex-col gap-2">
-                      <b className="uppercase text-md text-accent hover:underline tracking-widest">{child.name}</b>
-                      {child.children_recursive?.map((subChild) => (
-                        <NavLink
-                          key={subChild.id}
-                          href={`/coleccion?category=${activeCategory!.slug}&subcategory=${child.slug}&subsubcategory=${subChild.slug}`}
-                          className="text-beige px-3"
-                        >
-                          {subChild.name}
-                        </NavLink>
-                      ))}
-                    </div>
+                <div key={child.id} className="flex flex-col gap-2 px-3">
+                  <NavLink href={`/coleccion?category=${activeCategory!.slug}&subcategory=${child.slug}`} className="text-beige">
+                    <b className="uppercase text-md text-accent hover:underline tracking-widest">{child.name}</b>
                   </NavLink>
+                  {child.children_recursive?.map((subChild) => (
+                    <NavLink
+                      key={subChild.id}
+                      href={`/coleccion?category=${activeCategory!.slug}&subcategory=${child.slug}&subsubcategory=${subChild.slug}`}
+                      className="text-beige"
+                    >
+                      {subChild.name}
+                    </NavLink>
+                  ))}
                 </div>
               ))}
             </div>

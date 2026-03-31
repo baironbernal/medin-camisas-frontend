@@ -76,21 +76,6 @@ export async function signup(state: FormState, formData: FormData) {
   };
 }
 
-export async function register(payload: RegisterPayload): Promise<AuthResponse> {
-  const response = await apiFetch<AuthResponse>('/register', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(payload),
-  });
-  
-  if (!response.user) {
-    throw new Error('Error al crear la cuenta');
-  }
-  
-  await setSession(response.access_token, response.user);
-  return response;
-}
-
 
 export async function login(payload: LoginPayload): Promise<AuthResponse> {
   const response = await apiFetch<AuthResponse>('/login', {

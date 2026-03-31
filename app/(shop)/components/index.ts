@@ -1,8 +1,8 @@
 export { default as Banner } from './Banner';
-export { default as CartSidebar } from './cart/CartWithDiscount';
+export { default as CartSidebar } from './cart/Cart';
 export { default as CartItem } from './cart/CartItem';
 export { default as BtnAddToCart } from './cart/BtnAddToCart';
-export { default as WrapperDetail } from './detail/ProductDetailWithDiscount';
+export { WrapperDetail } from './detail/WrapperDetail';
 export { default as FiltersSidebar } from './filters/FiltersSidebar';
 export { default as Sort } from './filters/Sort';
 export { default as FilterType } from './filters/clothing-type/FilterType';

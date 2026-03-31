@@ -1,7 +1,7 @@
 import { getProduct } from "@/app/services/products";
 import { notFound } from "next/navigation";
 import { ProductDetail } from "@/types/product-detail";
-import ProductDetailWithDiscount from "@/app/(shop)/components/detail/ProductDetailWithDiscount";
+import { WrapperDetail } from "@/app/(shop)/components/detail/WrapperDetail";
 
 
 export default async function Page ({params}: {params: { slug: string }}) {
@@ -15,7 +15,7 @@ export default async function Page ({params}: {params: { slug: string }}) {
     
   return (
     <main className="flex items-justify justify-center py-2 lg:py-12 bg-beige">
-      <ProductDetailWithDiscount data={product.data} />
+      <WrapperDetail data={product.data} />
     </main> 
   )
 }

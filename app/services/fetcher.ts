@@ -65,5 +65,9 @@ export async function apiFetch<T>(
     throw new ApiError('Respuesta inválida del servidor', res.status);
   }
 
-  return res.json();
+  try {
+    return await res.json() as T;
+  } catch {
+    throw new ApiError('Respuesta inválida del servidor', res.status);
+  }
 }

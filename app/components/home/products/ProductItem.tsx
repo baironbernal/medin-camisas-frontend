@@ -9,10 +9,6 @@ interface ProductItemProps {
 }
 
 function ProductItem({ product }: ProductItemProps) {
-  const price = typeof product.base_price === 'string' 
-    ? parseInt(product.base_price, 10) 
-    : product.base_price;
-
   const hasSecondImage = product.images && product.images.length > 1;
 
   return (
@@ -20,7 +16,6 @@ function ProductItem({ product }: ProductItemProps) {
       <Link href={`/producto/${product.slug}`} className="block">
         <div className="relative w-full h-[16rem] lg:h-[25rem] overflow-hidden rounded-lg shadow-xl">
           <Image
-            unoptimized
             src={getImageUrl(product.images?.[0])}
             alt={`Imagen de ${product.name}`}
             fill
@@ -30,7 +25,6 @@ function ProductItem({ product }: ProductItemProps) {
           />
           {hasSecondImage && (
             <Image
-              unoptimized
               src={getImageUrl(product.images![1])}
               alt={`Imagen de ${product.name}`}
               fill
@@ -39,16 +33,16 @@ function ProductItem({ product }: ProductItemProps) {
           )}
         </div>
         
-        <section className='flex justify-between items-start pt-4 px-2'>
+        <section className='flex lg:flex-row flex-col-reverse justify-between items-start pt-4 px-2'>
           <div className="flex flex-col gap-1">
             <h3 className="font-semibold text-dark line-clamp-1">{product.name}</h3>
             <p className="font-medium text-secondary">
-              {formatCOP(price)}
+              {formatCOP(product.base_price)}
             </p>
           </div>
           {/* Badge dynamic colors */}
           {product.colors_count && product.colors_count > 1 && (
-            <span className='px-2 py-1 text-gray-500'>
+            <span className='lg:px-2 py-1 text-gray-500 text-xs lg:text-sm'>
               {product.colors_count} colores
             </span>
           )}
