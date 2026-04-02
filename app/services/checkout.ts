@@ -34,6 +34,14 @@ export interface OrderItem {
   discounted_total_price: string;
 }
 
+export interface WompiPaymentConfig {
+  public_key: string;
+  currency: string;
+  amount_in_cents: number;
+  reference: string;
+  signature: string;
+}
+
 export interface OrderResponse {
   success: boolean;
   message: string;
@@ -45,11 +53,11 @@ export interface OrderResponse {
       total: string;
       subtotal_original: string;
       subtotal_discounted: string;
-      total_discount: string;
       currency: string;
       created_at: string;
     };
     items: OrderItem[];
+    payment: WompiPaymentConfig;
   };
 }
 

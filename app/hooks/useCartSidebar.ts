@@ -17,6 +17,43 @@ export interface FormState {
   notes: string;
 }
 
+const WOMPI_SCRIPT_URL = 'https://checkout.wompi.co/widget.js';
+
+/**
+ * Injects the Wompi script tag if it isn't already in the document and
+ * returns a Promise that resolves once WidgetCheckout is available on window.
+ * Safe to call multiple times — reuses the same <script> element.
+ */
+function loadWompiScript(): Promise<void> {
+  return new Promise((resolve, reject) => {
+    type WompiWindow = Window & { WidgetCheckout?: unknown };
+
+    // Already available — resolve immediately
+    if (typeof (window as WompiWindow).WidgetCheckout !== 'undefined') {
+      console.log('[Wompi] WidgetCheckout ya estaba en window, listo.');
+      resolve();
+      return;
+    }
+
+    // Script tag already injected — wait for it to finish
+    let tag = document.querySelector<HTMLScriptElement>(`script[src="${WOMPI_SCRIPT_URL}"]`);
+    if (tag) {
+      console.log('[Wompi] <script> ya existe en el DOM, esperando evento load...');
+      tag.addEventListener('load', () => { console.log('[Wompi] script cargó (tag existente).'); resolve(); });
+      tag.addEventListener('error', (e) => { console.error('[Wompi] error en tag existente:', e); reject(new Error('No se pudo cargar el módulo de pago.')); });
+      return;
+    }
+
+    // Inject the script for the first time
+    console.log('[Wompi] Inyectando <script> por primera vez:', WOMPI_SCRIPT_URL);
+    tag = document.createElement('script');
+    tag.src = WOMPI_SCRIPT_URL;
+    tag.onload = () => { console.log('[Wompi] script cargado correctamente. WidgetCheckout:', typeof (window as WompiWindow).WidgetCheckout); resolve(); };
+    tag.onerror = (e) => { console.error('[Wompi] falló la carga del script:', e); reject(new Error('No se pudo cargar el módulo de pago. Verifica tu conexión.')); };
+    document.head.appendChild(tag);
+  });
+}
+
 function getSessionId(): string {
   const key = 'medin_session_id';
   let id = typeof window !== 'undefined' ? localStorage.getItem(key) : null;
@@ -105,9 +142,11 @@ export function useCartSidebar(onClose: () => void) {
     e.preventDefault();
     setError('');
     setLoading(true);
+    console.log('[Checkout] ── INICIO handleCheckout ──');
     try {
       const sessionId = getSessionId();
-      
+      console.log('[Checkout] sessionId:', sessionId);
+
       const checkoutItems = cart.map(item => {
         const unitPrice = Number(item.price);
         const quantity = item.quantity as number;
@@ -129,6 +168,12 @@ export function useCartSidebar(onClose: () => void) {
         };
       });
 
+      console.log('[Checkout] Payload que se envía al backend:', {
+        customer_name: formState.customer_name,
+        customer_email: formState.customer_email,
+        items: checkoutItems,
+      });
+
       const res = await checkout(
         {
           customer_name: formState.customer_name,
@@ -141,18 +186,54 @@ export function useCartSidebar(onClose: () => void) {
         },
         sessionId
       );
-      
-      setOrderNumber(res.data.order.order_number);
-      setOrderData({
-        total: res.data.order.total,
-        subtotal_original: res.data.order.subtotal_original,
-        subtotal_discounted: res.data.order.subtotal_discounted,
-        total_discount: res.data.order.total_discount,
-        items: res.data.items,
+
+      console.log('[Checkout] Respuesta del backend:', res);
+
+      const { order, payment, items } = res.data;
+      console.log('[Checkout] order:', order);
+      console.log('[Checkout] payment config:', payment);
+
+      // Guarantee the script is fully loaded before using WidgetCheckout
+      console.log('[Checkout] Llamando loadWompiScript...');
+      await loadWompiScript();
+      console.log('[Checkout] loadWompiScript resolvió. Abriendo widget...');
+
+      const widget = new WidgetCheckout({
+        currency: payment.currency,
+        amountInCents: payment.amount_in_cents,
+        reference: payment.reference,
+        publicKey: payment.public_key,
+        signature: { integrity: payment.signature },
       });
-      clearCart();
-      setStep('success');
+
+      console.log('[Checkout] widget.open() llamado.');
+      widget.open((result) => {
+        console.log('[Checkout] Callback de open, result completo:', result);
+        const status = result?.transaction?.status;
+        console.log('[Checkout] transaction status:', status);
+
+        if (status === 'APPROVED') {
+          console.log('[Checkout] Pago aprobado');
+          clearCart();
+          setOrderNumber(order.order_number);
+          setOrderData({
+            total: order.total,
+            subtotal_original: order.subtotal_original,
+            subtotal_discounted: order.subtotal_discounted,
+            total_discount: String(
+              Math.max(0, Number(order.subtotal_original) - Number(order.subtotal_discounted))
+            ),
+            items,
+          });
+          setStep('success');
+        } else if (status === 'DECLINED' || status === 'VOIDED' || status === 'ERROR') {
+          console.log('[Checkout] Pago rechazado');
+          setError('El pago fue rechazado. Por favor intenta con otro método de pago.');
+        }
+        // Sin status (cerró sin pagar) → se queda en el form silenciosamente
+      });
     } catch (err: unknown) {
+      console.error('[Checkout] ❌ ERROR capturado:', err);
       if (err instanceof Error) {
         setError(err.message);
       } else {
