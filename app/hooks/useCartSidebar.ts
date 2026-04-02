@@ -198,6 +198,7 @@ export function useCartSidebar(onClose: () => void) {
       console.log('[Checkout] Llamando loadWompiScript...');
       await loadWompiScript(payment.public_key);
       console.log('[Checkout] loadWompiScript resolvió. Abriendo widget...');
+      console.log(payment);
 
       const widget = new WidgetCheckout({
         currency: payment.currency,
