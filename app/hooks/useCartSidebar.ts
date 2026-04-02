@@ -24,7 +24,7 @@ const WOMPI_SCRIPT_URL = 'https://checkout.wompi.co/widget.js';
  * returns a Promise that resolves once WidgetCheckout is available on window.
  * Safe to call multiple times — reuses the same <script> element.
  */
-function loadWompiScript(): Promise<void> {
+function loadWompiScript(publicKey: string): Promise<void> {
   return new Promise((resolve, reject) => {
     type WompiWindow = Window & { WidgetCheckout?: unknown };
 
@@ -48,6 +48,7 @@ function loadWompiScript(): Promise<void> {
     console.log('[Wompi] Inyectando <script> por primera vez:', WOMPI_SCRIPT_URL);
     tag = document.createElement('script');
     tag.src = WOMPI_SCRIPT_URL;
+    tag.setAttribute('data-public-key', publicKey);
     tag.onload = () => { console.log('[Wompi] script cargado correctamente. WidgetCheckout:', typeof (window as WompiWindow).WidgetCheckout); resolve(); };
     tag.onerror = (e) => { console.error('[Wompi] falló la carga del script:', e); reject(new Error('No se pudo cargar el módulo de pago. Verifica tu conexión.')); };
     document.head.appendChild(tag);
@@ -195,7 +196,7 @@ export function useCartSidebar(onClose: () => void) {
 
       // Guarantee the script is fully loaded before using WidgetCheckout
       console.log('[Checkout] Llamando loadWompiScript...');
-      await loadWompiScript();
+      await loadWompiScript(payment.public_key);
       console.log('[Checkout] loadWompiScript resolvió. Abriendo widget...');
 
       const widget = new WidgetCheckout({
