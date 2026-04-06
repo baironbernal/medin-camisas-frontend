@@ -1,5 +1,6 @@
 "use client"
 
+import Image from 'next/image';
 import { getImageUrl } from '@/app/lib/image';
 import { useEffect, useState } from 'react';
 import { ChevronUp, ChevronDown, ArrowLeft, ArrowRight } from 'lucide-react';
@@ -47,12 +48,15 @@ export default function GalleryDetail({ images }: GalleryDetailProps) {
             onDragEnd={handleDragEnd}
             className="cursor-grab active:cursor-grabbing"
           >
-            <img
-              src={getImageUrl(images[selectedIndex])}
-              alt="Imagen del producto"
-              className="w-full h-auto max-h-[480px] object-contain select-none pointer-events-none"
-              draggable={false}
-            />
+            <div className="relative w-full h-[480px]">
+              <Image
+                src={getImageUrl(images[selectedIndex])}
+                alt="Imagen del producto"
+                fill
+                className="object-contain select-none pointer-events-none"
+                draggable={false}
+              />
+            </div>
           </motion.div>
         </div>
 
@@ -94,16 +98,17 @@ export default function GalleryDetail({ images }: GalleryDetailProps) {
                 <div
                   key={realIndex}
                   onClick={() => setSelectedIndex(realIndex)}
-                  className={`cursor-pointer border-2 transition-all w-16 h-20 overflow-hidden shrink-0 ${
+                  className={`relative cursor-pointer border-2 transition-all w-16 h-20 overflow-hidden shrink-0 ${
                     selectedIndex === realIndex
                       ? 'border-primary'
                       : 'border-transparent hover:border-gray-300'
                   }`}
                 >
-                  <img
+                  <Image
                     src={getImageUrl(image)}
                     alt={`Vista ${realIndex + 1}`}
-                    className="w-full h-full object-cover"
+                    fill
+                    className="object-cover"
                   />
                 </div>
               );
@@ -132,11 +137,14 @@ export default function GalleryDetail({ images }: GalleryDetailProps) {
             </button>
           )}
 
-          <img
-            src={getImageUrl(images[selectedIndex])}
-            alt="Imagen del producto"
-            className="w-full h-auto max-h-[500px] object-contain"
-          />
+          <div className="relative w-full h-[500px]">
+            <Image
+              src={getImageUrl(images[selectedIndex])}
+              alt="Imagen del producto"
+              fill
+              className="object-contain"
+            />
+          </div>
 
           {images.length > 1 && (
             <button

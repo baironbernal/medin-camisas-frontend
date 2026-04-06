@@ -1,6 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react';
+import Image from 'next/image';
 
 import { useCartStore } from '@/app/store/useCartStore'
 import { Variant } from "@/types/variant";
@@ -87,12 +88,13 @@ export default function CartItem({ product }: { product: Variant }) {
   return (
     <li className="flex gap-3 py-4 items-start">
       {/* Product Image */}
-      <div className="w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
+      <div className="relative w-20 h-20 rounded-lg overflow-hidden flex-shrink-0">
         {displayImages && displayImages.length > 0 ? (
-          <img
+          <Image
             src={getImageUrl(displayImages[0])}
             alt={displayName}
-            className="w-full h-full object-cover"
+            fill
+            className="object-cover"
           />
         ) : (
           <div className="w-full h-full flex items-center justify-center text-gray-400 text-xs">

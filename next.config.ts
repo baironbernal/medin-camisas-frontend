@@ -22,6 +22,11 @@ const nextConfig: NextConfig = {
         hostname: 'deepskyblue-gorilla-748938.hostingersite.com',
         pathname: '/storage/**',
       },
+      {
+        protocol: 'https',
+        hostname: 'api.camisasmedin.com',
+        pathname: '/storage/**',
+      },
     ],
   },
 };
