@@ -40,7 +40,7 @@ export type FormState =
         city?: string[]
       }
       message?: string
-      fields?: Record<string, string>
+      fields?: Record<string, string | undefined>
       success?: boolean
       user?: AuthUser
       redirectUrl?: string
