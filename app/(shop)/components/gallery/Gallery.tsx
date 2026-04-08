@@ -15,7 +15,6 @@ const VISIBLE_THUMBS = 5;
 export default function GalleryDetail({ images }: GalleryDetailProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [thumbOffset, setThumbOffset] = useState(0);
-  const [dragStartX, setDragStartX] = useState<number | null>(null);
 
   useEffect(() => {
     if (images && images.length > 0) setSelectedIndex(0);
@@ -48,15 +47,13 @@ export default function GalleryDetail({ images }: GalleryDetailProps) {
             onDragEnd={handleDragEnd}
             className="cursor-grab active:cursor-grabbing"
           >
-            <div className="relative w-full h-[480px]">
-              <Image
+            <Image
                 src={getImageUrl(images[selectedIndex])}
                 alt="Imagen del producto"
                 fill
                 className="object-contain select-none pointer-events-none"
                 draggable={false}
               />
-            </div>
           </motion.div>
         </div>
 
