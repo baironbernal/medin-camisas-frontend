@@ -35,6 +35,7 @@ export type Product = {
   variants?: Variant[];
 };
 
+
 export interface PaginatedResponse<T> {
   current_page: number;
   data: T[];

@@ -14,13 +14,17 @@ import SizeSelector from './SizeSelector';
 import QuantitySelector from './QuantitySelector';
 import ProductActions from './ProductActions';
 import ProductDescription from './ProductDescription';
+import ProductItem from '@/app/components/home/products/ProductItem';
+import { Product } from '@/types/product';
 
 
 interface ProductDetailProps {
-  data: ProductDetail;
+  product: ProductDetail;
+  interestedProducts: Product[];
+
 }
 
-export const WrapperDetail = ({ data }: ProductDetailProps) => {
+export const WrapperDetail = ({ product, interestedProducts  }: ProductDetailProps) => {
   const {
     colors, sizes, availableSizes,
     selectedColor, selectedSize, selectedVariant,
@@ -28,7 +32,7 @@ export const WrapperDetail = ({ data }: ProductDetailProps) => {
     selectColor, selectSize,
     quantityAvailable, remainingStock, inCartQuantity,
     quantitySelected, setQuantitySelected,
-  } = useProductDetail(data);
+  } = useProductDetail(product);
 
   const openCart = useCartStore(state => state.openCart);
   const { rules } = useDiscountRules();
@@ -56,8 +60,8 @@ export const WrapperDetail = ({ data }: ProductDetailProps) => {
 
   const breadcrumbItems = [
     { label: 'Inicio', href: '/' },
-    ...(data.brand ? [{ label: data.brand }] : []),
-    { label: data.name },
+    ...(product.brand ? [{ label: product.brand }] : []),
+    { label: product.name },
   ];
 
   const sharedActionProps = {
@@ -66,7 +70,7 @@ export const WrapperDetail = ({ data }: ProductDetailProps) => {
     remainingStock,
     quantityAvailable,
     quantitySelected,
-    productName: data.name,
+    productName: product.name,
     productImages: currentImages ?? [],
     combinationName: exactKey,
   };
@@ -77,7 +81,7 @@ export const WrapperDetail = ({ data }: ProductDetailProps) => {
 
       {/* Mobile-only: product name above the gallery */}
       <div className="block lg:hidden mb-4">
-        <h1 className="text-3xl font-semibold text-primary">{data.name}</h1>
+        <h1 className="text-3xl font-semibold text-primary">{product.name}</h1>
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
@@ -90,7 +94,7 @@ export const WrapperDetail = ({ data }: ProductDetailProps) => {
           <div className="flex flex-col gap-8 lg:sticky lg:top-24 h-fit">
 
             <FadeIn animation="fadeInUp" delay={0.1}>
-              <ProductInfo name={data.name} price={currentPrice} discount={currentDiscount} />
+              <ProductInfo name={product.name} price={currentPrice} discount={currentDiscount} />
             </FadeIn>
 
             <FadeIn animation="fadeInUp" delay={0.2}>
@@ -124,11 +128,25 @@ export const WrapperDetail = ({ data }: ProductDetailProps) => {
               <ProductActions {...sharedActionProps} btnRef={addToCartBtnRef} onBuyNow={openCart} />
             </FadeIn>
 
-            <ProductDescription description={data.description} />
+            <ProductDescription description={product.description} />
+            
+            
+            
 
           </div>
         </FadeIn>
       </div>
+
+      {interestedProducts && interestedProducts.length > 0 && (
+        <div className="mt-16">
+          <h2 className="text-2xl font-semibold text-primary mb-8">Te podría interesar</h2>
+          <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
+            {interestedProducts.map((p) => (
+              <ProductItem key={p.id} product={p} />
+            ))}
+          </div>
+        </div>
+      )}
 
     </section>
   );

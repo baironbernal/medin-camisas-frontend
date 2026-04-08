@@ -37,7 +37,7 @@ export function getProducts(params?: GetProductsParams) {
 }
 
 
-export function getProduct<T>(slug: string): Promise<ApiResponse<T>> {
+export function getProduct<T>(slug: string): Promise<T> {
     return apiFetch(`/products/${slug}`, {
         cache: 'no-store',
     });

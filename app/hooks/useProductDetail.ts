@@ -2,7 +2,6 @@
 
 import { useMemo, useState, useEffect } from 'react'
 import { ProductDetail } from '@/types/product-detail'
-import { formatCOP } from '../lib/formatPrice'
 import { useCartStore } from '../store/useCartStore'
 
 export function useProductDetail(data: ProductDetail) {
