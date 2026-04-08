@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { motion } from "framer-motion";
 import { Category } from "@/types/category";
-import { X, CircleUserRound, ChevronDown, ChevronRight, ShoppingBag } from "lucide-react";
+import { X, CircleUserRound, ChevronDown, ChevronRight, Handbag } from "lucide-react";
 import { useAuth } from "@/app/useContext/AuthContext";
 import { LogIn } from "lucide-react";
 import NavLink from "./NavLinkContent";
@@ -143,7 +143,7 @@ export default function NavbarMobile({
               className="flex items-center justify-between w-full rounded px-3 py-3 text-lg hover:bg-white/10 text-white"
             >
               <div className="flex items-center gap-3">
-                <ShoppingBag size={24} />
+                <Handbag size={24} />
                 <span>Carrito</span>
               </div>
               {cartCount > 0 && (
@@ -165,9 +165,6 @@ export default function NavbarMobile({
             />
           ))}
         </ul>
-
-        {/* WhatsApp Button */}
-        <WhatsappButton/>
       </motion.div>
 
       {/* Clickable backdrop to close */}

@@ -12,7 +12,14 @@ import { useDiscountRules } from "@/app/useContext/DiscountRuleContext";
 import { toast } from '@/app/lib/toast';
 
 
-export default function CartItem({ product }: { product: Variant }) {
+interface CartItemProps {
+  product: Variant;
+  largeSizeActive?: boolean;
+  isLargeSize?: boolean;
+  surcharge?: number;
+}
+
+export default function CartItem({ product, largeSizeActive = false, isLargeSize = false, surcharge = 0 }: CartItemProps) {
 
   const removeFromCart = useCartStore(state => state.removeFromCart)
   const updateQuantity = useCartStore(state => state.updateQuantity)
@@ -27,9 +34,10 @@ export default function CartItem({ product }: { product: Variant }) {
   const quantity = product.quantity || 1
 
   const totalCartQuantity = cart.reduce((acc, p) => acc + (p.quantity as number), 0);
-  const discountInfo = getDiscountForQuantity(totalCartQuantity, basePrice);
+  const effectiveBasePrice = largeSizeActive && isLargeSize ? basePrice + surcharge : basePrice;
+  const discountInfo = getDiscountForQuantity(totalCartQuantity, effectiveBasePrice);
   const hasDiscount = discountInfo && discountInfo.discount > 0;
-  const discountedUnitPrice = hasDiscount ? discountInfo.discountedPrice : basePrice;
+  const discountedUnitPrice = hasDiscount ? discountInfo.discountedPrice : effectiveBasePrice;
 
   const productStock = product.stock ?? Infinity;
 
@@ -116,11 +124,14 @@ export default function CartItem({ product }: { product: Variant }) {
             )}
             {hasDiscount ? (
               <>
-                <p className="text-xs line-through text-secondary">Antes: {formatCOP(basePrice)}</p>
+                <p className="text-xs line-through text-secondary">Antes: {formatCOP(effectiveBasePrice)}</p>
                 <p className="text-xs font-semibold text-green-600">Con descuento: {formatCOP(discountedUnitPrice)}</p>
               </>
             ) : (
-              <p className="text-sm font-medium text-primary">{formatCOP(basePrice)}</p>
+              <p className="text-sm font-medium text-primary">{formatCOP(effectiveBasePrice)}</p>
+            )}
+            {largeSizeActive && isLargeSize && (
+              <p className="text-xs text-amber-600">+{formatCOP(surcharge)} recargo talla grande</p>
             )}
           </article>
         </div>

@@ -2,7 +2,7 @@
 
 import { Category } from "@/types/category";
 import { useState, useEffect } from "react";
-import { Menu, ShoppingBag, CircleUserRound } from "lucide-react";
+import { Menu, Handbag, CircleUserRound, Search } from "lucide-react";
 import { useAnimatedOpen } from "@/app/hooks/useAnimatedOpen";
 import { useQueryState } from "nuqs";
 
@@ -12,6 +12,7 @@ import { CartSidebar } from "@/app/(shop)/components";
 import HoverPanel from "./HoverPanel";
 import NavLink from "./NavLinkContent";
 import NavbarMobile from "./NavbarMobile";
+import NavbarSearchBar from "./NavbarSearchBar";
 import Logo from "../commons/Logo";
 import { useCartStore } from "@/app/store/useCartStore";
 
@@ -28,12 +29,18 @@ export default function Navbar({
   logoAlt = "Medin Camisas",
 }: Props) {
   const { isLoggedIn } = useAuth();
-  const { 
-    isOpen: isMenuOpen, 
-    isClosing: isMenuClosing, 
-    open: openMenu, 
-    close: closeMenu 
+  const {
+    isOpen: isMenuOpen,
+    isClosing: isMenuClosing,
+    open: openMenu,
+    close: closeMenu
   } = useAnimatedOpen();
+
+  const {
+    isOpen: isSearchOpen,
+    toggle: toggleSearch,
+    close: closeSearch,
+  } = useAnimatedOpen(220);
   
   const isCartOpen = useCartStore(state => state.isOpen)
   const isCartClosing = useCartStore(state => state.isClosing)
@@ -106,10 +113,16 @@ export default function Navbar({
             </ul>
           </div>
 
-          {/* ================= Login and Cart ================= */}
+          {/* ================= Login, Cart and Search ================= */}
           <div className="hidden lg:flex items-center gap-4">
+            {/* ================= Button Search on navbar ================= */}
+            <button onClick={toggleSearch} className="relative cursor-pointer" aria-label="Buscar">
+              <Search size={25} color="beige" strokeWidth={1} />
+            </button>
+
+            {/* ================= Button Bag Cart ================= */}
             <button onClick={openCart} className="relative cursor-pointer">
-              <ShoppingBag size={30} color="beige" strokeWidth={1} />
+              <Handbag size={25} color="beige" strokeWidth={1} />
               {totalItems > 0 && (
                 <span className="absolute -top-2 -right-2 
                                 bg-red-500 text-white 
@@ -120,19 +133,29 @@ export default function Navbar({
                 </span>
               )}
             </button>
+            {/* ================= Button Login ================= */}
             <NavLink href={isLoggedIn ? "/profile" : "/login"}>
                 {isLoggedIn ? (
-                  <CircleUserRound size={30} color="beige" strokeWidth={1} />
+                  <CircleUserRound size={25} color="beige" strokeWidth={1} />
                 ) : (
-                  <LogIn size={26} color="beige" strokeWidth={1.5} />
+                  <LogIn size={25} color="beige" strokeWidth={1.5} />
                 )}
             </NavLink>
           </div>
 
           {/* ================= Mobile Buttons ================= */}
           <div className="lg:hidden flex items-center gap-4">
+            <button onClick={toggleSearch} className="text-accent/80 hover:text-accent transition-colors" aria-label="Buscar">
+              <Search size={20} strokeWidth={1.5} />
+            </button>
+            <button
+              onClick={openMenu}
+              className="text-white"
+            >
+              <Menu size={20} />
+            </button>
             <button onClick={openCart} className="relative text-white">
-              <ShoppingBag size={28} />
+              <Handbag size={20} />
               {totalItems > 0 && (
                 <span className="absolute -top-2 -right-2 
                                 bg-red-500 text-white 
@@ -142,12 +165,6 @@ export default function Navbar({
                   {totalItems}
                 </span>
               )}
-            </button>
-            <button
-              onClick={openMenu}
-              className="text-white"
-            >
-              <Menu size={28} />
             </button>
           </div>
 
@@ -168,6 +185,9 @@ export default function Navbar({
             }} 
           />
         )}
+
+      {/* ================= Search Bar ================= */}
+      <NavbarSearchBar isOpen={isSearchOpen} onClose={closeSearch} />
 
       {/* ================= Mobile Menu ================= */}
       {isMenuOpen && (

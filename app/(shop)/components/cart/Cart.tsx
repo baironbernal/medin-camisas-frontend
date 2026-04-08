@@ -21,14 +21,17 @@ export default function CartSidebar({ onClose, isClosing }: CartSidebarProps) {
     formState,
     setField,
     loading,
-    error,
+    whatsappLoading,
+    checkoutError,
+    whatsappError,
     orderNumber,
     orderData,
     subtotalDiscounted,
     subtotalOriginal,
+    largeSizeAnalysis,
     handleProceed,
     handleCheckout,
-    getDiscountForQuantity
+    handleWhatsAppOrder,
   } = useCartSidebar(onClose);
 
   return (
@@ -52,9 +55,7 @@ export default function CartSidebar({ onClose, isClosing }: CartSidebarProps) {
         {/* ── HEADER ── */}
         <div className="sticky top-0 border-b border-gray-200 px-6 py-4 flex justify-between items-center">
           {step === 'cart' && (
-            <h2 className="font-heading font-bold text-xl text-primary">
-              Carrito
-            </h2>
+            <h2 className="font-heading font-bold text-xl text-primary">Carrito</h2>
           )}
           {step === 'form' && (
             <div className="flex items-center gap-2">
@@ -64,15 +65,11 @@ export default function CartSidebar({ onClose, isClosing }: CartSidebarProps) {
               >
                 ← Volver
               </button>
-              <h2 className="font-heading font-bold text-xl text-primary">
-                Datos del pedido
-              </h2>
+              <h2 className="font-heading font-bold text-xl text-primary">Datos del pedido</h2>
             </div>
           )}
           {step === 'success' && (
-            <h2 className="font-heading font-bold text-xl text-primary">
-              ¡Pedido realizado!
-            </h2>
+            <h2 className="font-heading font-bold text-xl text-primary">¡Pedido realizado!</h2>
           )}
           <button onClick={onClose} className="cursor-pointer p-2">
             <X size={20} className="text-primary" />
@@ -87,18 +84,21 @@ export default function CartSidebar({ onClose, isClosing }: CartSidebarProps) {
             originalTotal={subtotalOriginal}
             isLoggedIn={isLoggedIn}
             handleProceed={handleProceed}
+            largeSizeAnalysis={largeSizeAnalysis}
+            handleWhatsAppOrder={handleWhatsAppOrder}
+            whatsappLoading={whatsappLoading}
+            error={whatsappError}
           />
         )}
 
         {step === 'form' && (
           <CheckoutFormStep
-            error={error}
+            error={checkoutError}
             loading={loading}
             formState={formState}
             setField={setField}
             handleCheckout={handleCheckout}
             cart={cart}
-            getDiscountForQuantity={getDiscountForQuantity}
             total={subtotalDiscounted}
           />
         )}

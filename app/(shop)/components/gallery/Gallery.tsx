@@ -4,7 +4,15 @@ import Image from 'next/image';
 import { getImageUrl } from '@/app/lib/image';
 import { useEffect, useState } from 'react';
 import { ChevronUp, ChevronDown, ArrowLeft, ArrowRight } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { motion, AnimatePresence } from 'framer-motion';
+
+const slideVariants = {
+  enter: (dir: number) => ({ x: dir >= 0 ? '100%' : '-100%', opacity: 0 }),
+  center: { x: 0, opacity: 1 },
+  exit: (dir: number) => ({ x: dir >= 0 ? '-100%' : '100%', opacity: 0 }),
+};
+
+const slideTransition = { duration: 0.35, ease: [0.25, 0.1, 0.25, 1] as const };
 
 interface GalleryDetailProps {
   images: string[];
@@ -14,6 +22,7 @@ const VISIBLE_THUMBS = 5;
 
 export default function GalleryDetail({ images }: GalleryDetailProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
+  const [direction, setDirection] = useState(0);
   const [thumbOffset, setThumbOffset] = useState(0);
 
   useEffect(() => {
@@ -26,8 +35,20 @@ export default function GalleryDetail({ images }: GalleryDetailProps) {
   const canScrollUp = thumbOffset > 0;
   const canScrollDown = thumbOffset + VISIBLE_THUMBS < images.length;
 
-  const prev = () => setSelectedIndex(i => (i > 0 ? i - 1 : images.length - 1));
-  const next = () => setSelectedIndex(i => (i < images.length - 1 ? i + 1 : 0));
+  const selectImage = (index: number) => {
+    setDirection(index > selectedIndex ? 1 : -1);
+    setSelectedIndex(index);
+  };
+
+  const prev = () => {
+    setDirection(-1);
+    setSelectedIndex(i => (i > 0 ? i - 1 : images.length - 1));
+  };
+
+  const next = () => {
+    setDirection(1);
+    setSelectedIndex(i => (i < images.length - 1 ? i + 1 : 0));
+  };
 
   const handleDragEnd = (_: unknown, info: { offset: { x: number } }) => {
     if (info.offset.x < -40) next();
@@ -39,15 +60,23 @@ export default function GalleryDetail({ images }: GalleryDetailProps) {
 
       {/* ── MOBILE: swipeable full-width + dots ── */}
       <div className="lg:hidden">
-        <div className="overflow-hidden">
-          <motion.div
-            drag="x"
-            dragConstraints={{ left: 0, right: 0 }}
-            dragElastic={0.1}
-            onDragEnd={handleDragEnd}
-            className="cursor-grab active:cursor-grabbing"
-          >
-            <Image
+        <div className="overflow-hidden relative">
+          <AnimatePresence custom={direction} mode="popLayout" initial={false}>
+            <motion.div
+              key={selectedIndex}
+              custom={direction}
+              variants={slideVariants}
+              initial="enter"
+              animate="center"
+              exit="exit"
+              transition={slideTransition}
+              drag="x"
+              dragConstraints={{ left: 0, right: 0 }}
+              dragElastic={0.1}
+              onDragEnd={handleDragEnd}
+              className="cursor-grab active:cursor-grabbing w-full"
+            >
+              <Image
                 src={getImageUrl(images[selectedIndex])}
                 alt="Imagen del producto"
                 width={800}
@@ -56,7 +85,8 @@ export default function GalleryDetail({ images }: GalleryDetailProps) {
                 className="object-contain select-none pointer-events-none"
                 draggable={false}
               />
-          </motion.div>
+            </motion.div>
+          </AnimatePresence>
         </div>
 
         {/* Dash dots */}
@@ -65,7 +95,7 @@ export default function GalleryDetail({ images }: GalleryDetailProps) {
             {images.map((_, i) => (
               <button
                 key={i}
-                onClick={() => setSelectedIndex(i)}
+                onClick={() => selectImage(i)}
                 className={`h-0.5 rounded-full transition-all duration-300 ${
                   i === selectedIndex ? 'w-8 bg-primary' : 'w-4 bg-gray-300'
                 }`}
@@ -96,7 +126,7 @@ export default function GalleryDetail({ images }: GalleryDetailProps) {
               return (
                 <div
                   key={realIndex}
-                  onClick={() => setSelectedIndex(realIndex)}
+                  onClick={() => selectImage(realIndex)}
                   className={`relative cursor-pointer border-2 transition-all w-16 h-20 overflow-hidden shrink-0 ${
                     selectedIndex === realIndex
                       ? 'border-primary'
@@ -136,13 +166,26 @@ export default function GalleryDetail({ images }: GalleryDetailProps) {
             </button>
           )}
 
-          <div className="relative w-full h-[500px]">
-            <Image
-              src={getImageUrl(images[selectedIndex])}
-              alt="Imagen del producto"
-              fill
-              className="object-contain"
-            />
+          <div className="relative w-full h-[500px] overflow-hidden">
+            <AnimatePresence custom={direction} mode="popLayout" initial={false}>
+              <motion.div
+                key={selectedIndex}
+                custom={direction}
+                variants={slideVariants}
+                initial="enter"
+                animate="center"
+                exit="exit"
+                transition={slideTransition}
+                className="absolute inset-0"
+              >
+                <Image
+                  src={getImageUrl(images[selectedIndex])}
+                  alt="Imagen del producto"
+                  fill
+                  className="object-contain"
+                />
+              </motion.div>
+            </AnimatePresence>
           </div>
 
           {images.length > 1 && (

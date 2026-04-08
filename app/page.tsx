@@ -1,8 +1,7 @@
-import { 
-  BannerHome as BannerSection, 
-  MayoristaSection, 
-  Products as ProductSection, 
-  VisitUs, 
+import {
+  BannerHome as BannerSection,
+  Products as ProductSection,
+  VisitUs,
   Us,
   FadeIn
 } from "./components";
@@ -27,13 +26,6 @@ export default async function Home() {
       <section className="bg-beige w-full px-4 py-16">
         <FadeIn animation="fadeInUp" delay={0.2}>
           <ProductSection products={ products } />
-        </FadeIn>
-      </section>
-
-      {/* Mayorista Section */}
-      <section className="bg-dark w-full px-4 py-16 flex flex-col justify-between gap:10 lg:gap-20">
-        <FadeIn animation="fadeInLeft" delay={0.3}>
-          <MayoristaSection/>
         </FadeIn>
       </section>
 

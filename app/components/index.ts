@@ -25,4 +25,3 @@ export { default as Products } from './home/products/Products';
 export { default as VisitUs } from './home/visit-us/VisitUs';
 export { default as WhatsAppFloat } from './home/whatsapp/WhatsappFloat';
 export { default as Us } from './home/who-are/Us';
-export { default as MayoristaSection } from './home/wholesaler/Wholesaler';

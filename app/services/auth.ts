@@ -10,35 +10,51 @@ export async function signup(state: FormState, formData: FormData) {
 
    // Validate form fields
   const validatedFields = SignupFormSchema.safeParse({
-    name: formData.get('name'),
-    email: formData.get('email'),
-    cellphone: formData.get('cellphone'),
-    address: formData.get('address'),
-    password: formData.get('password'),
+    name:             formData.get('name'),
+    email:            formData.get('email'),
+    cellphone:        formData.get('cellphone'),
+    password:         formData.get('password'),
+    whatsapp_number:  formData.get('whatsapp_number') || undefined,
+    city:             formData.get('city') || undefined,
+    selling_channel:  formData.get('selling_channel') || undefined,
+    clothing_type:    formData.get('clothing_type') || undefined,
+    selling_location: formData.get('selling_location') || undefined,
+    business_name:    formData.get('business_name') || undefined,
   })
- 
+
   // If any form fields are invalid, return early
   if (!validatedFields.success) {
     return {
       errors: validatedFields.error.flatten().fieldErrors,
       fields: {
-        name: formData.get('name') as string,
-        email: formData.get('email') as string,
-        cellphone: formData.get('cellphone') as string,
-        address: formData.get('address') as string,
+        name:             formData.get('name') as string,
+        email:            formData.get('email') as string,
+        cellphone:        formData.get('cellphone') as string,
+        whatsapp_number:  formData.get('whatsapp_number') as string,
+        city:             formData.get('city') as string,
+        selling_channel:  formData.get('selling_channel') as string,
+        clothing_type:    formData.get('clothing_type') as string,
+        selling_location: formData.get('selling_location') as string,
+        business_name:    formData.get('business_name') as string,
       }
     }
   }
-  
+
   const nameRaw = validatedFields.data.name;
+  const d = validatedFields.data;
   const registerPayload = {
-    name: nameRaw,
-    first_name: nameRaw.split(' ')[0] ?? nameRaw,
-    last_name: nameRaw.split(' ').slice(1).join(' ') ?? '',
-    phone_number: validatedFields.data.cellphone,
-    email: validatedFields.data.email,
-    password: validatedFields.data.password,
-    address: validatedFields.data.address
+    name:             nameRaw,
+    first_name:       nameRaw.split(' ')[0] ?? nameRaw,
+    last_name:        nameRaw.split(' ').slice(1).join(' ') ?? '',
+    phone_number:     d.cellphone,
+    email:            d.email,
+    password:         d.password,
+    whatsapp_number:  d.whatsapp_number,
+    city:             d.city,
+    selling_channel:  d.selling_channel,
+    clothing_type:    d.clothing_type,
+    selling_location: d.selling_location,
+    business_name:    d.business_name,
   };
 
   const response = await apiFetch<AuthResponse>('/register', {
@@ -49,14 +65,13 @@ export async function signup(state: FormState, formData: FormData) {
 
   const user = response.user;
 
-  if(!user) {
-     return {
-      message: 'An error occurred while creating your account.',
+  if (!user) {
+    return {
+      message: 'Ocurrió un error al crear tu cuenta. Intenta de nuevo.',
       fields: {
-        name: validatedFields.data.name,
-        email: validatedFields.data.email,
+        name:     validatedFields.data.name,
+        email:    validatedFields.data.email,
         cellphone: validatedFields.data.cellphone,
-        address: validatedFields.data.address,
       }
     }
   }

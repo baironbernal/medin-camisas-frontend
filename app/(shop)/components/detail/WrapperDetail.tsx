@@ -14,7 +14,7 @@ import SizeSelector from './SizeSelector';
 import QuantitySelector from './QuantitySelector';
 import ProductActions from './ProductActions';
 import ProductDescription from './ProductDescription';
-import FloatingAddToCart from './FloatingAddToCart';
+
 
 interface ProductDetailProps {
   data: ProductDetail;
@@ -130,7 +130,6 @@ export const WrapperDetail = ({ data }: ProductDetailProps) => {
         </FadeIn>
       </div>
 
-      <FloatingAddToCart show={showFloatingBtn} {...sharedActionProps} />
     </section>
   );
 };

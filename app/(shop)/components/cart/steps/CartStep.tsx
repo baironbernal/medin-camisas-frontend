@@ -1,10 +1,16 @@
 'use client';
 
-import { ShoppingBag, ArrowRight } from 'lucide-react';
+import { ShoppingBag, ArrowRight, MessageCircle, AlertTriangle } from 'lucide-react';
 import { formatCOP } from '@/app/lib/formatPrice';
 import CartItem from '../CartItem';
-
 import { Variant } from '@/types/variant';
+
+interface LargeSizeAnalysis {
+  triggers: boolean;
+  surcharge_per_item: number;
+  proportion: number;
+  large_variant_ids: Set<number>;
+}
 
 interface CartStepProps {
   cart: Variant[];
@@ -12,6 +18,10 @@ interface CartStepProps {
   originalTotal: number;
   isLoggedIn: boolean;
   handleProceed: () => void;
+  largeSizeAnalysis: LargeSizeAnalysis;
+  handleWhatsAppOrder: () => void;
+  whatsappLoading: boolean;
+  error: string;
 }
 
 export default function CartStep({
@@ -20,10 +30,15 @@ export default function CartStep({
   originalTotal,
   isLoggedIn,
   handleProceed,
+  largeSizeAnalysis,
+  handleWhatsAppOrder,
+  whatsappLoading,
+  error,
 }: CartStepProps) {
   return (
     <>
       <div className="flex-1 px-6 py-4 overflow-y-auto">
+        
         {cart.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center gap-3">
             <ShoppingBag size={48} className="text-gray-300" />
@@ -32,12 +47,31 @@ export default function CartStep({
           </div>
         ) : (
           <div className="flex flex-col gap-4">
-            <div className="bg-green-50 border  text-green-800 px-4 py-2 rounded-lg text-xs text-center shadow-sm">
+            <div className="bg-green-50 border text-green-800 px-4 py-2 rounded-lg text-xs text-center shadow-sm">
               Despues de <b>6</b> unidades precio emprendedor (LLEVA MÁS DE 11 PARA PRECIO MAYORISTA)
             </div>
+
+            {largeSizeAnalysis.triggers && (
+              <div className="bg-amber-50 border border-amber-300 text-amber-800 px-4 py-3 rounded-lg text-xs shadow-sm flex gap-2 items-start">
+                <AlertTriangle size={14} className="mt-0.5 flex-shrink-0 text-amber-500" />
+                <span>
+                  <b>Recargo tallas grandes activo</b> — el {Math.round(largeSizeAnalysis.proportion * 100)}% de tu
+                  pedido son tallas grandes (XL, XXL, 2XL o superiores). Se aplica un recargo de{' '}
+                  <b>{formatCOP(largeSizeAnalysis.surcharge_per_item)}</b> por cada prenda de talla grande.
+                  Combina con tallas más pequeñas para evitar el recargo.
+                </span>
+              </div>
+            )}
+
             <ul className="space-y-4">
               {cart.map((product) => (
-                <CartItem key={product.id} product={product} />
+                <CartItem
+                  key={product.id}
+                  product={product}
+                  largeSizeActive={largeSizeAnalysis.triggers}
+                  isLargeSize={largeSizeAnalysis.large_variant_ids.has(product.id)}
+                  surcharge={largeSizeAnalysis.surcharge_per_item}
+                />
               ))}
             </ul>
           </div>
@@ -45,8 +79,11 @@ export default function CartStep({
       </div>
 
       {cart.length > 0 && (
-        <div className="sticky bottom-0 bg-accent-light border-t border-gray-200 px-6 py-4">
-          <div className="flex justify-between items-center mb-4">
+        <div className="sticky bottom-0 bg-accent-light border-t border-gray-200 px-6 py-4 flex flex-col gap-3">
+          {error && (
+            <p className="text-xs text-red-600 text-center">{error}</p>
+          )}
+          <div className="flex justify-between items-center">
             <span className="text-base font-medium text-primary">Total</span>
             <div className="text-right">
               {total < originalTotal && (
@@ -66,6 +103,20 @@ export default function CartStep({
           >
             {isLoggedIn ? 'Proceder al pago' : 'Inicia sesión para comprar'}
             <ArrowRight size={16} />
+          </button>
+          <button
+            onClick={handleWhatsAppOrder}
+            disabled={whatsappLoading}
+            className="w-full bg-green-500 hover:bg-green-600 disabled:opacity-60 text-white py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
+          >
+            {whatsappLoading ? (
+              'Creando pedido...'
+            ) : (
+              <>
+                <MessageCircle size={16} />
+                Crear pedido en WhatsApp
+              </>
+            )}
           </button>
         </div>
       )}

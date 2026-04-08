@@ -1,6 +1,31 @@
 import { apiFetch } from './fetcher';
 import { getAuthHeaders } from './auth';
 
+export interface WhatsAppOrderPayload {
+  customer_name?: string;
+  customer_phone?: string;
+  notes?: string;
+  items: CheckoutItem[];
+}
+
+export interface WhatsAppOrderResponse {
+  success: boolean;
+  message: string;
+  data: {
+    order: {
+      id: number;
+      order_number: string;
+      status: string;
+      total: string;
+      subtotal_original: string;
+      subtotal_discounted: string;
+      currency: string;
+      created_at: string;
+    };
+    items: OrderItem[];
+  };
+}
+
 export interface CheckoutItem {
   product_variant_id: number;
   quantity: number;
@@ -71,6 +96,20 @@ export async function checkout(
     headers: {
       'Content-Type': 'application/json',
       'X-Session-ID': sessionId,
+      ...authHeaders,
+    },
+    body: JSON.stringify(payload),
+  });
+}
+
+export async function createWhatsAppOrder(
+  payload: WhatsAppOrderPayload
+): Promise<WhatsAppOrderResponse> {
+  const authHeaders = await getAuthHeaders();
+  return apiFetch<WhatsAppOrderResponse>('/whatsapp-order', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
       ...authHeaders,
     },
     body: JSON.stringify(payload),

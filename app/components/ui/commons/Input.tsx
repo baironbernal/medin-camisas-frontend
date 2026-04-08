@@ -3,7 +3,7 @@ import React, { forwardRef, useState } from 'react';
 import { Eye, EyeOff } from 'lucide-react';
 
 export interface InputProps extends React.InputHTMLAttributes<HTMLInputElement> {
-  label?: string;
+  label?: React.ReactNode;
   error?: string | string[];
   theme?: 'light' | 'dark';
   icon?: React.ReactNode;

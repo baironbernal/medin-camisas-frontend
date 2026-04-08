@@ -3,18 +3,17 @@
 import { Loader2, ArrowRight } from 'lucide-react';
 import { formatCOP } from '@/app/lib/formatPrice';
 import { Input } from '@/app/components';
-
-import { FormState } from '@/app/hooks/useCartSidebar';
+import { useDiscountRules } from '@/app/useContext/DiscountRuleContext';
+import { CheckoutFormState } from '@/app/hooks/cart/useCheckoutForm';
 import { Variant } from '@/types/variant';
 
 interface CheckoutFormStepProps {
   error: string;
   loading: boolean;
-  formState: FormState;
-  setField: (field: keyof FormState) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  formState: CheckoutFormState;
+  setField: (field: keyof CheckoutFormState) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
   handleCheckout: (e: React.FormEvent) => void;
   cart: Variant[];
-  getDiscountForQuantity: (quantity: number, basePrice: number) => { discount: number; discountedPrice: number } | null;
   total: number;
 }
 
@@ -25,9 +24,11 @@ export default function CheckoutFormStep({
   setField,
   handleCheckout,
   cart,
-  getDiscountForQuantity,
   total,
 }: CheckoutFormStepProps) {
+  const { getDiscountForQuantity } = useDiscountRules();
+  const totalQuantity = cart.reduce((acc, p) => acc + ((p.quantity as number) || 1), 0);
+
   const inputClass =
     'w-full px-3 py-2.5 rounded-lg border border-gray-200 bg-white text-primary placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-sm';
 
@@ -89,14 +90,15 @@ export default function CheckoutFormStep({
           <p className="text-xs font-semibold text-secondary uppercase tracking-wider mb-2">
             Resumen del pedido
           </p>
-          {cart.map((p) => {
+          {cart.map(p => {
             const basePrice = Number(p.price);
-            const quantity = p.quantity ?? 1;
-            const discountInfo = getDiscountForQuantity(quantity, basePrice);
-            const finalPrice = discountInfo && discountInfo.discount > 0 
-              ? discountInfo.discountedPrice 
+            const quantity  = (p.quantity as number) || 1;
+            // Discount is based on total cart quantity, not the individual item quantity
+            const discountInfo = getDiscountForQuantity(totalQuantity, basePrice);
+            const finalPrice   = discountInfo && discountInfo.discount > 0
+              ? discountInfo.discountedPrice
               : basePrice;
-            
+
             return (
               <div key={p.id} className="flex justify-between text-sm text-primary">
                 <span className="truncate max-w-[160px]">
@@ -108,9 +110,7 @@ export default function CheckoutFormStep({
                       {formatCOP(basePrice * quantity)}
                     </span>
                   )}
-                  <span className="font-medium">
-                    {formatCOP(finalPrice * quantity)}
-                  </span>
+                  <span className="font-medium">{formatCOP(finalPrice * quantity)}</span>
                 </div>
               </div>
             );
