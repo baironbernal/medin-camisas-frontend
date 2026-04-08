@@ -14,11 +14,10 @@ import { toast } from '@/app/lib/toast';
 
 export default function CartItem({ product }: { product: Variant }) {
 
-  
-
   const removeFromCart = useCartStore(state => state.removeFromCart)
   const updateQuantity = useCartStore(state => state.updateQuantity)
   const setQuantity = useCartStore(state => state.setQuantity)
+  const cart = useCartStore(state => state.cart)
 
   const { getDiscountForQuantity } = useDiscountRules();
 
@@ -27,10 +26,10 @@ export default function CartItem({ product }: { product: Variant }) {
   const basePrice = typeof product.price === 'number' ? product.price : parseFloat(product.price) || 0
   const quantity = product.quantity || 1
 
-  const discountInfo = getDiscountForQuantity(quantity, basePrice);
+  const totalCartQuantity = cart.reduce((acc, p) => acc + (p.quantity as number), 0);
+  const discountInfo = getDiscountForQuantity(totalCartQuantity, basePrice);
   const hasDiscount = discountInfo && discountInfo.discount > 0;
-  const finalUnitPrice = hasDiscount ? discountInfo.discountedPrice : basePrice;
-  const finalTotalPrice = finalUnitPrice * quantity;
+  const discountedUnitPrice = hasDiscount ? discountInfo.discountedPrice : basePrice;
 
   const productStock = product.stock ?? Infinity;
 
@@ -117,8 +116,8 @@ export default function CartItem({ product }: { product: Variant }) {
             )}
             {hasDiscount ? (
               <>
-                <p className="text-xs !line-through text-secondary ">Antes: {formatCOP(basePrice)}</p>
-                <p className="text-xs font-semibold text-green-600">Con descuento: {formatCOP(finalUnitPrice)}</p>
+                <p className="text-xs line-through text-secondary">Antes: {formatCOP(basePrice)}</p>
+                <p className="text-xs font-semibold text-green-600">Con descuento: {formatCOP(discountedUnitPrice)}</p>
               </>
             ) : (
               <p className="text-sm font-medium text-primary">{formatCOP(basePrice)}</p>
@@ -153,7 +152,7 @@ export default function CartItem({ product }: { product: Variant }) {
 
       {/* Total Price */}
       <div className="flex flex-col justify-between items-end ">
-        <span className="text-sm font-semibold text-primary">{formatCOP(finalTotalPrice)}</span>
+        <span className="text-sm font-semibold text-primary">{formatCOP(discountedUnitPrice * quantity)}</span>
         <button
             title="Eliminar producto"
             className="text-gray-400 hover:text-red-500 transition-colors p-1"

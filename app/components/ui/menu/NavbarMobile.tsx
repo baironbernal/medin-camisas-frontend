@@ -115,7 +115,7 @@ export default function NavbarMobile({
           <li className="w-full">
             {isLoggedIn ? (
               <NavLink
-                href="/perfil"
+                href="/profile"
                 onClick={onClose}
                 className="flex items-center gap-3 rounded px-3 py-3 text-lg hover:bg-white/10 text-accent font-medium w-fit"
               >

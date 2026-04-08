@@ -2,12 +2,11 @@
 const WhatsappButton = () => {
   return (
     <a
-            href="https://wa.me/"
+            href="https://wa.me/573024197103"
             target="_blank"
             rel="noopener noreferrer"
             className="
-              hidden
-              lg:flex
+              flex
               items-center
               rounded-full
               bg-accent

@@ -101,20 +101,17 @@ export function useCartSidebar(onClose: () => void) {
     }[];
   } | null>(null);
 
-  const subtotalDiscounted = cart.reduce((acc, p) => {
-    const basePrice = Number(p.price);
-    const quantity = p.quantity as number;
-    const discountInfo = getDiscountForQuantity(quantity, basePrice);
-    const finalPrice = discountInfo && discountInfo.discount > 0 
-      ? discountInfo.discountedPrice 
-      : basePrice;
-    return acc + finalPrice * quantity;
-  }, 0);
-
   const subtotalOriginal = cart.reduce(
     (acc, p) => acc + Number(p.price) * (p.quantity as number),
     0
   );
+
+  const totalQuantity = cart.reduce((acc, p) => acc + (p.quantity as number), 0);
+  const cartDiscountInfo = getDiscountForQuantity(totalQuantity, subtotalOriginal);
+  const subtotalDiscounted =
+    cartDiscountInfo && cartDiscountInfo.discount > 0
+      ? cartDiscountInfo.discountedPrice
+      : subtotalOriginal;
 
   const totalDiscount = subtotalOriginal - subtotalDiscounted;
 
@@ -152,7 +149,7 @@ export function useCartSidebar(onClose: () => void) {
         const unitPrice = Number(item.price);
         const quantity = item.quantity as number;
         const totalPrice = unitPrice * quantity;
-        const discountInfo = getDiscountForQuantity(quantity, unitPrice);
+        const discountInfo = getDiscountForQuantity(totalQuantity, unitPrice);
         const hasDiscount = discountInfo && discountInfo.discount > 0;
         const discountedUnitPrice = hasDiscount ? discountInfo.discountedPrice : unitPrice;
         const discountedTotalPrice = discountedUnitPrice * quantity;

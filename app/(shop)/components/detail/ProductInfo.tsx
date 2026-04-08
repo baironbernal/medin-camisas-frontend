@@ -9,7 +9,7 @@ interface ProductInfoProps {
 export default function ProductInfo({ name, price, discount }: ProductInfoProps) {
   return (
     <div className="flex flex-col gap-2">
-      <h1 className="text-3xl font-semibold text-primary">{name}</h1>
+      <h1 className="hidden lg:block text-3xl font-semibold text-primary">{name}</h1>
       {discount && discount.discount > 0 ? (
         <p className="text-lg text-gray-400 line-through">{formatCOP(price)}</p>
       ) : (

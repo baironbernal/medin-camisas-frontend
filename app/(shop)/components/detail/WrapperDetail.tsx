@@ -75,6 +75,11 @@ export const WrapperDetail = ({ data }: ProductDetailProps) => {
     <section className="w-full container mx-auto px-6 py-10 font-sans">
       <Breadcrumb items={breadcrumbItems} className="mb-8" />
 
+      {/* Mobile-only: product name above the gallery */}
+      <div className="block lg:hidden mb-4">
+        <h1 className="text-3xl font-semibold text-primary">{data.name}</h1>
+      </div>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-12">
 
         <FadeIn animation="fadeInLeft" duration={0.7}>
