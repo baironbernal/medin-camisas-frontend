@@ -39,7 +39,7 @@ export default function GalleryDetail({ images }: GalleryDetailProps) {
 
       {/* ── MOBILE: swipeable full-width + dots ── */}
       <div className="lg:hidden">
-        <div className="overflow-hidden relative">
+        <div className="overflow-hidden">
           <motion.div
             drag="x"
             dragConstraints={{ left: 0, right: 0 }}
@@ -50,7 +50,9 @@ export default function GalleryDetail({ images }: GalleryDetailProps) {
             <Image
                 src={getImageUrl(images[selectedIndex])}
                 alt="Imagen del producto"
-                fill
+                width={800}
+                height={1000}
+                style={{ width: '100%', height: 'auto' }}
                 className="object-contain select-none pointer-events-none"
                 draggable={false}
               />
