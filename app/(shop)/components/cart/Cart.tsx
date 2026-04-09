@@ -26,6 +26,7 @@ export default function CartSidebar({ onClose, isClosing }: CartSidebarProps) {
     whatsappError,
     orderNumber,
     orderData,
+    calculatedData,
     subtotalDiscounted,
     subtotalOriginal,
     largeSizeAnalysis,
@@ -85,6 +86,7 @@ export default function CartSidebar({ onClose, isClosing }: CartSidebarProps) {
             isLoggedIn={isLoggedIn}
             handleProceed={handleProceed}
             largeSizeAnalysis={largeSizeAnalysis}
+            calculatedData={calculatedData}
             handleWhatsAppOrder={handleWhatsAppOrder}
             whatsappLoading={whatsappLoading}
             error={whatsappError}
@@ -100,6 +102,7 @@ export default function CartSidebar({ onClose, isClosing }: CartSidebarProps) {
             handleCheckout={handleCheckout}
             cart={cart}
             total={subtotalDiscounted}
+            calculatedData={calculatedData}
           />
         )}
 

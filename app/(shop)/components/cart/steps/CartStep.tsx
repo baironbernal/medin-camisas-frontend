@@ -4,13 +4,7 @@ import { ShoppingBag, ArrowRight, MessageCircle, AlertTriangle } from 'lucide-re
 import { formatCOP } from '@/app/lib/formatPrice';
 import CartItem from '../CartItem';
 import { Variant } from '@/types/variant';
-
-interface LargeSizeAnalysis {
-  triggers: boolean;
-  surcharge_per_item: number;
-  proportion: number;
-  large_variant_ids: Set<number>;
-}
+import { CartCalculationResult, LargeSizeAnalysis } from '@/app/services/cart';
 
 interface CartStepProps {
   cart: Variant[];
@@ -19,6 +13,7 @@ interface CartStepProps {
   isLoggedIn: boolean;
   handleProceed: () => void;
   largeSizeAnalysis: LargeSizeAnalysis;
+  calculatedData: CartCalculationResult | null;
   handleWhatsAppOrder: () => void;
   whatsappLoading: boolean;
   error: string;
@@ -31,14 +26,20 @@ export default function CartStep({
   isLoggedIn,
   handleProceed,
   largeSizeAnalysis,
+  calculatedData,
   handleWhatsAppOrder,
   whatsappLoading,
   error,
 }: CartStepProps) {
+  // Build a map for O(1) lookup of calculated item by variant id
+  const calculatedItemsMap = new Map(
+    (calculatedData?.items ?? []).map(item => [item.product_variant_id, item])
+  );
+
   return (
     <>
       <div className="flex-1 px-6 py-4 overflow-y-auto">
-        
+
         {cart.length === 0 ? (
           <div className="flex flex-col items-center justify-center h-full text-center gap-3">
             <ShoppingBag size={48} className="text-gray-300" />
@@ -68,9 +69,7 @@ export default function CartStep({
                 <CartItem
                   key={product.id}
                   product={product}
-                  largeSizeActive={largeSizeAnalysis.triggers}
-                  isLargeSize={largeSizeAnalysis.large_variant_ids.has(product.id)}
-                  surcharge={largeSizeAnalysis.surcharge_per_item}
+                  calculatedItem={calculatedItemsMap.get(product.id) ?? null}
                 />
               ))}
             </ul>

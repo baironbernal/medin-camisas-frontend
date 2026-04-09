@@ -1,40 +1,9 @@
 import { apiFetch } from './fetcher';
 import { getAuthHeaders } from './auth';
 
-export interface WhatsAppOrderPayload {
-  customer_name?: string;
-  customer_phone?: string;
-  notes?: string;
-  items: CheckoutItem[];
-}
-
-export interface WhatsAppOrderResponse {
-  success: boolean;
-  message: string;
-  data: {
-    order: {
-      id: number;
-      order_number: string;
-      status: string;
-      total: string;
-      subtotal_original: string;
-      subtotal_discounted: string;
-      currency: string;
-      created_at: string;
-    };
-    items: OrderItem[];
-  };
-}
-
 export interface CheckoutItem {
   product_variant_id: number;
   quantity: number;
-  discount_rule_id: number | null;
-  discount_percentage: number;
-  unit_price: number;
-  discounted_unit_price: number;
-  total_price: number;
-  discounted_total_price: number;
 }
 
 export interface CheckoutPayload {
@@ -42,8 +11,13 @@ export interface CheckoutPayload {
   customer_name: string;
   customer_phone?: string;
   notes?: string;
-  subtotal_original: number;
-  subtotal_discounted: number;
+  items: CheckoutItem[];
+}
+
+export interface WhatsAppOrderPayload {
+  customer_name?: string;
+  customer_phone?: string;
+  notes?: string;
   items: CheckoutItem[];
 }
 
@@ -83,6 +57,24 @@ export interface OrderResponse {
     };
     items: OrderItem[];
     payment: WompiPaymentConfig;
+  };
+}
+
+export interface WhatsAppOrderResponse {
+  success: boolean;
+  message: string;
+  data: {
+    order: {
+      id: number;
+      order_number: string;
+      status: string;
+      total: string;
+      subtotal_original: string;
+      subtotal_discounted: string;
+      currency: string;
+      created_at: string;
+    };
+    items: OrderItem[];
   };
 }
 

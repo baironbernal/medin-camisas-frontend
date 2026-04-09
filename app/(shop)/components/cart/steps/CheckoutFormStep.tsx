@@ -3,8 +3,8 @@
 import { Loader2, ArrowRight } from 'lucide-react';
 import { formatCOP } from '@/app/lib/formatPrice';
 import { Input } from '@/app/components';
-import { useDiscountRules } from '@/app/useContext/DiscountRuleContext';
 import { CheckoutFormState } from '@/app/hooks/cart/useCheckoutForm';
+import { CartCalculationResult } from '@/app/services/cart';
 import { Variant } from '@/types/variant';
 
 interface CheckoutFormStepProps {
@@ -15,6 +15,7 @@ interface CheckoutFormStepProps {
   handleCheckout: (e: React.FormEvent) => void;
   cart: Variant[];
   total: number;
+  calculatedData: CartCalculationResult | null;
 }
 
 export default function CheckoutFormStep({
@@ -25,12 +26,15 @@ export default function CheckoutFormStep({
   handleCheckout,
   cart,
   total,
+  calculatedData,
 }: CheckoutFormStepProps) {
-  const { getDiscountForQuantity } = useDiscountRules();
-  const totalQuantity = cart.reduce((acc, p) => acc + ((p.quantity as number) || 1), 0);
-
   const inputClass =
     'w-full px-3 py-2.5 rounded-lg border border-gray-200 bg-white text-primary placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary transition-all text-sm';
+
+  // Build a map for O(1) lookup by variant id
+  const calculatedItemsMap = new Map(
+    (calculatedData?.items ?? []).map(item => [item.product_variant_id, item])
+  );
 
   return (
     <div className="flex-1 px-6 py-4 overflow-y-auto">
@@ -91,13 +95,11 @@ export default function CheckoutFormStep({
             Resumen del pedido
           </p>
           {cart.map(p => {
-            const basePrice = Number(p.price);
-            const quantity  = (p.quantity as number) || 1;
-            // Discount is based on total cart quantity, not the individual item quantity
-            const discountInfo = getDiscountForQuantity(totalQuantity, basePrice);
-            const finalPrice   = discountInfo && discountInfo.discount > 0
-              ? discountInfo.discountedPrice
-              : basePrice;
+            const calculatedItem = calculatedItemsMap.get(p.id);
+            const quantity       = (p.quantity as number) || 1;
+            const basePrice      = typeof p.price === 'number' ? p.price : parseFloat(p.price) || 0;
+            const unitPrice      = calculatedItem?.unit_price          ?? basePrice;
+            const finalPrice     = calculatedItem?.discounted_unit_price ?? unitPrice;
 
             return (
               <div key={p.id} className="flex justify-between text-sm text-primary">
@@ -105,9 +107,9 @@ export default function CheckoutFormStep({
                   {p.product_name || `Variante #${p.id}`} × {quantity}
                 </span>
                 <div className="flex items-center gap-2 shrink-0">
-                  {finalPrice < basePrice && (
+                  {finalPrice < unitPrice && (
                     <span className="text-xs text-gray-400 line-through">
-                      {formatCOP(basePrice * quantity)}
+                      {formatCOP(unitPrice * quantity)}
                     </span>
                   )}
                   <span className="font-medium">{formatCOP(finalPrice * quantity)}</span>

@@ -4,7 +4,7 @@ import { useState, useCallback } from 'react';
 import { checkout } from '@/app/services/checkout';
 import { useCartStore } from '@/app/store/useCartStore';
 import { CheckoutFormState } from './useCheckoutForm';
-import { CheckoutItem } from './useCartPricing';
+import { SimpleCheckoutItem } from './useCartPricing';
 
 export interface OrderData {
   total: string;
@@ -62,17 +62,13 @@ function getSessionId(): string {
 }
 
 interface UseWompiCheckoutParams {
-  buildCheckoutItems: () => CheckoutItem[];
-  subtotalOriginal: number;
-  subtotalDiscounted: number;
+  buildCheckoutItems: () => SimpleCheckoutItem[];
   formState: CheckoutFormState;
   onSuccess: (orderNumber: string, orderData: OrderData) => void;
 }
 
 export function useWompiCheckout({
   buildCheckoutItems,
-  subtotalOriginal,
-  subtotalDiscounted,
   formState,
   onSuccess,
 }: UseWompiCheckoutParams) {
@@ -88,13 +84,11 @@ export function useWompiCheckout({
     try {
       const res = await checkout(
         {
-          customer_name:        formState.customer_name,
-          customer_email:       formState.customer_email,
-          customer_phone:       formState.customer_phone || undefined,
-          notes:                formState.notes          || undefined,
-          subtotal_original:    subtotalOriginal,
-          subtotal_discounted:  subtotalDiscounted,
-          items:                buildCheckoutItems(),
+          customer_name:  formState.customer_name,
+          customer_email: formState.customer_email,
+          customer_phone: formState.customer_phone || undefined,
+          notes:          formState.notes          || undefined,
+          items:          buildCheckoutItems(),
         },
         getSessionId()
       );
@@ -104,11 +98,11 @@ export function useWompiCheckout({
       await loadWompiScript(payment.public_key);
 
       const widget = new WidgetCheckout({
-        currency:     payment.currency,
+        currency:      payment.currency,
         amountInCents: payment.amount_in_cents,
-        reference:    payment.reference,
-        publicKey:    payment.public_key,
-        signature:    { integrity: payment.signature },
+        reference:     payment.reference,
+        publicKey:     payment.public_key,
+        signature:     { integrity: payment.signature },
       });
 
       widget.open(result => {
@@ -134,7 +128,7 @@ export function useWompiCheckout({
     } finally {
       setLoading(false);
     }
-  }, [formState, subtotalOriginal, subtotalDiscounted, buildCheckoutItems, onSuccess, clearCart]);
+  }, [formState, buildCheckoutItems, onSuccess, clearCart]);
 
   return { loading, error, handleCheckout };
 }

@@ -20,7 +20,7 @@ export function useCartSidebar(onClose: () => void) {
   const { isLoggedIn } = useAuth();
   const router = useRouter();
 
-  const [step, setStep]           = useState<Step>('cart');
+  const [step, setStep]               = useState<Step>('cart');
   const [orderNumber, setOrderNumber] = useState('');
   const [orderData, setOrderData]     = useState<OrderData | null>(null);
 
@@ -30,8 +30,6 @@ export function useCartSidebar(onClose: () => void) {
 
   const { loading, error: checkoutError, handleCheckout } = useWompiCheckout({
     buildCheckoutItems: pricing.buildCheckoutItems,
-    subtotalOriginal:   pricing.subtotalOriginal,
-    subtotalDiscounted: pricing.subtotalDiscounted,
     formState,
     onSuccess: (num, data) => {
       setOrderNumber(num);
@@ -42,11 +40,6 @@ export function useCartSidebar(onClose: () => void) {
 
   const { loading: whatsappLoading, error: whatsappError, handleWhatsAppOrder } = useWhatsAppOrder({
     buildCheckoutItems: pricing.buildCheckoutItems,
-    cart,
-    subtotalOriginal:   pricing.subtotalOriginal,
-    subtotalDiscounted: pricing.subtotalDiscounted,
-    totalDiscount:      pricing.totalDiscount,
-    discountPct:        pricing.cartDiscountInfo?.discount ?? 0,
   });
 
   // ── Handlers ───────────────────────────────────────────────────────────────
@@ -73,6 +66,8 @@ export function useCartSidebar(onClose: () => void) {
     whatsappError,
     orderNumber,
     orderData,
+    calculatedData:     pricing.calculatedData,
+    isLoadingPricing:   pricing.isLoading,
     subtotalOriginal:   pricing.subtotalOriginal,
     subtotalDiscounted: pricing.subtotalDiscounted,
     totalDiscount:      pricing.totalDiscount,

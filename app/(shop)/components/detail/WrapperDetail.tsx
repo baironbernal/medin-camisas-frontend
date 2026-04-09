@@ -3,8 +3,7 @@
 import { useRef, useEffect, useState } from 'react';
 import { ProductDetail } from '@/types/product-detail';
 import { useProductDetail } from '@/app/hooks/useProductDetail';
-import { useDiscount } from '@/app/hooks/useDiscount';
-import { useDiscountRules } from '@/app/useContext/DiscountRuleContext';
+import { useProductPricing } from '@/app/hooks/useProductPricing';
 import { useCartStore } from '@/app/store/useCartStore';
 import { FadeIn, Breadcrumb } from '@/app/components';
 import GalleryDetail from '../gallery/Gallery';
@@ -21,10 +20,9 @@ import { Product } from '@/types/product';
 interface ProductDetailProps {
   product: ProductDetail;
   interestedProducts: Product[];
-
 }
 
-export const WrapperDetail = ({ product, interestedProducts  }: ProductDetailProps) => {
+export const WrapperDetail = ({ product, interestedProducts }: ProductDetailProps) => {
   const {
     colors, sizes, availableSizes,
     selectedColor, selectedSize, selectedVariant,
@@ -35,14 +33,14 @@ export const WrapperDetail = ({ product, interestedProducts  }: ProductDetailPro
   } = useProductDetail(product);
 
   const openCart = useCartStore(state => state.openCart);
-  const { rules } = useDiscountRules();
-  const { getDiscountForQuantity } = useDiscount(rules);
 
-  const currentDiscount = getDiscountForQuantity(quantitySelected, currentPrice);
+  const { currentDiscount, nextTierDiscount } = useProductPricing(
+    selectedVariant?.id ?? null,
+    quantitySelected,
+    quantityAvailable,
+  );
+
   const nextTierQuantity = quantitySelected + 1;
-  const nextTierDiscount = nextTierQuantity <= quantityAvailable
-    ? getDiscountForQuantity(nextTierQuantity, currentPrice)
-    : null;
 
   const addToCartBtnRef = useRef<HTMLDivElement>(null);
   const [showFloatingBtn, setShowFloatingBtn] = useState(false);
@@ -129,9 +127,6 @@ export const WrapperDetail = ({ product, interestedProducts  }: ProductDetailPro
             </FadeIn>
 
             <ProductDescription description={product.description} />
-            
-            
-            
 
           </div>
         </FadeIn>

@@ -1,37 +1,31 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { createWhatsAppOrder } from '@/app/services/checkout';
+import { createWhatsAppOrder, OrderItem } from '@/app/services/checkout';
 import { useCartStore } from '@/app/store/useCartStore';
 import { useAuth } from '@/app/useContext/AuthContext';
 import { formatCOP } from '@/app/lib/formatPrice';
-import { Variant } from '@/types/variant';
-import { CheckoutItem } from './useCartPricing';
+import { SimpleCheckoutItem } from './useCartPricing';
 
 const WHATSAPP_NUMBER = '573024197103';
 
-// ── Pure presentation function — builds the pre-filled WhatsApp message ──────
 function buildWhatsAppMessage(
   orderNumber: string,
-  cart: Variant[],
-  checkoutItems: CheckoutItem[],
+  orderItems: OrderItem[],
   subtotalOriginal: number,
   subtotalDiscounted: number,
-  totalDiscount: number,
-  discountPct: number,
 ): string {
+  const totalDiscount = subtotalOriginal - subtotalDiscounted;
+  const discountPct = orderItems[0]?.discount_percentage ?? 0;
+
   const lines: string[] = [];
   lines.push(`Hola! Quiero confirmar mi pedido *${orderNumber}*`);
   lines.push('');
   lines.push('📦 *Productos:*');
 
-  cart.forEach((item, index) => {
-    const ci = checkoutItems[index];
-    const finalUnitPrice = ci.discounted_unit_price;
-    const itemTotal = finalUnitPrice * ci.quantity;
-    const name = item.product_name || `SKU ${item.id}`;
-    const combo = item.combination_name ? ` (${item.combination_name})` : '';
-    lines.push(`- ${name}${combo} × ${ci.quantity}: ${formatCOP(itemTotal)}`);
+  orderItems.forEach(item => {
+    const name = item.product_name || `SKU ${item.variant_sku}`;
+    lines.push(`- ${name} (${item.variant_sku}) × ${item.quantity}: ${formatCOP(Number(item.discounted_total_price))}`);
   });
 
   lines.push('');
@@ -48,22 +42,10 @@ function buildWhatsAppMessage(
 }
 
 interface UseWhatsAppOrderParams {
-  buildCheckoutItems: () => CheckoutItem[];
-  cart: Variant[];
-  subtotalOriginal: number;
-  subtotalDiscounted: number;
-  totalDiscount: number;
-  discountPct: number;
+  buildCheckoutItems: () => SimpleCheckoutItem[];
 }
 
-export function useWhatsAppOrder({
-  buildCheckoutItems,
-  cart,
-  subtotalOriginal,
-  subtotalDiscounted,
-  totalDiscount,
-  discountPct,
-}: UseWhatsAppOrderParams) {
+export function useWhatsAppOrder({ buildCheckoutItems }: UseWhatsAppOrderParams) {
   const clearCart = useCartStore(state => state.clearCart);
   const { user } = useAuth();
   const [loading, setLoading] = useState(false);
@@ -74,22 +56,21 @@ export function useWhatsAppOrder({
     setLoading(true);
 
     try {
-      const checkoutItems = buildCheckoutItems();
-
       const res = await createWhatsAppOrder({
         customer_name:  user?.name,
         customer_phone: user?.phone_number,
-        items:          checkoutItems,
+        items:          buildCheckoutItems(),
       });
 
+      const { order, items } = res.data;
+      const subtotalOriginal   = Number(order.subtotal_original);
+      const subtotalDiscounted = Number(order.subtotal_discounted);
+
       const message = buildWhatsAppMessage(
-        res.data.order.order_number,
-        cart,
-        checkoutItems,
+        order.order_number,
+        items,
         subtotalOriginal,
         subtotalDiscounted,
-        totalDiscount,
-        discountPct,
       );
 
       clearCart();
@@ -99,7 +80,7 @@ export function useWhatsAppOrder({
     } finally {
       setLoading(false);
     }
-  }, [buildCheckoutItems, cart, user, subtotalOriginal, subtotalDiscounted, totalDiscount, discountPct, clearCart]);
+  }, [buildCheckoutItems, user, clearCart]);
 
   return { loading, error, handleWhatsAppOrder };
 }

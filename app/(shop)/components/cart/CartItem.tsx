@@ -8,38 +8,34 @@ import { Variant } from "@/types/variant";
 import { Trash, Plus, Minus } from 'lucide-react';
 import { getImageUrl } from "@/app/lib/image";
 import { formatCOP } from "@/app/lib/formatPrice";
-import { useDiscountRules } from "@/app/useContext/DiscountRuleContext";
 import { toast } from '@/app/lib/toast';
+import { CalculatedItem } from '@/app/services/cart';
 
 
 interface CartItemProps {
   product: Variant;
-  largeSizeActive?: boolean;
-  isLargeSize?: boolean;
-  surcharge?: number;
+  calculatedItem: CalculatedItem | null;
 }
 
-export default function CartItem({ product, largeSizeActive = false, isLargeSize = false, surcharge = 0 }: CartItemProps) {
+export default function CartItem({ product, calculatedItem }: CartItemProps) {
 
   const removeFromCart = useCartStore(state => state.removeFromCart)
   const updateQuantity = useCartStore(state => state.updateQuantity)
   const setQuantity = useCartStore(state => state.setQuantity)
-  const cart = useCartStore(state => state.cart)
-
-  const { getDiscountForQuantity } = useDiscountRules();
 
   const displayName = product.product_name || `Producto #${product.product_id}`
   const displayImages = product.product_images || product.images
-  const basePrice = typeof product.price === 'number' ? product.price : parseFloat(product.price) || 0
   const quantity = product.quantity || 1
+  const productStock = product.stock ?? Infinity
 
-  const totalCartQuantity = cart.reduce((acc, p) => acc + (p.quantity as number), 0);
-  const effectiveBasePrice = largeSizeActive && isLargeSize ? basePrice + surcharge : basePrice;
-  const discountInfo = getDiscountForQuantity(totalCartQuantity, effectiveBasePrice);
-  const hasDiscount = discountInfo && discountInfo.discount > 0;
-  const discountedUnitPrice = hasDiscount ? discountInfo.discountedPrice : effectiveBasePrice;
-
-  const productStock = product.stock ?? Infinity;
+  // Use backend-calculated prices when available, fall back to base price
+  const basePrice = typeof product.price === 'number' ? product.price : parseFloat(product.price) || 0
+  const effectiveUnitPrice     = calculatedItem?.unit_price          ?? basePrice
+  const discountedUnitPrice    = calculatedItem?.discounted_unit_price ?? effectiveUnitPrice
+  const discountedTotalPrice   = calculatedItem?.discounted_total_price ?? (discountedUnitPrice * quantity)
+  const hasDiscount            = discountedUnitPrice < effectiveUnitPrice
+  const hasLargeSizeSurcharge  = calculatedItem?.has_large_size_surcharge ?? false
+  const surchargeAmount        = calculatedItem?.surcharge_amount ?? 0
 
   const [inputValue, setInputValue] = useState(quantity.toString());
 
@@ -48,34 +44,27 @@ export default function CartItem({ product, largeSizeActive = false, isLargeSize
   }, [quantity]);
 
   const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-  const rawValue = e.target.value;
+    const rawValue = e.target.value;
 
-  // 1. Permitir solo números o vacío
-  if (!/^\d*$/.test(rawValue)) return;
+    if (!/^\d*$/.test(rawValue)) return;
 
-  setInputValue(rawValue);
+    setInputValue(rawValue);
 
-  // 2. Si está vacío, no hacer nada más
-  if (rawValue === '') return;
+    if (rawValue === '') return;
 
-  const parsedValue = parseInt(rawValue, 10);
+    const parsedValue = parseInt(rawValue, 10);
 
-  // 3. Validar mínimo
-  if (parsedValue <= 0) return;
+    if (parsedValue <= 0) return;
 
-  // 4. Validar stock máximo
-  if (parsedValue > productStock) {
-    toast(`Solo hay ${productStock} unidades en stock.`, 'error');
+    if (parsedValue > productStock) {
+      toast(`Solo hay ${productStock} unidades en stock.`, 'error');
+      setInputValue(productStock.toString());
+      setQuantity(product.id, productStock);
+      return;
+    }
 
-    const maxStockString = productStock.toString();
-    setInputValue(maxStockString);
-    setQuantity(product.id, productStock);
-    return;
-  }
-
-  // 5. Caso válido
-  setQuantity(product.id, parsedValue);
-};
+    setQuantity(product.id, parsedValue);
+  };
 
   const handleBlur = () => {
     if (inputValue === '' || parseInt(inputValue, 10) === 0) {
@@ -116,7 +105,7 @@ export default function CartItem({ product, largeSizeActive = false, isLargeSize
           <h3 className="font-medium text-md text-primary">
             {displayName}
           </h3>
-          
+
           {/* Unit Price */}
           <article className="py-4">
             {product.combination_name && (
@@ -124,14 +113,14 @@ export default function CartItem({ product, largeSizeActive = false, isLargeSize
             )}
             {hasDiscount ? (
               <>
-                <p className="text-xs line-through text-secondary">Antes: {formatCOP(effectiveBasePrice)}</p>
+                <p className="text-xs line-through text-secondary">Antes: {formatCOP(effectiveUnitPrice)}</p>
                 <p className="text-xs font-semibold text-green-600">Con descuento: {formatCOP(discountedUnitPrice)}</p>
               </>
             ) : (
-              <p className="text-sm font-medium text-primary">{formatCOP(effectiveBasePrice)}</p>
+              <p className="text-sm font-medium text-primary">{formatCOP(effectiveUnitPrice)}</p>
             )}
-            {largeSizeActive && isLargeSize && (
-              <p className="text-xs text-amber-600">+{formatCOP(surcharge)} recargo talla grande</p>
+            {hasLargeSizeSurcharge && surchargeAmount > 0 && (
+              <p className="text-xs text-amber-600">+{formatCOP(surchargeAmount)} recargo talla grande</p>
             )}
           </article>
         </div>
@@ -145,7 +134,7 @@ export default function CartItem({ product, largeSizeActive = false, isLargeSize
             >
               <Minus size={14} className="text-gray-600" />
             </button>
-            <input type="text" value={inputValue} onChange={handleInputChange} onBlur={handleBlur} className="w-10 py-1 text-center text-sm text-primary border border-transparent focus:border-gray-200 rounded outline-none transition-colors"  pattern="[0-9]*" />
+            <input type="text" value={inputValue} onChange={handleInputChange} onBlur={handleBlur} className="w-10 py-1 text-center text-sm text-primary border border-transparent focus:border-gray-200 rounded outline-none transition-colors" pattern="[0-9]*" />
             <button
               className={`w-7 h-7 flex items-center justify-center border border-gray-200 rounded transition-colors ${
                 quantity >= productStock
@@ -162,15 +151,15 @@ export default function CartItem({ product, largeSizeActive = false, isLargeSize
       </div>
 
       {/* Total Price */}
-      <div className="flex flex-col justify-between items-end ">
-        <span className="text-sm font-semibold text-primary">{formatCOP(discountedUnitPrice * quantity)}</span>
+      <div className="flex flex-col justify-between items-end">
+        <span className="text-sm font-semibold text-primary">{formatCOP(discountedTotalPrice)}</span>
         <button
-            title="Eliminar producto"
-            className="text-gray-400 hover:text-red-500 transition-colors p-1"
-            onClick={() => removeFromCart(product.id)}
-          >
-            <Trash size={16} />
-          </button>
+          title="Eliminar producto"
+          className="text-gray-400 hover:text-red-500 transition-colors p-1"
+          onClick={() => removeFromCart(product.id)}
+        >
+          <Trash size={16} />
+        </button>
       </div>
     </li>
   )
