@@ -139,7 +139,7 @@ export const WrapperDetail = ({ product, interestedProducts  }: ProductDetailPro
 
       {interestedProducts && interestedProducts.length > 0 && (
         <div className="mt-16">
-          <h2 className="text-2xl font-semibold text-primary mb-8">Te podría interesar</h2>
+          <h2 className="text-2xl font-semibold text-primary text-center mb-8">Productos relacionados</h2>
           <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
             {interestedProducts.map((p) => (
               <ProductItem key={p.id} product={p} />
