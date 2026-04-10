@@ -78,16 +78,12 @@ export interface WhatsAppOrderResponse {
   };
 }
 
-export async function checkout(
-  payload: CheckoutPayload,
-  sessionId: string
-): Promise<OrderResponse> {
+export async function checkout(payload: CheckoutPayload): Promise<OrderResponse> {
   const authHeaders = await getAuthHeaders();
   return apiFetch<OrderResponse>('/checkout', {
     method: 'POST',
     headers: {
       'Content-Type': 'application/json',
-      'X-Session-ID': sessionId,
       ...authHeaders,
     },
     body: JSON.stringify(payload),

@@ -32,7 +32,7 @@ export default function HoverPanel({
           className="lg:block fixed left-0 top-[67px] w-full bg-dark shadow-xl overflow-hidden z-40 pointer-events-auto"
           onMouseLeave={onMouseLeave}
         >
-          <div className="container mx-auto px-6 py-6">
+          <div className="container mx-auto px-6 py-10">
             <div className="flex justify-between gap-8">
               {activeCategory!.children_recursive!.map((child) => (
                 <div key={child.id} className="flex flex-col gap-2 px-3">

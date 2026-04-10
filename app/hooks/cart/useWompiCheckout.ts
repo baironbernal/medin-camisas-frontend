@@ -51,16 +51,6 @@ function loadWompiScript(publicKey: string): Promise<void> {
   });
 }
 
-function getSessionId(): string {
-  const key = 'medin_session_id';
-  let id = typeof window !== 'undefined' ? localStorage.getItem(key) : null;
-  if (!id) {
-    id = crypto.randomUUID();
-    if (typeof window !== 'undefined') localStorage.setItem(key, id);
-  }
-  return id;
-}
-
 interface UseWompiCheckoutParams {
   buildCheckoutItems: () => SimpleCheckoutItem[];
   formState: CheckoutFormState;
@@ -82,16 +72,13 @@ export function useWompiCheckout({
     setLoading(true);
 
     try {
-      const res = await checkout(
-        {
-          customer_name:  formState.customer_name,
-          customer_email: formState.customer_email,
-          customer_phone: formState.customer_phone || undefined,
-          notes:          formState.notes          || undefined,
-          items:          buildCheckoutItems(),
-        },
-        getSessionId()
-      );
+      const res = await checkout({
+        customer_name:  formState.customer_name,
+        customer_email: formState.customer_email,
+        customer_phone: formState.customer_phone || undefined,
+        notes:          formState.notes          || undefined,
+        items:          buildCheckoutItems(),
+      });
 
       const { order, payment, items } = res.data;
 
