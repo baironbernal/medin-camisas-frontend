@@ -17,7 +17,8 @@ export const SignupFormSchema = z.object({
     .trim(),
   // Wholesaler fields — all optional
   whatsapp_number:  z.string().optional(),
-  city:             z.string().optional(),
+  department_id:    z.coerce.number().int().positive().optional(),
+  municipality_id:  z.coerce.number().int().positive().optional(),
   selling_channel:  z.string().optional(),
   clothing_type:    z.string().optional(),
   selling_location: z.string().optional(),
@@ -37,7 +38,6 @@ export type FormState =
         cellphone?: string[]
         password?: string[]
         whatsapp_number?: string[]
-        city?: string[]
       }
       message?: string
       fields?: Record<string, string | undefined>

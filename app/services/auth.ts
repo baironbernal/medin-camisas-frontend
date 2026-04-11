@@ -1,7 +1,7 @@
 'use server';
 
 import { setSession, removeSession, getAuthToken } from '../lib/session';
-import { apiFetch } from './fetcher';
+import { apiFetch, ApiError } from './fetcher';
 import { AuthResponse, LoginPayload, RegisterPayload } from '@/types/auth';
 import { SignupFormSchema, FormState } from '@/app/lib/definitions';
 import { redirect } from 'next/navigation';
@@ -15,7 +15,8 @@ export async function signup(state: FormState, formData: FormData) {
     cellphone:        formData.get('cellphone'),
     password:         formData.get('password'),
     whatsapp_number:  formData.get('whatsapp_number') || undefined,
-    city:             formData.get('city') || undefined,
+    department_id:    formData.get('department_id') || undefined,
+    municipality_id:  formData.get('municipality_id') || undefined,
     selling_channel:  formData.get('selling_channel') || undefined,
     clothing_type:    formData.get('clothing_type') || undefined,
     selling_location: formData.get('selling_location') || undefined,
@@ -31,7 +32,6 @@ export async function signup(state: FormState, formData: FormData) {
         email:            formData.get('email') as string,
         cellphone:        formData.get('cellphone') as string,
         whatsapp_number:  formData.get('whatsapp_number') as string,
-        city:             formData.get('city') as string,
         selling_channel:  formData.get('selling_channel') as string,
         clothing_type:    formData.get('clothing_type') as string,
         selling_location: formData.get('selling_location') as string,
@@ -50,18 +50,34 @@ export async function signup(state: FormState, formData: FormData) {
     email:            d.email,
     password:         d.password,
     whatsapp_number:  d.whatsapp_number,
-    city:             d.city,
+    department_id:    d.department_id,
+    municipality_id:  d.municipality_id,
     selling_channel:  d.selling_channel,
     clothing_type:    d.clothing_type,
     selling_location: d.selling_location,
     business_name:    d.business_name,
   };
 
-  const response = await apiFetch<AuthResponse>('/register', {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify(registerPayload),
-  });
+  let response: AuthResponse;
+  try {
+    response = await apiFetch<AuthResponse>('/register', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(registerPayload),
+    });
+  } catch (err) {
+    const message = err instanceof ApiError
+      ? err.message
+      : 'Ocurrió un error al crear tu cuenta. Intenta de nuevo.';
+    return {
+      message,
+      fields: {
+        name:      validatedFields.data.name,
+        email:     validatedFields.data.email,
+        cellphone: validatedFields.data.cellphone,
+      },
+    };
+  }
 
   const user = response.user;
 
@@ -69,11 +85,11 @@ export async function signup(state: FormState, formData: FormData) {
     return {
       message: 'Ocurrió un error al crear tu cuenta. Intenta de nuevo.',
       fields: {
-        name:     validatedFields.data.name,
-        email:    validatedFields.data.email,
+        name:      validatedFields.data.name,
+        email:     validatedFields.data.email,
         cellphone: validatedFields.data.cellphone,
-      }
-    }
+      },
+    };
   }
 
   await setSession(response.access_token, user);

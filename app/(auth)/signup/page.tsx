@@ -1,14 +1,26 @@
 'use client'
 
 import Link from 'next/link';
-import { useActionState, useEffect, Suspense } from 'react';
+import { useActionState, useEffect, useState, Suspense } from 'react';
 import { useQueryState } from 'nuqs';
 import { useRouter } from 'next/navigation';
 import { signup } from '@/app/services/auth';
 import { useAuth } from '@/app/useContext/AuthContext';
 import { FormState } from '@/app/lib/definitions';
-import { Loader2, User, Mail, Phone, MapPin, Lock, Store } from 'lucide-react';
+import { Loader2, User, Mail, Phone, Lock, Store } from 'lucide-react';
 import { Input } from '@/app/components';
+
+interface Location { id: number; nombre: string }
+
+async function fetchDepartments(): Promise<Location[]> {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/locations/departments`);
+  return res.json();
+}
+
+async function fetchMunicipalities(departmentId: number): Promise<Location[]> {
+  const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/locations/municipalities/${departmentId}`);
+  return res.json();
+}
 
 export default function SignupPage() {
   return (
@@ -24,6 +36,24 @@ function SignupContent() {
   const [callback] = useQueryState('callback');
   const [, setOpenCart] = useQueryState('openCart');
   const [state, action, pending] = useActionState<FormState, FormData>(signup, undefined);
+
+  const [departments, setDepartments] = useState<Location[]>([]);
+  const [municipalities, setMunicipalities] = useState<Location[]>([]);
+  const [selectedDepartment, setSelectedDepartment] = useState<string>('');
+
+  useEffect(() => {
+    fetchDepartments().then(setDepartments);
+  }, []);
+
+  const handleDepartmentChange = async (e: React.ChangeEvent<HTMLSelectElement>) => {
+    const id = e.target.value;
+    setSelectedDepartment(id);
+    setMunicipalities([]);
+    if (id) {
+      const munis = await fetchMunicipalities(Number(id));
+      setMunicipalities(munis);
+    }
+  };
 
   useEffect(() => {
     if (state?.success) {
@@ -107,24 +137,52 @@ function SignupContent() {
               <p className="text-white/50 text-xs uppercase tracking-widest mb-4">Datos de mayorista {optionalSpan}</p>
 
               <div className="space-y-4">
-                {/* WhatsApp + Ciudad */}
+                {/* WhatsApp */}
+                <Input
+                  label={<>WhatsApp {optionalSpan}</>}
+                  id="whatsapp_number" name="whatsapp_number" type="tel"
+                  placeholder="Ej: 3001234567"
+                  defaultValue={state?.fields?.whatsapp_number}
+                  theme="dark"
+                  icon={<Phone size={18} />}
+                />
+
+                {/* Departamento + Municipio */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <Input
-                    label={<>WhatsApp {optionalSpan}</>}
-                    id="whatsapp_number" name="whatsapp_number" type="tel"
-                    placeholder="Ej: 3001234567"
-                    defaultValue={state?.fields?.whatsapp_number}
-                    theme="dark"
-                    icon={<Phone size={18} />}
-                  />
-                  <Input
-                    label={<>Ciudad {optionalSpan}</>}
-                    id="city" name="city" type="text"
-                    placeholder="Ej: Medellín"
-                    defaultValue={state?.fields?.city}
-                    theme="dark"
-                    icon={<MapPin size={18} />}
-                  />
+                  <div>
+                    <label htmlFor="department_id" className="block text-sm font-medium mb-1.5 text-white">
+                      Departamento {optionalSpan}
+                    </label>
+                    <select
+                      id="department_id" name="department_id"
+                      value={selectedDepartment}
+                      onChange={handleDepartmentChange}
+                      className={selectClass}
+                    >
+                      <option value="" className="text-gray-800">Selecciona...</option>
+                      {departments.map(d => (
+                        <option key={d.id} value={d.id} className="text-gray-800">{d.nombre}</option>
+                      ))}
+                    </select>
+                  </div>
+
+                  <div>
+                    <label htmlFor="municipality_id" className="block text-sm font-medium mb-1.5 text-white">
+                      Municipio {optionalSpan}
+                    </label>
+                    <select
+                      id="municipality_id" name="municipality_id"
+                      disabled={!selectedDepartment}
+                      className={`${selectClass} disabled:opacity-40`}
+                    >
+                      <option value="" className="text-gray-800">
+                        {selectedDepartment ? 'Selecciona...' : 'Primero elige departamento'}
+                      </option>
+                      {municipalities.map(m => (
+                        <option key={m.id} value={m.id} className="text-gray-800">{m.nombre}</option>
+                      ))}
+                    </select>
+                  </div>
                 </div>
 
                 {/* Canal de venta + Tipo de ropa */}
