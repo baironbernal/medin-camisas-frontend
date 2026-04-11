@@ -1,11 +1,12 @@
+
 import {
   BannerHome as BannerSection,
   Products as ProductSection,
   VisitUs,
-  Us,
-  FadeIn
+  FadeIn,
 } from "./components";
 import { getProducts } from "./services/products";
+import { TravelSection } from "./components/home/travel-section/TravelSection";
 
 
 export const revalidate = 60;
@@ -28,13 +29,9 @@ export default async function Home() {
           <ProductSection products={ products } />
         </FadeIn>
       </section>
-
-      {/* Us Section */}
-      <section className="bg-beige w-full px-4 py-16">
-        <FadeIn animation="fadeInRight" delay={0.4}>
-          <Us/>
-        </FadeIn>
-      </section>
+      
+      {/* Travel Section */}
+      <TravelSection/>
 
       {/* Visit Us Section */}
       <section className="bg-dark w-full px-4 py-16 flex flex-col justify-between gap:10 lg:gap-20">
