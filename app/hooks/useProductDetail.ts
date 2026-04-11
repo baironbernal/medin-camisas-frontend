@@ -4,75 +4,94 @@ import { useMemo, useState, useEffect } from 'react'
 import { ProductDetail } from '@/types/product-detail'
 import { useCartStore } from '../store/useCartStore'
 
+// The backend builds combination_index keys with '|' as separator in fixed order:
+// "Talla|Color|Material"  (Material segment is absent when the product has no Material attribute)
+// Using '|' avoids ambiguity when attribute values contain '-' (e.g. "Azul-Oscuro")
+const KEY_SEP = '|'
+
 export function useProductDetail(data: ProductDetail) {
   const [selectedColor, setSelectedColor] = useState<string | null>(null)
   const [selectedSize, setSelectedSize] = useState<string | null>(null)
   const [quantitySelected, setQuantitySelected] = useState<number>(1)
 
   const { available_attributes, variants, combination_index } = data
-  const colors = available_attributes?.['Color'] ?? []
-  const sizes = available_attributes?.['Talla'] ?? []
+  const colors   = available_attributes?.['Color']    ?? []
+  const sizes    = available_attributes?.['Talla']    ?? []
   const material = available_attributes?.['Material']?.[0] ?? null
 
-  // 1. Obtenemos todas las combinaciones como un array una sola vez para facilitar las búsquedas
+  // All combination_index entries as a stable array
   const entries = useMemo(() => Object.entries(combination_index), [combination_index])
 
-  // 2. Tallas disponibles para el color seleccionado
+  // Tallas disponibles para el color seleccionado.
+  // Key format: "Talla|Color" or "Talla|Color|Material"
+  // Split by KEY_SEP → index 0 is always size, index 1 is always color.
   const availableSizes = useMemo(() => {
     if (!selectedColor) return []
+
     return entries
-      .filter(([key]) => key.split('-').includes(selectedColor))
-      .map(([key]) => key.split('-')[0])
+      .filter(([key]) => {
+        const parts = key.split(KEY_SEP)
+        // index 1 is always the color segment (guaranteed by backend fixed order)
+        return parts[1] === selectedColor
+      })
+      .map(([key]) => key.split(KEY_SEP)[0]) // index 0 is always the size segment
   }, [selectedColor, entries])
 
+  // Build the lookup key matching exactly the backend format.
+  // Only append material segment when the product actually has one.
   const exactKey = useMemo(() => {
-    return `${selectedSize}-${selectedColor}-${material}`;
+    if (!selectedSize || !selectedColor) return ''
+    const parts = [selectedSize, selectedColor]
+    if (material) parts.push(material)
+    return parts.join(KEY_SEP)
   }, [selectedSize, selectedColor, material])
 
-  // 3. Variante seleccionada (Combinación exacta)
+  // Variante seleccionada (combinación exacta)
   const selectedVariant = useMemo(() => {
-    if (!selectedColor || !selectedSize || !material) return null
+    if (!exactKey) return null
     const id = combination_index[exactKey]?.variant_id
     return variants.find(v => v.id === id) ?? null
-  }, [selectedColor, selectedSize, material, variants, combination_index, exactKey])
+  }, [exactKey, combination_index, variants])
 
-  // 3b. Stock disponible (derivado, sin side effects)
+  // Stock disponible
   const quantityAvailable = useMemo(() => {
-    if (!selectedColor || !selectedSize || !material) return 0
+    if (!exactKey) return 0
     return combination_index[exactKey]?.stock ?? 0
-  }, [selectedColor, selectedSize, material, combination_index, exactKey])
+  }, [exactKey, combination_index])
 
-  // 4. Imágenes actuales: Buscamos cualquier variante que coincida con el color si no hay selección completa
+  // Imágenes actuales: variante exacta si existe, sino primera variante del color seleccionado
   const currentImages = useMemo(() => {
     if (selectedVariant) return selectedVariant.images
-    
+
     if (selectedColor) {
-      // Buscamos la primera combinación que contenga el color seleccionado
-      const firstComboWithColor = entries.find(([key]) => key.split('-').includes(selectedColor))
+      const firstComboWithColor = entries.find(([key]) => {
+        const parts = key.split(KEY_SEP)
+        return parts[1] === selectedColor
+      })
       if (firstComboWithColor) {
         const variantId = firstComboWithColor[1].variant_id
         return variants.find(v => v.id === variantId)?.images ?? variants[0].images
       }
     }
-    
+
     return variants[0]?.images ?? []
   }, [selectedVariant, selectedColor, entries, variants])
 
-  // 5. How many of this variant are already in the cart
+  // Cuántas unidades de esta variante ya están en el carrito
   const cart = useCartStore(state => state.cart)
   const inCartQuantity = useMemo(() => {
     if (!selectedVariant) return 0
     return cart.find(item => item.id === selectedVariant.id)?.quantity ?? 0
   }, [cart, selectedVariant])
 
-  // 6. Remaining stock the user can actually add
+  // Stock restante que el usuario puede añadir
   const remainingStock = Math.max(0, quantityAvailable - inCartQuantity)
 
-  // 7. Helpers de UI
+  // Helpers de UI
   const currentPrice = selectedVariant?.price ?? variants[0]?.price ?? 0
-  const isComplete = !!selectedVariant && remainingStock > 0
+  const isComplete   = !!selectedVariant && remainingStock > 0
 
-  // Reset quantity selection whenever the variant changes
+  // Reset cantidad al cambiar de variante
   useEffect(() => {
     setQuantitySelected(1)
   }, [selectedVariant])
@@ -83,8 +102,6 @@ export function useProductDetail(data: ProductDetail) {
   }
 
   const selectSize = (size: string) => setSelectedSize(size)
-
-
 
   return {
     colors,
@@ -103,6 +120,6 @@ export function useProductDetail(data: ProductDetail) {
     remainingStock,
     inCartQuantity,
     quantitySelected,
-    setQuantitySelected
+    setQuantitySelected,
   }
 }
