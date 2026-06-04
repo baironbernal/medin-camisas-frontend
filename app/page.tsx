@@ -17,11 +17,14 @@ export default async function Home() {
 
   return (
     <main className="max-w-full">
-      
+
+
       {/*Home Banner Section */}
       <FadeIn animation="fadeIn" duration={0.8}>
         <BannerSection/>
       </FadeIn>
+
+      
 
       {/*Products Swiper */}
       <section className="bg-beige w-full px-4 py-16">
@@ -39,8 +42,6 @@ export default async function Home() {
           <VisitUs/>
         </FadeIn>
       </section>
-      
-
     </main>
   );
 }

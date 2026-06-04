@@ -22,6 +22,7 @@ export type Product = {
   season_id: number;
   category_id: number;
   base_price: string;
+  wholesaler_price: string | null;
   colors_count: number;
   cost: string;
   brand: string;

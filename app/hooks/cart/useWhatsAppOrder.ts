@@ -3,7 +3,6 @@
 import { useState, useCallback } from 'react';
 import { createWhatsAppOrder, OrderItem } from '@/app/services/checkout';
 import { useCartStore } from '@/app/store/useCartStore';
-import { useAuth } from '@/app/useContext/AuthContext';
 import { formatCOP } from '@/app/lib/formatPrice';
 import { SimpleCheckoutItem } from './useCartPricing';
 
@@ -14,12 +13,14 @@ function buildWhatsAppMessage(
   orderItems: OrderItem[],
   subtotalOriginal: number,
   subtotalDiscounted: number,
+  customerName: string,
+  customerPhone: string,
 ): string {
   const totalDiscount = subtotalOriginal - subtotalDiscounted;
   const discountPct = orderItems[0]?.discount_percentage ?? 0;
 
   const lines: string[] = [];
-  lines.push(`Hola! Quiero confirmar mi pedido *${orderNumber}*`);
+  lines.push(`Hola, soy *${customerName}* y mi teléfono es *${customerPhone}*. Quiero confirmar mi pedido *${orderNumber}*`);
   lines.push('');
   lines.push('📦 *Productos:*');
 
@@ -47,18 +48,17 @@ interface UseWhatsAppOrderParams {
 
 export function useWhatsAppOrder({ buildCheckoutItems }: UseWhatsAppOrderParams) {
   const clearCart = useCartStore(state => state.clearCart);
-  const { user } = useAuth();
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  const handleWhatsAppOrder = useCallback(async () => {
+  const handleWhatsAppOrder = useCallback(async (customerName: string, customerPhone: string) => {
     setError('');
     setLoading(true);
 
     try {
       const res = await createWhatsAppOrder({
-        customer_name:  user?.name,
-        customer_phone: user?.phone_number,
+        customer_name:  customerName,
+        customer_phone: customerPhone,
         items:          buildCheckoutItems(),
       });
 
@@ -71,6 +71,8 @@ export function useWhatsAppOrder({ buildCheckoutItems }: UseWhatsAppOrderParams)
         items,
         subtotalOriginal,
         subtotalDiscounted,
+        customerName,
+        customerPhone,
       );
 
       clearCart();
@@ -80,7 +82,7 @@ export function useWhatsAppOrder({ buildCheckoutItems }: UseWhatsAppOrderParams)
     } finally {
       setLoading(false);
     }
-  }, [buildCheckoutItems, user, clearCart]);
+  }, [buildCheckoutItems, clearCart]);
 
   return { loading, error, handleWhatsAppOrder };
 }

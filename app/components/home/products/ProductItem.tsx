@@ -39,6 +39,11 @@ function ProductItem({ product }: ProductItemProps) {
             <p className="font-medium text-secondary">
               {formatCOP(product.base_price)}
             </p>
+            {product.wholesaler_price && (
+              <p className="text-xs text-primary font-medium">
+                Mayorista: {formatCOP(product.wholesaler_price)}
+              </p>
+            )}
           </div>
           {/* Badge dynamic colors */}
           {product.colors_count && product.colors_count > 1 && (

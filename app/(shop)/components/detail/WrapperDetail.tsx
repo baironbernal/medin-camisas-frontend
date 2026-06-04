@@ -86,13 +86,24 @@ export const WrapperDetail = ({ product, interestedProducts }: ProductDetailProp
 
         <FadeIn animation="fadeInLeft" duration={0.7}>
           <GalleryDetail images={currentImages} />
+          <div className="mt-4 flex justify-center">
+            <a
+              href={`${process.env.NEXT_PUBLIC_API_URL}/products/${product.slug}/colors-pdf`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="inline-flex items-center gap-2 text-sm font-medium text-secondary border border-gray-300 rounded-full px-5 py-2 hover:bg-gray-50 transition-colors"
+            >
+              <svg xmlns="http://www.w3.org/2000/svg" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+              Descargar colores
+            </a>
+          </div>
         </FadeIn>
 
         <FadeIn animation="fadeInRight" duration={0.7} delay={0.2}>
           <div className="flex flex-col gap-8 lg:sticky lg:top-24 h-fit">
 
             <FadeIn animation="fadeInUp" delay={0.1}>
-              <ProductInfo name={product.name} price={currentPrice} discount={currentDiscount} />
+              <ProductInfo name={product.name} price={currentPrice} discount={currentDiscount} wholesalerPrice={product.wholesaler_price} />
             </FadeIn>
 
             <FadeIn animation="fadeInUp" delay={0.2}>

@@ -25,7 +25,6 @@ export default function BtnAddToCart({
   totalStock,
 }: Props) {
   const addToCart = useCartStore(state => state.addToCart)
-  const openCart = useCartStore(state => state.openCart)
 
   const handleAdd = () => {
     if (quantitySelected > remainingStock) {
@@ -54,8 +53,6 @@ export default function BtnAddToCart({
       `✓ ${quantitySelected} unidad${quantitySelected !== 1 ? 'es' : ''} de "${productName}" agregada${quantitySelected !== 1 ? 's' : ''} al carrito.`,
       'success'
     )
-
-    openCart()
   }
 
   return (

@@ -7,6 +7,7 @@ import { getSession } from "./lib/session";
 import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { AuthProvider } from "./useContext/AuthContext";
 import { Footer, WhatsAppFloat, Navbar } from "./components";
+import HomeAdsTicker from "./components/home/HomeAdsTicker";
 
 
 /* Utendo */
@@ -57,6 +58,9 @@ export default async function RootLayout({
         <AuthProvider initialSession={{ isAuthenticated: session.isAuthenticated, user: session.user }}>
           <NuqsAdapter>
             <Suspense fallback={<div className="h-20 bg-dark" />}>
+
+              {/* Announcements ticker */}
+              <HomeAdsTicker />
               <Navbar categories={categories} />
             </Suspense>
             <main className="w-full">

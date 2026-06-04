@@ -1,8 +1,10 @@
 'use client';
 
+import { useState } from 'react';
 import { ShoppingBag, ArrowRight, MessageCircle, AlertTriangle } from 'lucide-react';
 import { formatCOP } from '@/app/lib/formatPrice';
 import CartItem from '../CartItem';
+import WhatsAppCustomerModal from '../WhatsAppCustomerModal';
 import { Variant } from '@/types/variant';
 import { CartCalculationResult, LargeSizeAnalysis } from '@/app/services/cart';
 
@@ -14,7 +16,7 @@ interface CartStepProps {
   handleProceed: () => void;
   largeSizeAnalysis: LargeSizeAnalysis;
   calculatedData: CartCalculationResult | null;
-  handleWhatsAppOrder: () => void;
+  handleWhatsAppOrder: (name: string, phone: string) => void;
   whatsappLoading: boolean;
   error: string;
 }
@@ -31,10 +33,19 @@ export default function CartStep({
   whatsappLoading,
   error,
 }: CartStepProps) {
-  // Build a map for O(1) lookup of calculated item by variant id
+  const [showModal, setShowModal] = useState(false);
+
   const calculatedItemsMap = new Map(
     (calculatedData?.items ?? []).map(item => [item.product_variant_id, item])
   );
+
+  const handleOpenModal = () => setShowModal(true);
+  const handleCancelModal = () => { if (!whatsappLoading) setShowModal(false); };
+
+  const handleConfirmModal = (name: string, phone: string) => {
+    handleWhatsAppOrder(name, phone);
+    setShowModal(false);
+  };
 
   return (
     <>
@@ -104,7 +115,7 @@ export default function CartStep({
             <ArrowRight size={16} />
           </button>
           <button
-            onClick={handleWhatsAppOrder}
+            onClick={handleOpenModal}
             disabled={whatsappLoading}
             className="w-full bg-green-500 hover:bg-green-600 disabled:opacity-60 text-white py-3 rounded-lg font-medium transition-colors flex items-center justify-center gap-2"
           >
@@ -118,6 +129,14 @@ export default function CartStep({
             )}
           </button>
         </div>
+      )}
+
+      {showModal && (
+        <WhatsAppCustomerModal
+          onConfirm={handleConfirmModal}
+          onCancel={handleCancelModal}
+          loading={whatsappLoading}
+        />
       )}
     </>
   );

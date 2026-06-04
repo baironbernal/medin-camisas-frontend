@@ -42,6 +42,7 @@ export function useCartSidebar(onClose: () => void) {
     buildCheckoutItems: pricing.buildCheckoutItems,
   });
 
+
   // ── Handlers ───────────────────────────────────────────────────────────────
   const handleProceed = () => {
     if (!isLoggedIn) {
