@@ -29,7 +29,7 @@ export default function HoverPanel({
           animate={{ opacity: 1, y: 0 }}
           exit={{ opacity: 0, y: -8 }}
           transition={{ duration: 0.2, ease: 'easeOut' }}
-          className="lg:block fixed left-0 top-[67px] w-full bg-dark shadow-xl overflow-hidden z-40 pointer-events-auto"
+          className="lg:block absolute left-0 top-full w-full bg-dark shadow-xl overflow-hidden z-10 pointer-events-auto"
           onMouseLeave={onMouseLeave}
         >
           <div className="container mx-auto px-6 py-10">

@@ -4,7 +4,11 @@ import { motion } from 'framer-motion';
 import { ButtonDefault, Tag } from "@/app/components";
 import { MessageCircle, Truck, Tag as TagIcon } from 'lucide-react';
 
-const BannerSection = () => {
+interface BannerSectionProps {
+  videoUrl?: string;
+}
+
+const BannerSection = ({ videoUrl = '/home/video.mp4' }: BannerSectionProps) => {
   return (
     <main className="p-4"
       style={{
@@ -39,7 +43,7 @@ const BannerSection = () => {
         {/* Second Column */}
         <article className="w-full lg:w-1/2 lg:mt-0 mt-12">
           <video className="w-full lg:max-h-[40rem] rounded-xl object-cover" controls preload="none" autoPlay muted loop>
-            <source src="/home/video.mp4" type="video/mp4" />
+            <source src={videoUrl} type="video/mp4" />
             <track
               src="/home/captions.vtt"
               kind="subtitles"
