@@ -38,9 +38,6 @@ export default async function Home() {
         <BannerSection videoUrl={bannerVideoUrl ?? undefined} />
       </FadeIn>
 
-      {/* Announcements ticker */}
-      <HomeAdsTicker />
-
       {/*Products Swiper */}
       <section className="bg-beige w-full px-4 py-16">
         <FadeIn animation="fadeInUp" delay={0.2}>
