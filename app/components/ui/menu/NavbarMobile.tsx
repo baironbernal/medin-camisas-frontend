@@ -155,7 +155,20 @@ export default function NavbarMobile({
           </li>
           
           <div className="h-px w-full bg-white/10 my-2" />
-          
+
+          {/* Cómo Comprar */}
+          <li className="w-full">
+            <NavLink
+              href="/como-comprar"
+              onClick={onClose}
+              className="block rounded px-3 py-3 text-lg hover:bg-white/10 text-white"
+            >
+              ¿Cómo Comprar?
+            </NavLink>
+          </li>
+
+          <div className="h-px w-full bg-white/10 my-2" />
+
           {categories.map((category) => (
             <MobileMenuItem
               key={category.id}

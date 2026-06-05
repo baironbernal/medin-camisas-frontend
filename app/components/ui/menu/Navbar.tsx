@@ -78,6 +78,11 @@ export default function Navbar({
                 <NavLink href={'/coleccion'} className="inline-flex justify-center px-3 text-accent">Ver todo</NavLink>
               </li>
 
+              {/* Cómo Comprar */}
+              <li className="relative flex flex-col items-center text-lg">
+                <NavLink href={'/como-comprar'} className="inline-flex justify-center px-3 text-accent">¿Cómo Comprar?</NavLink>
+              </li>
+
               {categories.map((category) => {
                 const hasChildren =
                   category.children_recursive &&
