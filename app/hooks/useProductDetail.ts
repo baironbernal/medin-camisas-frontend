@@ -3,6 +3,7 @@
 import { useMemo, useState, useEffect } from 'react'
 import { ProductDetail } from '@/types/product-detail'
 import { useCartStore } from '../store/useCartStore'
+import { normalizeSegment } from '@/app/lib/utils'
 
 // The backend builds combination_index keys with '|' as separator in fixed order:
 // "Talla|Color|Material"  (Material segment is absent when the product has no Material attribute)
@@ -28,21 +29,26 @@ export function useProductDetail(data: ProductDetail) {
   const availableSizes = useMemo(() => {
     if (!selectedColor) return []
 
-    return entries
+    const normalizedSelectedColor = normalizeSegment(selectedColor)
+
+    const normalizedAvailableSizes = entries
       .filter(([key]) => {
         const parts = key.split(KEY_SEP)
         // index 1 is always the color segment (guaranteed by backend fixed order)
-        return parts[1] === selectedColor
+        return parts[1] === normalizedSelectedColor
       })
       .map(([key]) => key.split(KEY_SEP)[0]) // index 0 is always the size segment
-  }, [selectedColor, entries])
+
+    // Return the raw sizes that correspond to the normalized ones
+    return sizes.filter(size => normalizedAvailableSizes.includes(normalizeSegment(size)))
+  }, [selectedColor, entries, sizes])
 
   // Build the lookup key matching exactly the backend format.
   // Only append material segment when the product actually has one.
   const exactKey = useMemo(() => {
     if (!selectedSize || !selectedColor) return ''
-    const parts = [selectedSize, selectedColor]
-    if (material) parts.push(material)
+    const parts = [normalizeSegment(selectedSize), normalizeSegment(selectedColor)]
+    if (material) parts.push(normalizeSegment(material))
     return parts.join(KEY_SEP)
   }, [selectedSize, selectedColor, material])
 
@@ -64,9 +70,10 @@ export function useProductDetail(data: ProductDetail) {
     if (selectedVariant) return selectedVariant.images
 
     if (selectedColor) {
+      const normalizedSelectedColor = normalizeSegment(selectedColor)
       const firstComboWithColor = entries.find(([key]) => {
         const parts = key.split(KEY_SEP)
-        return parts[1] === selectedColor
+        return parts[1] === normalizedSelectedColor
       })
       if (firstComboWithColor) {
         const variantId = firstComboWithColor[1].variant_id

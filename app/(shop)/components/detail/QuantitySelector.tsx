@@ -22,16 +22,20 @@ export default function QuantitySelector({
 }: QuantitySelectorProps) {
   return (
     <div className="flex flex-col gap-3">
-      <div className="flex items-center gap-2 text-sm">
-        <p className="font-medium tracking-wide text-primary">
-          Quedan <span className="text-secondary font-bold">{quantityAvailable}</span> unidades
-        </p>
-        {inCartQuantity > 0 && (
-          <span className="text-xs text-gray-500">({inCartQuantity} ya en tu carrito)</span>
-        )}
-      </div>
+      {quantityAvailable > 0 && (
+        <div className="flex items-center gap-2 text-sm">
+          <p className="font-medium tracking-wide text-primary">
+            Quedan <span className="text-secondary font-bold">{quantityAvailable}</span> unidades
+          </p>
+          {inCartQuantity > 0 && (
+            <span className="text-xs text-gray-500">({inCartQuantity} ya en tu carrito)</span>
+          )}
+        </div>
+      )}
 
-      {remainingStock > 0 ? (
+      {quantityAvailable <= 0 ? (
+        <p className="text-sm text-red-500 font-medium">Producto agotado.</p>
+      ) : remainingStock > 0 ? (
         <select
           value={quantitySelected}
           onChange={(e) => onChange(Number(e.target.value))}
