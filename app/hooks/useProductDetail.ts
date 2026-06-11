@@ -16,9 +16,8 @@ export function useProductDetail(data: ProductDetail) {
   const [quantitySelected, setQuantitySelected] = useState<number>(1)
 
   const { available_attributes, variants, combination_index } = data
-  const colors   = available_attributes?.['Color']    ?? []
-  const sizes    = available_attributes?.['Talla']    ?? []
-  const material = available_attributes?.['Material']?.[0] ?? null
+  const colors = available_attributes?.['Color'] ?? []
+  const sizes  = available_attributes?.['Talla'] ?? []
 
   // All combination_index entries as a stable array
   const entries = useMemo(() => Object.entries(combination_index), [combination_index])
@@ -43,14 +42,19 @@ export function useProductDetail(data: ProductDetail) {
     return sizes.filter(size => normalizedAvailableSizes.includes(normalizeSegment(size)))
   }, [selectedColor, entries, sizes])
 
-  // Build the lookup key matching exactly the backend format.
-  // Only append material segment when the product actually has one.
+  // Find the exact key from the index by matching size+color.
+  // Avoids reconstructing the key manually — material (and any future segment)
+  // is already embedded in the stored key, so we never need to guess it.
   const exactKey = useMemo(() => {
     if (!selectedSize || !selectedColor) return ''
-    const parts = [normalizeSegment(selectedSize), normalizeSegment(selectedColor)]
-    if (material) parts.push(normalizeSegment(material))
-    return parts.join(KEY_SEP)
-  }, [selectedSize, selectedColor, material])
+    const normalizedSize  = normalizeSegment(selectedSize)
+    const normalizedColor = normalizeSegment(selectedColor)
+    const match = entries.find(([key]) => {
+      const parts = key.split(KEY_SEP)
+      return parts[0] === normalizedSize && parts[1] === normalizedColor
+    })
+    return match?.[0] ?? ''
+  }, [selectedSize, selectedColor, entries])
 
   // Variante seleccionada (combinación exacta)
   const selectedVariant = useMemo(() => {
