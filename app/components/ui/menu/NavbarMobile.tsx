@@ -156,6 +156,17 @@ export default function NavbarMobile({
           
           <div className="h-px w-full bg-white/10 my-2" />
 
+          {/* Ver todo */}
+          <li className="w-full">
+            <NavLink
+              href="/coleccion"
+              onClick={onClose}
+              className="block rounded px-3 py-3 text-lg hover:bg-white/10 text-white"
+            >
+              Ver todo
+            </NavLink>
+          </li>
+
           {/* Cómo Comprar */}
           <li className="w-full">
             <NavLink
