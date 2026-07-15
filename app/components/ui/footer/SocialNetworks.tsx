@@ -1,64 +1,30 @@
-import {
-  Facebook,
-  Instagram,
-  Linkedin,
-  Twitter,
-  Music,
-} from "lucide-react";
+import { Facebook, Instagram, Music } from "lucide-react";
+import { getSiteInfo } from "@/app/services/siteInfo";
 
-export default function SocialNetworks() {
+export default async function SocialNetworks() {
+  const info = await getSiteInfo();
+
+  const networks = [
+    { url: info.social_instagram_url, label: info.social_instagram_handle, Icon: Instagram },
+    { url: info.social_facebook_url, label: info.social_facebook_handle, Icon: Facebook },
+    { url: info.social_tiktok_url, label: info.social_tiktok_handle, Icon: Music },
+  ].filter((n) => n.url);
+
   return (
     <div className="flex items-center gap-4">
-
-                    {/* TikTok (Music icon) */}
-                    <a
-                        href="https://www.tiktok.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="hover:scale-110 transition-transform duration-200 text-dark"
-                    >
-                        <Music size={24} />
-                    </a>
-
-                    {/* X (Twitter) */}
-                    <a
-                        href="https://x.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="hover:scale-110 transition-transform duration-200 text-dark"
-                    >
-                        <Twitter size={24} />
-                    </a>
-
-                    {/* Instagram */}
-                    <a
-                        href="https://www.instagram.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="hover:scale-110 transition-transform duration-200 text-dark"
-                    >
-                        <Instagram size={24} />
-                    </a>
-
-                    {/* Facebook */}
-                    <a
-                        href="https://www.facebook.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="hover:scale-110 transition-transform duration-200 text-dark"
-                    >
-                        <Facebook size={24} />
-                    </a>
-
-                    {/* LinkedIn */}
-                    <a
-                        href="https://www.linkedin.com"
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="hover:scale-110 transition-transform duration-200 text-dark"
-                    >
-                        <Linkedin size={24} />
-                    </a>
-            </div>
-  )
+      {networks.map(({ url, label, Icon }) => (
+        <a
+          key={url}
+          href={url}
+          target="_blank"
+          rel="noopener noreferrer"
+          aria-label={label}
+          title={label}
+          className="hover:scale-110 transition-transform duration-200 text-dark"
+        >
+          <Icon size={24} />
+        </a>
+      ))}
+    </div>
+  );
 }
