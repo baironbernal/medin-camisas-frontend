@@ -12,9 +12,11 @@ export default function ProductInfo({ name, price, discount, wholesalerPrice }: 
     <div className="flex flex-col gap-2">
       <h1 className="hidden lg:block text-3xl font-semibold text-primary">{name}</h1>
       {discount && discount.discount > 0 ? (
-        <p className="text-lg text-gray-400 line-through">{formatCOP(price)}</p>
+        <p className="text-lg text-gray-400">
+          Precio unitario: <span className="line-through">{formatCOP(price)}</span>
+        </p>
       ) : (
-        <p className="text-2xl font-medium text-primary">{formatCOP(price)}</p>
+        <p className="text-2xl font-medium text-primary">Precio unitario: {formatCOP(price)}</p>
       )}
       {wholesalerPrice && (
         <p className="text-sm font-medium text-primary">

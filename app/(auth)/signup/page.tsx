@@ -9,6 +9,7 @@ import { useAuth } from '@/app/useContext/AuthContext';
 import { FormState } from '@/app/lib/definitions';
 import { Loader2, User, Mail, Phone, Lock, Store } from 'lucide-react';
 import { Input } from '@/app/components';
+import { trackMetaEvent } from '@/app/lib/metaPixel';
 
 interface Location { id: number; nombre: string }
 
@@ -57,6 +58,7 @@ function SignupContent() {
 
   useEffect(() => {
     if (state?.success) {
+      trackMetaEvent('CompleteRegistration');
       setLoggedIn(true);
       if (state.user) setUser(state.user);
 

@@ -12,6 +12,7 @@ interface CheckoutFormStepProps {
   loading: boolean;
   formState: CheckoutFormState;
   setField: (field: keyof CheckoutFormState) => (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => void;
+  isGuest: boolean;
   handleCheckout: (e: React.FormEvent) => void;
   cart: Variant[];
   total: number;
@@ -23,6 +24,7 @@ export default function CheckoutFormStep({
   loading,
   formState,
   setField,
+  isGuest,
   handleCheckout,
   cart,
   total,
@@ -68,9 +70,10 @@ export default function CheckoutFormStep({
         />
 
         <Input
-          label="Celular"
+          label={isGuest ? 'Celular *' : 'Celular'}
           id="checkout-phone"
           type="tel"
+          required={isGuest}
           value={formState.customer_phone}
           onChange={setField('customer_phone')}
           placeholder="Ej: 3001234567"

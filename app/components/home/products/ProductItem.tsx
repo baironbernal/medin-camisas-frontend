@@ -37,11 +37,11 @@ function ProductItem({ product }: ProductItemProps) {
           <div className="flex flex-col gap-1">
             <h3 className="font-semibold text-dark line-clamp-1">{product.name}</h3>
             <p className="font-medium text-secondary">
-              {formatCOP(product.base_price)}
+              Precio unitario: {formatCOP(product.base_price)}
             </p>
             {product.wholesaler_price && (
               <p className="text-xs text-primary font-medium">
-                Mayorista: {formatCOP(product.wholesaler_price)}
+                Precio mayorista: {formatCOP(product.wholesaler_price)}
               </p>
             )}
           </div>

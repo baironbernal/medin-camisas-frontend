@@ -16,6 +16,8 @@ export default function CartSidebar({ onClose, isClosing }: CartSidebarProps) {
   const {
     cart,
     isLoggedIn,
+    isGuest,
+    canGuestCheckout,
     step,
     setStep,
     formState,
@@ -84,6 +86,7 @@ export default function CartSidebar({ onClose, isClosing }: CartSidebarProps) {
             total={subtotalDiscounted}
             originalTotal={subtotalOriginal}
             isLoggedIn={isLoggedIn}
+            canGuestCheckout={canGuestCheckout}
             handleProceed={handleProceed}
             largeSizeAnalysis={largeSizeAnalysis}
             calculatedData={calculatedData}
@@ -99,6 +102,7 @@ export default function CartSidebar({ onClose, isClosing }: CartSidebarProps) {
             loading={loading}
             formState={formState}
             setField={setField}
+            isGuest={isGuest}
             handleCheckout={handleCheckout}
             cart={cart}
             total={subtotalDiscounted}

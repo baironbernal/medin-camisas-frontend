@@ -5,6 +5,7 @@ import { createWhatsAppOrder, OrderItem } from '@/app/services/checkout';
 import { useCartStore } from '@/app/store/useCartStore';
 import { formatCOP } from '@/app/lib/formatPrice';
 import { SimpleCheckoutItem } from './useCartPricing';
+import { trackMetaEvent, CURRENCY } from '@/app/lib/metaPixel';
 
 const WHATSAPP_NUMBER = '573024197103';
 
@@ -74,6 +75,12 @@ export function useWhatsAppOrder({ buildCheckoutItems }: UseWhatsAppOrderParams)
         customerName,
         customerPhone,
       );
+
+      trackMetaEvent('Contact', {
+        content_name: 'Pedido WhatsApp',
+        value: subtotalDiscounted,
+        currency: CURRENCY,
+      }, order.order_number);
 
       clearCart();
       window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${encodeURIComponent(message)}`, '_blank');

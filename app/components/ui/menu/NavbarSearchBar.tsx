@@ -4,6 +4,7 @@ import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { Search, X } from 'lucide-react';
 import { useRouter } from 'next/navigation';
+import { trackMetaEvent } from '@/app/lib/metaPixel';
 
 interface NavbarSearchBarProps {
   isOpen: boolean;
@@ -27,6 +28,7 @@ export default function NavbarSearchBar({ isOpen, onClose }: NavbarSearchBarProp
   const handleSearch = () => {
     const q = value.trim();
     if (!q) return;
+    trackMetaEvent('Search', { search_string: q });
     router.push(`/coleccion?name=${encodeURIComponent(q)}`);
     onClose();
   };

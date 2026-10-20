@@ -12,6 +12,7 @@ export interface CheckoutPayload {
   customer_phone?: string;
   notes?: string;
   items: CheckoutItem[];
+  meta?: { fbp?: string; fbc?: string };
 }
 
 export interface WhatsAppOrderPayload {
@@ -85,6 +86,18 @@ export async function checkout(payload: CheckoutPayload): Promise<OrderResponse>
     headers: {
       'Content-Type': 'application/json',
       ...authHeaders,
+    },
+    body: JSON.stringify(payload),
+  });
+}
+
+/** Checkout without an account — backend only accepts up to 6 units. */
+export async function guestCheckout(payload: CheckoutPayload): Promise<OrderResponse> {
+  return apiFetch<OrderResponse>('/guest-checkout', {
+    method: 'POST',
+    headers: {
+      'Content-Type': 'application/json',
+      Accept: 'application/json',
     },
     body: JSON.stringify(payload),
   });

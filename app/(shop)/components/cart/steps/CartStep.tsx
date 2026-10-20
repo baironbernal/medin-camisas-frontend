@@ -7,12 +7,14 @@ import CartItem from '../CartItem';
 import WhatsAppCustomerModal from '../WhatsAppCustomerModal';
 import { Variant } from '@/types/variant';
 import { CartCalculationResult, LargeSizeAnalysis } from '@/app/services/cart';
+import { GUEST_MAX_UNITS } from '@/app/hooks/useCartSidebar';
 
 interface CartStepProps {
   cart: Variant[];
   total: number;
   originalTotal: number;
   isLoggedIn: boolean;
+  canGuestCheckout: boolean;
   handleProceed: () => void;
   largeSizeAnalysis: LargeSizeAnalysis;
   calculatedData: CartCalculationResult | null;
@@ -26,6 +28,7 @@ export default function CartStep({
   total,
   originalTotal,
   isLoggedIn,
+  canGuestCheckout,
   handleProceed,
   largeSizeAnalysis,
   calculatedData,
@@ -38,6 +41,10 @@ export default function CartStep({
   const calculatedItemsMap = new Map(
     (calculatedData?.items ?? []).map(item => [item.product_variant_id, item])
   );
+
+  const proceedLabel = canGuestCheckout
+    ? 'Comprar'
+    : isLoggedIn ? 'Proceder al pago' : 'Inicia sesión para comprar';
 
   const handleOpenModal = () => setShowModal(true);
   const handleCancelModal = () => { if (!whatsappLoading) setShowModal(false); };
@@ -111,9 +118,14 @@ export default function CartStep({
             onClick={handleProceed}
             className="w-full bg-primary text-white py-3 rounded-lg font-medium hover:bg-purple transition-colors flex items-center justify-center gap-2"
           >
-            {isLoggedIn ? 'Proceder al pago' : 'Inicia sesión para comprar'}
+            {proceedLabel}
             <ArrowRight size={16} />
           </button>
+          {!isLoggedIn && !canGuestCheckout && (
+            <p className="text-xs text-secondary text-center -mt-1">
+              Para pedidos de más de {GUEST_MAX_UNITS} unidades necesitas una cuenta.
+            </p>
+          )}
           <button
             onClick={handleOpenModal}
             disabled={whatsappLoading}

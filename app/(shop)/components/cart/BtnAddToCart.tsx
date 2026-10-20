@@ -2,6 +2,7 @@
 import { useCartStore } from '@/app/store/useCartStore'
 import { Variant } from '@/types/variant'
 import { toast } from '@/app/lib/toast'
+import { trackMetaEvent, CURRENCY } from '@/app/lib/metaPixel'
 
 interface Props {
   variant: Variant
@@ -47,6 +48,15 @@ export default function BtnAddToCart({
       combination_name: combinationName,
       quantity: quantitySelected,
       stock: totalStock,
+    })
+
+    trackMetaEvent('AddToCart', {
+      content_ids: [String(variant.product_id)],
+      content_name: productName,
+      content_type: 'product',
+      contents: [{ id: String(variant.product_id), quantity: quantitySelected }],
+      value: Number(variant.price) * quantitySelected,
+      currency: CURRENCY,
     })
 
     toast(

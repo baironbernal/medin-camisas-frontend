@@ -1,10 +1,11 @@
 'use client';
 
 import { useState, useCallback } from 'react';
-import { checkout } from '@/app/services/checkout';
+import { checkout, guestCheckout } from '@/app/services/checkout';
 import { useCartStore } from '@/app/store/useCartStore';
 import { CheckoutFormState } from './useCheckoutForm';
 import { SimpleCheckoutItem } from './useCartPricing';
+import { trackMetaEvent, getMetaCookies, CURRENCY } from '@/app/lib/metaPixel';
 
 export interface OrderData {
   total: string;
@@ -54,12 +55,14 @@ function loadWompiScript(publicKey: string): Promise<void> {
 interface UseWompiCheckoutParams {
   buildCheckoutItems: () => SimpleCheckoutItem[];
   formState: CheckoutFormState;
+  isGuest: boolean;
   onSuccess: (orderNumber: string, orderData: OrderData) => void;
 }
 
 export function useWompiCheckout({
   buildCheckoutItems,
   formState,
+  isGuest,
   onSuccess,
 }: UseWompiCheckoutParams) {
   const clearCart = useCartStore(state => state.clearCart);
@@ -72,15 +75,19 @@ export function useWompiCheckout({
     setLoading(true);
 
     try {
-      const res = await checkout({
+      const createOrder = isGuest ? guestCheckout : checkout;
+      const res = await createOrder({
         customer_name:  formState.customer_name,
         customer_email: formState.customer_email,
         customer_phone: formState.customer_phone || undefined,
         notes:          formState.notes          || undefined,
         items:          buildCheckoutItems(),
+        meta:           getMetaCookies(),
       });
 
       const { order, payment, items } = res.data;
+      // Product IDs captured now — the cart is cleared once the payment is approved
+      const productIds = [...new Set(useCartStore.getState().cart.map(item => String(item.product_id)))];
 
       await loadWompiScript(payment.public_key);
 
@@ -96,6 +103,14 @@ export function useWompiCheckout({
         const status = result?.transaction?.status;
 
         if (status === 'APPROVED') {
+          // eventId = order number, same as the server-side Purchase → Meta counts it once
+          trackMetaEvent('Purchase', {
+            content_ids: productIds,
+            content_type: 'product',
+            num_items: items.reduce((sum, item) => sum + item.quantity, 0),
+            value: Number(order.total),
+            currency: CURRENCY,
+          }, order.order_number);
           clearCart();
           onSuccess(order.order_number, {
             total:               order.total,
@@ -115,7 +130,7 @@ export function useWompiCheckout({
     } finally {
       setLoading(false);
     }
-  }, [formState, buildCheckoutItems, onSuccess, clearCart]);
+  }, [formState, isGuest, buildCheckoutItems, onSuccess, clearCart]);
 
   return { loading, error, handleCheckout };
 }

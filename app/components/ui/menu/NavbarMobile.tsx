@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import { Category } from "@/types/category";
 import { X, CircleUserRound, ChevronDown, ChevronRight, Handbag } from "lucide-react";
 import { useAuth } from "@/app/useContext/AuthContext";
-import { LogIn } from "lucide-react";
+import { LogOut } from "lucide-react";
 import NavLink from "./NavLinkContent";
 import WhatsappButton from "../commons/WhatsappButton";
 import Logo from "../commons/Logo";
@@ -119,7 +119,7 @@ export default function NavbarMobile({
                 onClick={onClose}
                 className="flex items-center gap-3 rounded px-3 py-3 text-lg hover:bg-white/10 text-accent font-medium w-fit"
               >
-                <CircleUserRound size={24} />
+                <LogOut size={24} />
                 <span className="truncate">Hola, {user?.name.split(' ')[0] || 'Mi Perfil'}</span>
               </NavLink>
             ) : (
@@ -128,7 +128,7 @@ export default function NavbarMobile({
                 onClick={onClose}
                 className="flex items-center gap-3 rounded px-3 py-3 text-lg hover:bg-white/10 text-accent font-medium w-fit"
               >
-                <LogIn size={24} />
+                <CircleUserRound size={24} />
                 Iniciar Sesión
               </NavLink>
             )}

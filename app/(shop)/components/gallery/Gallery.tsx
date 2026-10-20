@@ -16,11 +16,12 @@ const slideTransition = { duration: 0.35, ease: [0.25, 0.1, 0.25, 1] as const };
 
 interface GalleryDetailProps {
   images: string[];
+  onImageChange?: (image: string | null) => void;
 }
 
 const VISIBLE_THUMBS = 5;
 
-export default function GalleryDetail({ images }: GalleryDetailProps) {
+export default function GalleryDetail({ images, onImageChange }: GalleryDetailProps) {
   const [selectedIndex, setSelectedIndex] = useState(0);
   const [direction, setDirection] = useState(0);
   const [thumbOffset, setThumbOffset] = useState(0);
@@ -28,6 +29,10 @@ export default function GalleryDetail({ images }: GalleryDetailProps) {
   useEffect(() => {
     if (images && images.length > 0) setSelectedIndex(0);
   }, [images]);
+
+  useEffect(() => {
+    onImageChange?.(images?.[selectedIndex] ?? null);
+  }, [images, selectedIndex, onImageChange]);
 
   if (!images || images.length === 0) return null;
 

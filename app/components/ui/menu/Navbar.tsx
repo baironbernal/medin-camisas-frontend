@@ -7,7 +7,7 @@ import { useAnimatedOpen } from "@/app/hooks/useAnimatedOpen";
 import { useQueryState } from "nuqs";
 
 import { useAuth } from "@/app/useContext/AuthContext";
-import { LogIn } from "lucide-react";
+import { LogOut } from "lucide-react";
 import { CartSidebar } from "@/app/(shop)/components";
 import HoverPanel from "./HoverPanel";
 import NavLink from "./NavLinkContent";
@@ -141,9 +141,9 @@ export default function Navbar({
             {/* ================= Button Login ================= */}
             <NavLink href={isLoggedIn ? "/profile" : "/login"}>
                 {isLoggedIn ? (
-                  <CircleUserRound size={25} color="beige" strokeWidth={1} />
+                  <LogOut size={25} color="beige" strokeWidth={1.5} />
                 ) : (
-                  <LogIn size={25} color="beige" strokeWidth={1.5} />
+                  <CircleUserRound size={25} color="beige" strokeWidth={1} />
                 )}
             </NavLink>
           </div>

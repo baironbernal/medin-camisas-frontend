@@ -8,6 +8,7 @@ import { NuqsAdapter } from 'nuqs/adapters/next/app'
 import { AuthProvider } from "./useContext/AuthContext";
 import { Footer, WhatsAppFloat, Navbar } from "./components";
 import HomeAdsTicker from "./components/home/HomeAdsTicker";
+import MetaPixel from "./components/analytics/MetaPixel";
 
 
 /* Utendo */
@@ -55,6 +56,9 @@ export default async function RootLayout({
   return (
     <html lang="en" className={`${utendo.variable} ${okine.variable}`}>
       <body className="antialiased">
+        <Suspense fallback={null}>
+          <MetaPixel />
+        </Suspense>
         <AuthProvider initialSession={{ isAuthenticated: session.isAuthenticated, user: session.user }}>
           <NuqsAdapter>
             <Suspense fallback={<div className="h-20 bg-dark" />}>

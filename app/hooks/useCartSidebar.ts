@@ -8,8 +8,12 @@ import { useCartPricing } from './cart/useCartPricing';
 import { useCheckoutForm } from './cart/useCheckoutForm';
 import { useWompiCheckout, OrderData } from './cart/useWompiCheckout';
 import { useWhatsAppOrder } from './cart/useWhatsAppOrder';
+import { trackMetaEvent, CURRENCY } from '@/app/lib/metaPixel';
 
 export type Step = 'cart' | 'form' | 'success';
+
+/** Orders up to this many units can be paid without an account. */
+export const GUEST_MAX_UNITS = 6;
 
 // Re-exported so existing imports from this file keep working
 export type { CheckoutFormState as FormState } from './cart/useCheckoutForm';
@@ -17,12 +21,16 @@ export type { OrderData } from './cart/useWompiCheckout';
 
 export function useCartSidebar(onClose: () => void) {
   const cart = useCartStore(state => state.cart);
+  const totalUnits = useCartStore(state => state.totalItems);
   const { isLoggedIn } = useAuth();
   const router = useRouter();
 
   const [step, setStep]               = useState<Step>('cart');
   const [orderNumber, setOrderNumber] = useState('');
   const [orderData, setOrderData]     = useState<OrderData | null>(null);
+
+  const canGuestCheckout = totalUnits <= GUEST_MAX_UNITS;
+  const isGuest = !isLoggedIn;
 
   // ── Sub-hooks ──────────────────────────────────────────────────────────────
   const pricing = useCartPricing();
@@ -31,6 +39,7 @@ export function useCartSidebar(onClose: () => void) {
   const { loading, error: checkoutError, handleCheckout } = useWompiCheckout({
     buildCheckoutItems: pricing.buildCheckoutItems,
     formState,
+    isGuest,
     onSuccess: (num, data) => {
       setOrderNumber(num);
       setOrderData(data);
@@ -45,7 +54,14 @@ export function useCartSidebar(onClose: () => void) {
 
   // ── Handlers ───────────────────────────────────────────────────────────────
   const handleProceed = () => {
-    if (!isLoggedIn) {
+    trackMetaEvent('InitiateCheckout', {
+      content_ids: cart.map(item => String(item.product_id)),
+      num_items: totalUnits,
+      value: pricing.subtotalDiscounted,
+      currency: CURRENCY,
+    });
+
+    if (!isLoggedIn && !canGuestCheckout) {
       onClose();
       router.push('/login?callback=cart');
       return;
@@ -57,6 +73,8 @@ export function useCartSidebar(onClose: () => void) {
   return {
     cart,
     isLoggedIn,
+    isGuest,
+    canGuestCheckout,
     step,
     setStep,
     formState,
