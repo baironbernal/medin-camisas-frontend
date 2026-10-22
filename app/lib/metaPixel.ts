@@ -5,7 +5,7 @@
  * (it ships in the page HTML), so it's safe to keep as a fallback here.
  */
 
-export const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || '1009919508200104';
+export const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || '966084697955782';
 
 export const CURRENCY = 'COP';
 
