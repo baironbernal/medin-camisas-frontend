@@ -41,6 +41,9 @@ const okine = localFont({
 export const metadata: Metadata = {
   title: "Medin Camisas",
   description: "Colecciones para hombre con fit moderno y precios competitivos. Compra al detal o surte tu negocio con la mejor calidad.",
+  other: {
+    "facebook-domain-verification": "lne53r3vqjahtt1jax9yws0qgt3j9g",
+  },
 };
 
 export default async function RootLayout({

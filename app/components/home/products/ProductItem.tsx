@@ -39,7 +39,7 @@ function ProductItem({ product }: ProductItemProps) {
             <p className="font-medium text-secondary">
               Precio unitario: {formatCOP(product.base_price)}
             </p>
-            {product.wholesaler_price && (
+            {product.wholesaler_price && !product.unit_sale_only && (
               <p className="text-xs text-primary font-medium">
                 Precio mayorista: {formatCOP(product.wholesaler_price)}
               </p>

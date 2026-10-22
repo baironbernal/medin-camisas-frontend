@@ -1,11 +1,11 @@
 /**
  * Meta (Facebook) Pixel helpers.
  *
- * Everything here is a no-op until NEXT_PUBLIC_META_PIXEL_ID is set, so the
- * site works the same with or without the Pixel configured.
+ * NEXT_PUBLIC_META_PIXEL_ID overrides the default Pixel; the ID is public
+ * (it ships in the page HTML), so it's safe to keep as a fallback here.
  */
 
-export const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID ?? '';
+export const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || '1009919508200104';
 
 export const CURRENCY = 'COP';
 

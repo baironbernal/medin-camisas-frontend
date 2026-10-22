@@ -128,7 +128,7 @@ export const WrapperDetail = ({ product, interestedProducts }: ProductDetailProp
           <div className="flex flex-col gap-8 lg:sticky lg:top-24 h-fit">
 
             <FadeIn animation="fadeInUp" delay={0.1}>
-              <ProductInfo name={product.name} price={currentPrice} discount={currentDiscount} wholesalerPrice={product.wholesaler_price} />
+              <ProductInfo name={product.name} price={currentPrice} discount={currentDiscount} wholesalerPrice={product.wholesaler_price} unitSaleOnly={product.unit_sale_only} />
             </FadeIn>
 
             <FadeIn animation="fadeInUp" delay={0.2}>

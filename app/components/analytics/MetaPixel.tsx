@@ -8,7 +8,6 @@ import { META_PIXEL_ID, trackMetaEvent } from '@/app/lib/metaPixel';
 /**
  * Loads the Meta Pixel and sends a PageView on every client-side navigation
  * (Next.js doesn't reload the page, so the base snippet alone only counts the first one).
- * Renders nothing when NEXT_PUBLIC_META_PIXEL_ID is not set.
  */
 export default function MetaPixel() {
   const pathname = usePathname();

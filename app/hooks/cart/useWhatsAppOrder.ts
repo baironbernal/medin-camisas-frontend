@@ -18,7 +18,8 @@ function buildWhatsAppMessage(
   customerPhone: string,
 ): string {
   const totalDiscount = subtotalOriginal - subtotalDiscounted;
-  const discountPct = orderItems[0]?.discount_percentage ?? 0;
+  // Unit-sale-only items carry 0%, so take the tier from any discounted item
+  const discountPct = Math.max(0, ...orderItems.map(item => Number(item.discount_percentage) || 0));
 
   const lines: string[] = [];
   lines.push(`Hola, soy *${customerName}* y mi teléfono es *${customerPhone}*. Quiero confirmar mi pedido *${orderNumber}*`);

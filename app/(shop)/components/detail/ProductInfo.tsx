@@ -5,9 +5,10 @@ interface ProductInfoProps {
   price: number;
   discount: { discount: number; discountedPrice: number } | null;
   wholesalerPrice?: string | null;
+  unitSaleOnly?: boolean;
 }
 
-export default function ProductInfo({ name, price, discount, wholesalerPrice }: ProductInfoProps) {
+export default function ProductInfo({ name, price, discount, wholesalerPrice, unitSaleOnly }: ProductInfoProps) {
   return (
     <div className="flex flex-col gap-2">
       <h1 className="hidden lg:block text-3xl font-semibold text-primary">{name}</h1>
@@ -18,7 +19,12 @@ export default function ProductInfo({ name, price, discount, wholesalerPrice }: 
       ) : (
         <p className="text-2xl font-medium text-primary">Precio unitario: {formatCOP(price)}</p>
       )}
-      {wholesalerPrice && (
+      {unitSaleOnly && (
+        <p className="text-sm text-gray-500">
+          Solo venta unitaria: este producto no aplica para descuentos por cantidad.
+        </p>
+      )}
+      {wholesalerPrice && !unitSaleOnly && (
         <p className="text-sm font-medium text-primary">
           Precio mayorista: {formatCOP(wholesalerPrice)}
         </p>

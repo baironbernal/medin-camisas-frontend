@@ -9,6 +9,7 @@ export interface CalculatedItem {
   discounted_total_price: number;
   discount_percentage: number;
   discount_rule_id: number | null;
+  unit_sale_only: boolean;
   has_large_size_surcharge: boolean;
   surcharge_amount: number;
 }
