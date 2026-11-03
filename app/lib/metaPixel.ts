@@ -5,6 +5,8 @@
  * (it ships in the page HTML), so it's safe to keep as a fallback here.
  */
 
+import type { Variant } from '@/types/variant';
+
 export const META_PIXEL_ID = process.env.NEXT_PUBLIC_META_PIXEL_ID || '966084697955782';
 
 export const CURRENCY = 'COP';
@@ -31,6 +33,27 @@ export function trackMetaEvent(event: MetaEvent, params?: Record<string, unknown
   const fbq = (window as Window & { fbq?: Fbq }).fbq;
   if (!fbq) return;
   fbq('track', event, params, eventId ? { eventID: eventId } : undefined);
+}
+
+/**
+ * content_ids / content_name / contents for a list of cart lines.
+ * Variants of the same product are merged so each product ID appears once.
+ */
+export function cartContentParams(cart: Variant[]) {
+  const byProduct = new Map<string, { id: string; name?: string; quantity: number; item_price: number }>();
+  for (const item of cart) {
+    const id = String(item.product_id);
+    const line = byProduct.get(id) ?? { id, name: item.product_name, quantity: 0, item_price: Number(item.price) };
+    line.quantity += item.quantity ?? 1;
+    byProduct.set(id, line);
+  }
+  const lines = [...byProduct.values()];
+  return {
+    content_ids: lines.map(l => l.id),
+    content_name: lines.map(l => l.name).filter(Boolean).join(', '),
+    content_type: 'product',
+    contents: lines.map(({ id, quantity, item_price }) => ({ id, quantity, item_price })),
+  };
 }
 
 /** Meta browser cookies, forwarded to the backend so server events can be matched. */

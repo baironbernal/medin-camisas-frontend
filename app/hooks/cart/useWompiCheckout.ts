@@ -5,7 +5,7 @@ import { checkout, guestCheckout } from '@/app/services/checkout';
 import { useCartStore } from '@/app/store/useCartStore';
 import { CheckoutFormState } from './useCheckoutForm';
 import { SimpleCheckoutItem } from './useCartPricing';
-import { trackMetaEvent, getMetaCookies, CURRENCY } from '@/app/lib/metaPixel';
+import { trackMetaEvent, getMetaCookies, cartContentParams, CURRENCY } from '@/app/lib/metaPixel';
 
 export interface OrderData {
   total: string;
@@ -86,8 +86,8 @@ export function useWompiCheckout({
       });
 
       const { order, payment, items } = res.data;
-      // Product IDs captured now — the cart is cleared once the payment is approved
-      const productIds = [...new Set(useCartStore.getState().cart.map(item => String(item.product_id)))];
+      // Captured now — the cart is cleared once the payment is approved
+      const contentParams = cartContentParams(useCartStore.getState().cart);
 
       await loadWompiScript(payment.public_key);
 
@@ -105,8 +105,7 @@ export function useWompiCheckout({
         if (status === 'APPROVED') {
           // eventId = order number, same as the server-side Purchase → Meta counts it once
           trackMetaEvent('Purchase', {
-            content_ids: productIds,
-            content_type: 'product',
+            ...contentParams,
             num_items: items.reduce((sum, item) => sum + item.quantity, 0),
             value: Number(order.total),
             currency: CURRENCY,

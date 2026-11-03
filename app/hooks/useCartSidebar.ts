@@ -8,7 +8,7 @@ import { useCartPricing } from './cart/useCartPricing';
 import { useCheckoutForm } from './cart/useCheckoutForm';
 import { useWompiCheckout, OrderData } from './cart/useWompiCheckout';
 import { useWhatsAppOrder } from './cart/useWhatsAppOrder';
-import { trackMetaEvent, CURRENCY } from '@/app/lib/metaPixel';
+import { trackMetaEvent, cartContentParams, CURRENCY } from '@/app/lib/metaPixel';
 
 export type Step = 'cart' | 'form' | 'success';
 
@@ -55,7 +55,7 @@ export function useCartSidebar(onClose: () => void) {
   // ── Handlers ───────────────────────────────────────────────────────────────
   const handleProceed = () => {
     trackMetaEvent('InitiateCheckout', {
-      content_ids: cart.map(item => String(item.product_id)),
+      ...cartContentParams(cart),
       num_items: totalUnits,
       value: pricing.subtotalDiscounted,
       currency: CURRENCY,
