@@ -5,7 +5,7 @@ import { createWhatsAppOrder, OrderItem } from '@/app/services/checkout';
 import { useCartStore } from '@/app/store/useCartStore';
 import { formatCOP } from '@/app/lib/formatPrice';
 import { SimpleCheckoutItem } from './useCartPricing';
-import { trackMetaEvent, CURRENCY } from '@/app/lib/metaPixel';
+import { trackMetaEvent, trackOrderPlaced, cartContentParams, getMetaCookies, CURRENCY } from '@/app/lib/metaPixel';
 
 const WHATSAPP_NUMBER = '573024197103';
 
@@ -62,6 +62,7 @@ export function useWhatsAppOrder({ buildCheckoutItems }: UseWhatsAppOrderParams)
         customer_name:  customerName,
         customer_phone: customerPhone,
         items:          buildCheckoutItems(),
+        meta:           getMetaCookies(),
       });
 
       const { order, items } = res.data;
@@ -76,6 +77,18 @@ export function useWhatsAppOrder({ buildCheckoutItems }: UseWhatsAppOrderParams)
         customerName,
         customerPhone,
       );
+
+      // Order generated, not paid: payment (transfer / cash on delivery) is agreed over
+      // WhatsApp, and the Purchase is sent from the server when the admin records it.
+      trackOrderPlaced(order.order_number, {
+        ...cartContentParams(useCartStore.getState().cart),
+        num_items: items.reduce((sum, item) => sum + item.quantity, 0),
+        value: subtotalDiscounted,
+        currency: CURRENCY,
+        payment_method: 'por_definir',
+        payment_status: 'pending',
+        order_source: 'whatsapp',
+      });
 
       trackMetaEvent('Contact', {
         content_name: 'Pedido WhatsApp',

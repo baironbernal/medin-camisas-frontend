@@ -21,7 +21,15 @@ type MetaEvent =
   | 'CompleteRegistration'
   | 'Search';
 
-type Fbq = (command: 'track', event: MetaEvent, params?: Record<string, unknown>, options?: { eventID?: string }) => void;
+/** Custom events (not standard Meta events) — sent with fbq('trackCustom'). */
+type MetaCustomEvent = 'OrderPlaced';
+
+type Fbq = (
+  command: 'track' | 'trackCustom',
+  event: MetaEvent | MetaCustomEvent,
+  params?: Record<string, unknown>,
+  options?: { eventID?: string },
+) => void;
 
 /**
  * Send a standard event to Meta.
@@ -33,6 +41,19 @@ export function trackMetaEvent(event: MetaEvent, params?: Record<string, unknown
   const fbq = (window as Window & { fbq?: Fbq }).fbq;
   if (!fbq) return;
   fbq('track', event, params, eventId ? { eventID: eventId } : undefined);
+}
+
+/**
+ * OrderPlaced: an order was generated on the site but isn't paid yet
+ * (Wompi checkout opened, or WhatsApp order for transfer / cash on delivery).
+ * The real sale is the Purchase, sent from the server once the order is paid.
+ * eventId = `${order_number}-placed`, same as the server event → counted once.
+ */
+export function trackOrderPlaced(orderNumber: string, params: Record<string, unknown>) {
+  if (!META_PIXEL_ID || typeof window === 'undefined') return;
+  const fbq = (window as Window & { fbq?: Fbq }).fbq;
+  if (!fbq) return;
+  fbq('trackCustom', 'OrderPlaced', params, { eventID: `${orderNumber}-placed` });
 }
 
 /**

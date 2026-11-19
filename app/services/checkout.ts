@@ -20,6 +20,7 @@ export interface WhatsAppOrderPayload {
   customer_phone?: string;
   notes?: string;
   items: CheckoutItem[];
+  meta?: { fbp?: string; fbc?: string };
 }
 
 export interface OrderItem {

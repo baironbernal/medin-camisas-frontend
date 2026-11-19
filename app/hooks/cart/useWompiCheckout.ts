@@ -5,7 +5,7 @@ import { checkout, guestCheckout } from '@/app/services/checkout';
 import { useCartStore } from '@/app/store/useCartStore';
 import { CheckoutFormState } from './useCheckoutForm';
 import { SimpleCheckoutItem } from './useCartPricing';
-import { trackMetaEvent, getMetaCookies, cartContentParams, CURRENCY } from '@/app/lib/metaPixel';
+import { trackMetaEvent, trackOrderPlaced, getMetaCookies, cartContentParams, CURRENCY } from '@/app/lib/metaPixel';
 
 export interface OrderData {
   total: string;
@@ -89,6 +89,16 @@ export function useWompiCheckout({
       // Captured now — the cart is cleared once the payment is approved
       const contentParams = cartContentParams(useCartStore.getState().cart);
 
+      trackOrderPlaced(order.order_number, {
+        ...contentParams,
+        num_items: items.reduce((sum, item) => sum + item.quantity, 0),
+        value: Number(order.total),
+        currency: CURRENCY,
+        payment_method: 'wompi',
+        payment_status: 'pending',
+        order_source: 'web',
+      });
+
       await loadWompiScript(payment.public_key);
 
       const widget = new WidgetCheckout({
@@ -109,6 +119,9 @@ export function useWompiCheckout({
             num_items: items.reduce((sum, item) => sum + item.quantity, 0),
             value: Number(order.total),
             currency: CURRENCY,
+            payment_method: 'wompi',
+            payment_status: 'paid',
+            order_source: 'web',
           }, order.order_number);
           clearCart();
           onSuccess(order.order_number, {
